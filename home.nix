@@ -74,7 +74,7 @@
 
   programs.fzf.enable = true;
 
-  # programs.starship.enable = true;
+  programs.starship.enable = true;
 
   programs.direnv = {
     enable = true;
