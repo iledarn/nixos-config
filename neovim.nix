@@ -1,35 +1,35 @@
 { pkgs, ... }:
-let
-  tabnine-nvim3 = pkgs.vimUtils.buildVimPlugin {
-    name = "tabnine-nvim3";
-
-    src = pkgs.fetchgit {
-      url = "https://github.com/codota/tabnine-nvim";
-      fetchSubmodules = true;
-      hash = "sha256-1kzyPCfFb/wxzj8smkIZfIk2mdOCDjQKMe/C5mlIfZE=";
-    };
-  };
-in
+# let
+#   tabnine-nvim3 = pkgs.vimUtils.buildVimPlugin {
+#     name = "tabnine-nvim3";
+#
+#     src = pkgs.fetchgit {
+#       url = "https://github.com/codota/tabnine-nvim";
+#       fetchSubmodules = true;
+#       hash = "sha256-1kzyPCfFb/wxzj8smkIZfIk2mdOCDjQKMe/C5mlIfZE=";
+#     };
+#   };
+# in
 {
   programs.neovim = {
     enable = true;
     defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
-      {
-        plugin = tabnine-nvim3;
-        type = "lua";
-        config = ''
-          require('tabnine').setup({
-            disable_auto_comment=true,
-            accept_keymap = null,
-            dismiss_keymap = null,
-            debounce_ms = 800,
-            suggestion_color = {gui = "#808080", cterm = 244},
-            exclude_filetypes = {"TelescopePrompt", "NvimTree"},
-            -- log_file_path = nil, -- absolute path to Tabnine log file
-          })
-        '';
-      }
+      # {
+      #   plugin = tabnine-nvim3;
+      #   type = "lua";
+      #   config = ''
+      #     require('tabnine').setup({
+      #       disable_auto_comment=true,
+      #       accept_keymap = null,
+      #       dismiss_keymap = null,
+      #       debounce_ms = 800,
+      #       suggestion_color = {gui = "#808080", cterm = 244},
+      #       exclude_filetypes = {"TelescopePrompt", "NvimTree"},
+      #       -- log_file_path = nil, -- absolute path to Tabnine log file
+      #     })
+      #   '';
+      # }
       lush-nvim
       zenbones-nvim
       fugitive
