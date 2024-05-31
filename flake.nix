@@ -14,7 +14,11 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }: {
+  outputs = inputs @ {
+    nixpkgs,
+    home-manager,
+    ...
+  }: {
     # TODO please change the hostname to your own
     nixosConfigurations = {
       nixos = nixpkgs.lib.nixosSystem {
@@ -37,5 +41,6 @@
         ];
       };
     };
+    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
   };
 }

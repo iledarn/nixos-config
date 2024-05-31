@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{pkgs, ...}:
 # let
 #   tabnine-nvim3 = pkgs.vimUtils.buildVimPlugin {
 #     name = "tabnine-nvim3";
@@ -184,7 +184,6 @@
           vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
         '';
       }
-
     ];
     extraConfig = ''
       " colorscheme PaperColor
