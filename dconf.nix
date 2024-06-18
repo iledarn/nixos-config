@@ -43,7 +43,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/control-center" = {
-      last-panel = "display";
+      last-panel = "power";
       window-state = mkTuple [ 980 640 false ];
     };
 
@@ -325,8 +325,9 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/settings-daemon/plugins/power" = {
+      idle-dim = false;
       sleep-inactive-ac-timeout = 7200;
-      sleep-inactive-battery-timeout = 7200;
+      sleep-inactive-battery-timeout = 3600;
     };
 
     "org/gnome/shell" = {
