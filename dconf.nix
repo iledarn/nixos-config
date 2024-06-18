@@ -43,7 +43,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/control-center" = {
-      last-panel = "power";
+      last-panel = "multitasking";
       window-state = mkTuple [ 980 640 false ];
     };
 
@@ -87,6 +87,7 @@ with lib.hm.gvariant;
 
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-light";
+      enable-hot-corners = false;
       font-antialiasing = "grayscale";
       font-hinting = "slight";
       show-battery-percentage = true;
@@ -267,7 +268,7 @@ with lib.hm.gvariant;
 
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
-      workspaces-only-on-primary = true;
+      workspaces-only-on-primary = false;
     };
 
     "org/gnome/nautilus/preferences" = {
