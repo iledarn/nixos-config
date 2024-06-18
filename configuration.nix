@@ -25,6 +25,7 @@
     127.0.0.1 doodba15
     127.0.0.1 doodba16
     127.0.0.1 doodba17
+    139.162.11.95 usdtest12.kaertech.com
   '';
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
