@@ -21,7 +21,7 @@
   }: {
     # TODO please change the hostname to your own
     nixosConfigurations = {
-      nixos = nixpkgs.lib.nixosSystem {
+      scnsoft = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
