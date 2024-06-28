@@ -56,7 +56,7 @@
     gimp
     gparted
     ntfs3g
-    nixpkgs-fmt
+    # nixpkgs-fmt
     bat
     tcpdump
     ngrok
