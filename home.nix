@@ -98,7 +98,7 @@
         ms-python.black-formatter
         ms-python.python
         ms-python.isort
-	zainchen.json
+        xyz.local-history
       ]
       ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
