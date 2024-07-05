@@ -117,7 +117,7 @@
           name = "aws-toolkit-vscode";
           publisher = "AmazonWebServices";
           version = "3.12.0";
-          sha256 = "sha256-65Sspi2DZUcWHWcOvnWWWliX/sSozWiSg9ptXdbFNV8=";
+          sha256 = "sha256-110Hn80Nll8vO8EgeQ7coKyspjUR6TyyCTmdIdkzHZ4=";
         }
         {
           name = "amazon-q-vscode";
