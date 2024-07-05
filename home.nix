@@ -123,7 +123,7 @@
           name = "amazon-q-vscode";
           publisher = "AmazonWebServices";
           version = "1.11.0";
-          sha256 = "sha256-65Sspi2DZUcWHWcOvnWWWliX/sSozWiSg9ptXdbFNV8=";
+          sha256 = "sha256-5Op1ivgeVzPvIuT5qeY67Oe8xm1wWWIaSgp4jzDBau0=";
         }
         {
           name = "prettier-vscode";
