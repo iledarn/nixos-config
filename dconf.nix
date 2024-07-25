@@ -14,6 +14,10 @@ with lib.hm.gvariant;
       width = 600;
     };
 
+    "org/gnome/Connections" = {
+      first-run = false;
+    };
+
     "org/gnome/Console" = {
       font-scale = 1.1;
       last-window-size = mkTuple [ 652 480 ];
@@ -21,7 +25,10 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/Snapshot" = {
+      capture-mode = "video";
       is-maximized = false;
+      play-shutter-sound = true;
+      show-composition-guidelines = false;
       window-height = 640;
       window-width = 800;
     };
@@ -43,7 +50,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/control-center" = {
-      last-panel = "multitasking";
+      last-panel = "applications";
       window-state = mkTuple [ 980 640 false ];
     };
 
@@ -94,7 +101,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/notifications" = {
-      application-children = [ "gnome-power-panel" "org-gnome-nautilus" "org-gnome-epiphany" "org-gnome-console" "org-telegram-desktop" "gnome-network-panel" "org-keepassxc-keepassxc" "firefox" "org-gnome-settings" ];
+      application-children = [ "gnome-power-panel" "org-gnome-nautilus" "org-gnome-epiphany" "org-gnome-console" "org-telegram-desktop" "gnome-network-panel" "org-keepassxc-keepassxc" "firefox" "org-gnome-settings" "brave-browser" ];
       show-banners = false;
     };
 
@@ -130,6 +137,10 @@ with lib.hm.gvariant;
       application-id = "gnome-power-panel.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/microsoft-edge" = {
+      application-id = "microsoft-edge.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/org-flameshot-flameshot" = {
       enable = true;
     };
@@ -144,6 +155,10 @@ with lib.hm.gvariant;
 
     "org/gnome/desktop/notifications/application/org-gnome-epiphany" = {
       application-id = "org.gnome.Epiphany.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/org-gnome-extensions" = {
+      application-id = "org.gnome.Extensions.desktop";
     };
 
     "org/gnome/desktop/notifications/application/org-gnome-nautilus" = {
@@ -221,10 +236,6 @@ with lib.hm.gvariant;
       num-workspaces = 9;
     };
 
-    "org/gnome/epiphany" = {
-      ask-for-default = false;
-    };
-
     "org/gnome/epiphany/web" = {
       enable-user-js = false;
     };
@@ -269,6 +280,10 @@ with lib.hm.gvariant;
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
       workspaces-only-on-primary = false;
+    };
+
+    "org/gnome/nautilus/icon-view" = {
+      default-zoom-level = "extra-large";
     };
 
     "org/gnome/nautilus/preferences" = {
@@ -335,7 +350,7 @@ with lib.hm.gvariant;
       command-history = [ "lg" ];
       disable-user-extensions = false;
       disabled-extensions = [];
-      enabled-extensions = [ "workspace-indicator@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" ];
+      enabled-extensions = [ "workspace-indicator@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" ];
       last-selected-power-profile = "power-saver";
       remember-mount-password = false;
       welcome-dialog-last-shown-version = "45.3";
@@ -343,6 +358,10 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/app-switcher" = {
       current-workspace-only = false;
+    };
+
+    "org/gnome/shell/extensions/auto-move-windows" = {
+      application-list = [ "org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:5" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:6" "org.keepassxc.KeePassXC.desktop:9" ];
     };
 
     "org/gnome/shell/world-clocks" = {
