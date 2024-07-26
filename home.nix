@@ -64,6 +64,7 @@
     awscli2
     s3fs
     gnomeExtensions.caffeine
+    gnomeExtensions.clipboard-indicator
   ];
 
   programs.bash = {
