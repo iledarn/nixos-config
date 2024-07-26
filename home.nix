@@ -63,6 +63,7 @@
     openvpn
     awscli2
     s3fs
+    gnomeExtensions.caffeine
   ];
 
   programs.bash = {
