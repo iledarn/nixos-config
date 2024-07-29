@@ -350,7 +350,7 @@ with lib.hm.gvariant;
       command-history = [ "lg" ];
       disable-user-extensions = false;
       disabled-extensions = [];
-      enabled-extensions = [ "workspace-indicator@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" ];
+      enabled-extensions = [ "workspace-indicator@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "clipboard-indicator@tudmotu.com" "caffeine@patapon.info" ];
       last-selected-power-profile = "power-saver";
       remember-mount-password = false;
       welcome-dialog-last-shown-version = "45.3";
@@ -362,6 +362,17 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/auto-move-windows" = {
       application-list = [ "org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:5" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:6" "org.keepassxc.KeePassXC.desktop:9" ];
+    };
+
+    "org/gnome/shell/extensions/caffeine" = {
+      indicator-position-max = 2;
+      toggle-shortcut = [ "<Shift><Alt>i" ];
+      toggle-state = true;
+      user-enabled = true;
+    };
+
+    "org/gnome/shell/extensions/clipboard-indicator" = {
+      strip-text = true;
     };
 
     "org/gnome/shell/world-clocks" = {
