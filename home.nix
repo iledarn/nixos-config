@@ -31,6 +31,7 @@
     htop
     emacs
     git
+    gh
     keepassxc
     surfraw
     jq
