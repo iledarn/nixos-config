@@ -32,6 +32,7 @@
       # }
       lush-nvim
       zenbones-nvim
+      tokyonight-nvim
       fugitive
       vim-rhubarb
       vimagit
@@ -191,7 +192,8 @@
       " set background=light " or dark
       set background=dark " or dark
       " colorscheme zenbones
-      colorscheme tokyobones
+      " colorscheme tokyobones
+      colorscheme tokyonight
       " Highlight on yank
       augroup YankHighlight
       autocmd!
