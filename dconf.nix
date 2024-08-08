@@ -1,12 +1,9 @@
 # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
-{ lib, ... }:
-
-with lib.hm.gvariant;
-
-{
+{lib, ...}:
+with lib.hm.gvariant; {
   dconf.settings = {
     "apps/seahorse/listing" = {
-      keyrings-selected = [ "gnupg://" ];
+      keyrings-selected = ["gnupg://"];
     };
 
     "apps/seahorse/windows/key-manager" = {
@@ -20,7 +17,7 @@ with lib.hm.gvariant;
 
     "org/gnome/Console" = {
       font-scale = 1.1;
-      last-window-size = mkTuple [ 652 480 ];
+      last-window-size = mkTuple [652 480];
       theme = "night";
     };
 
@@ -39,40 +36,40 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/Totem" = {
-      active-plugins = [ "rotation" "vimeo" "apple-trailers" "open-directory" "save-file" "autoload-subtitles" "mpris" "skipto" "recent" "screenshot" "screensaver" "movie-properties" "variable-rate" ];
+      active-plugins = ["rotation" "vimeo" "apple-trailers" "open-directory" "save-file" "autoload-subtitles" "mpris" "skipto" "recent" "screenshot" "screensaver" "movie-properties" "variable-rate"];
       subtitle-encoding = "UTF-8";
     };
 
     "org/gnome/calendar" = {
       active-view = "month";
       window-maximized = true;
-      window-size = mkTuple [ 768 600 ];
+      window-size = mkTuple [768 600];
     };
 
     "org/gnome/control-center" = {
       last-panel = "applications";
-      window-state = mkTuple [ 980 640 false ];
+      window-state = mkTuple [960 1048 false];
     };
 
     "org/gnome/desktop/app-folders" = {
-      folder-children = [ "Utilities" "YaST" "Pardus" ];
+      folder-children = ["Utilities" "YaST" "Pardus"];
     };
 
     "org/gnome/desktop/app-folders/folders/Pardus" = {
-      categories = [ "X-Pardus-Apps" ];
+      categories = ["X-Pardus-Apps"];
       name = "X-Pardus-Apps.directory";
       translate = true;
     };
 
     "org/gnome/desktop/app-folders/folders/Utilities" = {
-      apps = [ "gnome-abrt.desktop" "gnome-system-log.desktop" "nm-connection-editor.desktop" "org.gnome.baobab.desktop" "org.gnome.Connections.desktop" "org.gnome.DejaDup.desktop" "org.gnome.Dictionary.desktop" "org.gnome.DiskUtility.desktop" "org.gnome.Evince.desktop" "org.gnome.FileRoller.desktop" "org.gnome.fonts.desktop" "org.gnome.Loupe.desktop" "org.gnome.seahorse.Application.desktop" "org.gnome.tweaks.desktop" "org.gnome.Usage.desktop" "vinagre.desktop" ];
-      categories = [ "X-GNOME-Utilities" ];
+      apps = ["gnome-abrt.desktop" "gnome-system-log.desktop" "nm-connection-editor.desktop" "org.gnome.baobab.desktop" "org.gnome.Connections.desktop" "org.gnome.DejaDup.desktop" "org.gnome.Dictionary.desktop" "org.gnome.DiskUtility.desktop" "org.gnome.Evince.desktop" "org.gnome.FileRoller.desktop" "org.gnome.fonts.desktop" "org.gnome.Loupe.desktop" "org.gnome.seahorse.Application.desktop" "org.gnome.tweaks.desktop" "org.gnome.Usage.desktop" "vinagre.desktop"];
+      categories = ["X-GNOME-Utilities"];
       name = "X-GNOME-Utilities.directory";
       translate = true;
     };
 
     "org/gnome/desktop/app-folders/folders/YaST" = {
-      categories = [ "X-SuSE-YaST" ];
+      categories = ["X-SuSE-YaST"];
       name = "suse-yast.directory";
       translate = true;
     };
@@ -87,9 +84,9 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/input-sources" = {
-      mru-sources = [ (mkTuple [ "xkb" "en" ]) ];
-      sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "ru" ]) ];
-      xkb-options = [ "terminalte:ctrl_alt_bksp" "lv4:ralt_switch" "ctrl:nocaps" "grp:shifts_toggle" ];
+      mru-sources = [(mkTuple ["xkb" "en"])];
+      sources = [(mkTuple ["xkb" "us"]) (mkTuple ["xkb" "ru"])];
+      xkb-options = ["terminalte:ctrl_alt_bksp" "lv4:ralt_switch" "ctrl:nocaps" "grp:shifts_toggle"];
     };
 
     "org/gnome/desktop/interface" = {
@@ -101,7 +98,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/notifications" = {
-      application-children = [ "gnome-power-panel" "org-gnome-nautilus" "org-gnome-epiphany" "org-gnome-console" "org-telegram-desktop" "gnome-network-panel" "org-keepassxc-keepassxc" "firefox" "org-gnome-settings" "brave-browser" ];
+      application-children = ["gnome-power-panel" "org-gnome-nautilus" "org-gnome-epiphany" "org-gnome-console" "org-telegram-desktop" "gnome-network-panel" "org-keepassxc-keepassxc" "firefox" "org-gnome-settings" "brave-browser"];
       show-banners = false;
     };
 
@@ -203,7 +200,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/search-providers" = {
-      sort-order = [ "org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
+      sort-order = ["org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop"];
     };
 
     "org/gnome/desktop/session" = {
@@ -211,29 +208,35 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/wm/keybindings" = {
-      move-to-workspace-1 = [ "<Ctrl><Alt>1" ];
-      move-to-workspace-2 = [ "<Ctrl><Alt>2" ];
-      move-to-workspace-3 = [ "<Ctrl><Alt>3" ];
-      move-to-workspace-4 = [ "<Ctrl><Alt>4" ];
-      move-to-workspace-5 = [ "<Ctrl><Alt>5" ];
-      move-to-workspace-6 = [ "<Ctrl><Alt>6" ];
-      move-to-workspace-7 = [ "<Ctrl><Alt>7" ];
-      move-to-workspace-8 = [ "<Ctrl><Alt>8" ];
-      move-to-workspace-9 = [ "<Ctrl><Alt>9" ];
-      switch-to-workspace-1 = [ "<Shift><Alt>1" "<Shift><Alt>x" ];
-      switch-to-workspace-2 = [ "<Shift><Alt>2" "<Shift><Alt>d" ];
-      switch-to-workspace-3 = [ "<Shift><Alt>3" "<Shift><Alt>f" ];
-      switch-to-workspace-4 = [ "<Shift><Alt>4" "<Shift><Alt>e" ];
-      switch-to-workspace-5 = [ "<Shift><Alt>5" "<Shift><Alt>t" ];
-      switch-to-workspace-6 = [ "<Shift><Alt>6" "<Shift><Alt>y" ];
-      switch-to-workspace-7 = [ "<Shift><Alt>7" ];
-      switch-to-workspace-8 = [ "<Shift><Alt>8" "<Shift><Alt>v" ];
-      switch-to-workspace-9 = [ "<Shift><Alt>9" "<Shift><Alt>k" ];
+      maximize = [];
+      move-to-workspace-1 = ["<Ctrl><Alt>1"];
+      move-to-workspace-2 = ["<Ctrl><Alt>2"];
+      move-to-workspace-3 = ["<Ctrl><Alt>3"];
+      move-to-workspace-4 = ["<Ctrl><Alt>4"];
+      move-to-workspace-5 = ["<Ctrl><Alt>5"];
+      move-to-workspace-6 = ["<Ctrl><Alt>6"];
+      move-to-workspace-7 = ["<Ctrl><Alt>7"];
+      move-to-workspace-8 = ["<Ctrl><Alt>8"];
+      move-to-workspace-9 = ["<Ctrl><Alt>9"];
+      switch-to-workspace-1 = ["<Shift><Alt>1" "<Shift><Alt>x"];
+      switch-to-workspace-2 = ["<Shift><Alt>2" "<Shift><Alt>d"];
+      switch-to-workspace-3 = ["<Shift><Alt>3" "<Shift><Alt>f"];
+      switch-to-workspace-4 = ["<Shift><Alt>4" "<Shift><Alt>e"];
+      switch-to-workspace-5 = ["<Shift><Alt>5" "<Shift><Alt>t"];
+      switch-to-workspace-6 = ["<Shift><Alt>6" "<Shift><Alt>y"];
+      switch-to-workspace-7 = ["<Shift><Alt>7"];
+      switch-to-workspace-8 = ["<Shift><Alt>8" "<Shift><Alt>v"];
+      switch-to-workspace-9 = ["<Shift><Alt>9" "<Shift><Alt>k"];
+      unmaximize = [];
     };
 
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "appmenu:close";
       num-workspaces = 9;
+    };
+
+    "org/gnome/epiphany" = {
+      default-search-engine = "DuckDuckGo";
     };
 
     "org/gnome/epiphany/web" = {
@@ -251,7 +254,7 @@ with lib.hm.gvariant;
       sidebar-page = "thumbnails";
       sidebar-size = 132;
       sizing-mode = "automatic";
-      window-ratio = mkTuple [ 1.008471 0.712657 ];
+      window-ratio = mkTuple [1.008471 0.712657];
     };
 
     "org/gnome/evolution-data-server" = {
@@ -279,7 +282,14 @@ with lib.hm.gvariant;
 
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
+      edge-tiling = false;
+      overlay-key = "Super_L";
       workspaces-only-on-primary = false;
+    };
+
+    "org/gnome/mutter/keybindings" = {
+      toggle-tiled-left = [];
+      toggle-tiled-right = [];
     };
 
     "org/gnome/nautilus/icon-view" = {
@@ -293,7 +303,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/nautilus/window-state" = {
-      initial-size = mkTuple [ 890 550 ];
+      initial-size = mkTuple [890 550];
       maximized = true;
     };
 
@@ -325,7 +335,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
-      custom-keybindings = [ "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/" ];
+      custom-keybindings = ["/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"];
     };
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
@@ -347,10 +357,10 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell" = {
-      command-history = [ "lg" ];
+      command-history = ["lg"];
       disable-user-extensions = false;
       disabled-extensions = [];
-      enabled-extensions = [ "workspace-indicator@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "clipboard-indicator@tudmotu.com" "caffeine@patapon.info" ];
+      enabled-extensions = ["workspace-indicator@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "clipboard-indicator@tudmotu.com" "caffeine@patapon.info" "drive-menu@gnome-shell-extensions.gcampax.github.com" "tiling-assistant@leleat-on-github"];
       last-selected-power-profile = "power-saver";
       remember-mount-password = false;
       welcome-dialog-last-shown-version = "45.3";
@@ -361,18 +371,21 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/auto-move-windows" = {
-      application-list = [ "org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:5" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:6" "org.keepassxc.KeePassXC.desktop:9" ];
+      application-list = ["org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:5" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:6" "org.keepassxc.KeePassXC.desktop:9"];
     };
 
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = 2;
-      toggle-shortcut = [ "<Shift><Alt>i" ];
-      toggle-state = true;
-      user-enabled = true;
+      indicator-position-max = -1;
+      toggle-shortcut = ["<Shift><Alt>i"];
     };
 
     "org/gnome/shell/extensions/clipboard-indicator" = {
       strip-text = true;
+    };
+
+    "org/gnome/shell/extensions/tiling-assistant" = {
+      active-window-hint-color = "rgb(53,132,228)";
+      last-version-installed = 44;
     };
 
     "org/gnome/shell/world-clocks" = {
@@ -395,7 +408,7 @@ with lib.hm.gvariant;
       sort-order = "descending";
       type-format = "category";
       view-type = "list";
-      window-size = mkTuple [ 959 372 ];
+      window-size = mkTuple [959 372];
     };
 
     "org/gtk/settings/file-chooser" = {
@@ -409,9 +422,8 @@ with lib.hm.gvariant;
       sort-directories-first = false;
       sort-order = "descending";
       type-format = "category";
-      window-position = mkTuple [ 26 23 ];
-      window-size = mkTuple [ 1203 902 ];
+      window-position = mkTuple [26 23];
+      window-size = mkTuple [1203 902];
     };
-
   };
 }
