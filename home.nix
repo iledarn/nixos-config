@@ -65,6 +65,7 @@
     awscli2
     s3fs
     gnomeExtensions.caffeine
+    gnomeExtensions.tiling-assistant
     gnomeExtensions.clipboard-indicator
   ];
 
