@@ -67,6 +67,7 @@
     gnomeExtensions.caffeine
     gnomeExtensions.tiling-assistant
     gnomeExtensions.clipboard-indicator
+    obs-studio
   ];
 
   programs.bash = {
