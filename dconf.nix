@@ -47,7 +47,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/control-center" = {
-      last-panel = "applications";
+      last-panel = "keyboard";
       window-state = mkTuple [960 1048 false];
     };
 
@@ -222,8 +222,8 @@ with lib.hm.gvariant; {
       switch-to-workspace-2 = ["<Shift><Alt>2" "<Shift><Alt>d"];
       switch-to-workspace-3 = ["<Shift><Alt>3" "<Shift><Alt>f"];
       switch-to-workspace-4 = ["<Shift><Alt>4" "<Shift><Alt>e"];
-      switch-to-workspace-5 = ["<Shift><Alt>5" "<Shift><Alt>t"];
-      switch-to-workspace-6 = ["<Shift><Alt>6" "<Shift><Alt>y"];
+      switch-to-workspace-5 = ["<Shift><Alt>5" "<Shift><Alt>w"];
+      switch-to-workspace-6 = ["<Shift><Alt>6" "<Shift><Alt>t"];
       switch-to-workspace-7 = ["<Shift><Alt>7"];
       switch-to-workspace-8 = ["<Shift><Alt>8" "<Shift><Alt>v"];
       switch-to-workspace-9 = ["<Shift><Alt>9" "<Shift><Alt>k"];
@@ -236,7 +236,9 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/epiphany" = {
+      ask-for-default = false;
       default-search-engine = "DuckDuckGo";
+      restore-session-policy = "crashed";
     };
 
     "org/gnome/epiphany/web" = {
@@ -345,7 +347,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-      binding = "<Shift><Alt>w";
+      binding = "<Shift><Alt>r";
       command = "emacsclient -cF \"((visibility . nil))\" -e \"(emacs-counsel-launcher)\"";
       name = "emacs-run-launcher";
     };
@@ -371,11 +373,11 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/shell/extensions/auto-move-windows" = {
-      application-list = ["org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:5" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:6" "org.keepassxc.KeePassXC.desktop:9"];
+      application-list = ["org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:6" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:7" "org.keepassxc.KeePassXC.desktop:9" "org.gnome.Epiphany.desktop:5"];
     };
 
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = -1;
+      indicator-position-max = 2;
       toggle-shortcut = ["<Shift><Alt>i"];
     };
 
