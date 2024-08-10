@@ -15,7 +15,21 @@
     enable = true;
     defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
-      nvim-lspconfig
+      {
+        plugin = nvim-lspconfig;
+        type = "lua";
+        config = ''
+          -- Nil language server setup
+          local lspconfig = require('lspconfig')
+          -- Get the Nil binary path from the Nix store
+          local nil_bin = "${pkgs.nil}/bin/nil"
+          lspconfig.nills.setup {
+            cmd = { nil_bin },
+            on_attach = on_attach,
+            capabilities = capabilities,
+          }
+        '';
+      }
       # {
       #   plugin = tabnine-nvim3;
       #   type = "lua";
