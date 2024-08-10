@@ -15,6 +15,7 @@
     enable = true;
     defaultEditor = true;
     plugins = with pkgs.vimPlugins; [
+      nvim-lspconfig
       # {
       #   plugin = tabnine-nvim3;
       #   type = "lua";
