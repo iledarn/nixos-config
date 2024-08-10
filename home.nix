@@ -68,6 +68,8 @@
     gnomeExtensions.tiling-assistant
     gnomeExtensions.clipboard-indicator
     obs-studio
+    # nix
+    nil
   ];
 
   programs.bash = {
