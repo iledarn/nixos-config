@@ -15,9 +15,13 @@
     enable = true;
     defaultEditor = true;
     extraPython3Packages = pkgs: with pkgs; [
-      python311Packages.python-lsp-server
+      python310Packages.python-lsp-server
       # Other Python packages for Neovim...
       black
+      pyyaml
+    ];
+    extraPackages = [
+      pkgs.pyright
     ];
     plugins = with pkgs.vimPlugins; [
       {
