@@ -68,8 +68,9 @@
     gnomeExtensions.tiling-assistant
     gnomeExtensions.clipboard-indicator
     obs-studio
-    # nix
+    # lsp
     nil
+    luajitPackages.lua-lsp
   ];
 
   programs.bash = {
