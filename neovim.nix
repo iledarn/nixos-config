@@ -14,6 +14,11 @@
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+    extraPython3Packages = pkgs: with pkgs; [
+      python311Packages.python-lsp-server
+      # Other Python packages for Neovim...
+      black
+    ];
     plugins = with pkgs.vimPlugins; [
       {
         plugin = nvim-lspconfig;
