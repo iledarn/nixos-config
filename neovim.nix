@@ -15,7 +15,7 @@
     enable = true;
     defaultEditor = true;
     extraPython3Packages = pkgs: with pkgs; [
-      python310Packages.python-lsp-server
+      python3Packages.python-lsp-server
       # Other Python packages for Neovim...
       black
       pyyaml
