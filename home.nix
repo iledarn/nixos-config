@@ -71,6 +71,7 @@
     # lsp
     nil
     luajitPackages.lua-lsp
+    lua-language-server
   ];
 
   programs.bash = {
