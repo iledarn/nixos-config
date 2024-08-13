@@ -262,7 +262,6 @@
       })
       --Same for nix files
       -- Get the path to the nix executable
-      local pkgs = vim.fn["nix#nixpkgs"]()
       local nix_bin = "${pkgs.nix}/bin/nix"
       -- Set the equalprg option for Nix files
       vim.api.nvim_create_augroup("nix_format", { clear = true })
