@@ -69,6 +69,7 @@
       #     })
       #   '';
       # }
+      vim-nix
       lush-nvim
       zenbones-nvim
       tokyonight-nvim
