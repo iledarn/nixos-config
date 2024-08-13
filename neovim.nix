@@ -269,7 +269,7 @@
         pattern = "nix",
         group = "nix_format",
         callback = function()
-        vim.bo.equalprg = string.format("%s fmt --quiet -", nix_bin)
+        vim.bo.equalprg = string.format("%s fmt", nix_bin)
         end,
       })
 
