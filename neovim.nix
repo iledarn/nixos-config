@@ -240,7 +240,7 @@
       autocmd TextYankPost * silent! lua vim.highlight.on_yank()
       augroup end
       " au FileType python setlocal equalprg=black\ -\ 2>/dev/null
-      au FileType nix setlocal equalprg=nixpkgs-fmt
+      " au FileType nix setlocal equalprg=nixpkgs-fmt
       " set clipboard+=unnamedplus
       " set clipboard^=unnamed,unnamedplus
       let g:db_ui_use_nerd_fonts = 1
