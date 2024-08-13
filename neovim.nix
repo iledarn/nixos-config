@@ -225,6 +225,9 @@
       }
     ];
     extraConfig = ''
+      " Configure black as the formatter for Python files
+      let g:formatdef_black = '"${pkgs.python3Packages.black}/bin/black - --quiet"'
+      let g:formatters_python = ['black']
       " colorscheme PaperColor
       set termguicolors
       " set background=light " or dark
