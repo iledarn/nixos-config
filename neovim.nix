@@ -225,9 +225,6 @@
       }
     ];
     extraConfig = ''
-      " Configure black as the formatter for Python files
-      let g:formatdef_black = '"${pkgs.python3Packages.black}/bin/black - --quiet"'
-      let g:formatters_python = ['black']
       " colorscheme PaperColor
       set termguicolors
       " set background=light " or dark
@@ -240,7 +237,7 @@
       autocmd!
       autocmd TextYankPost * silent! lua vim.highlight.on_yank()
       augroup end
-      au FileType python setlocal equalprg=black\ -\ 2>/dev/null
+      " au FileType python setlocal equalprg=black\ -\ 2>/dev/null
       au FileType nix setlocal equalprg=nixpkgs-fmt
       " set clipboard+=unnamedplus
       " set clipboard^=unnamed,unnamedplus
@@ -250,6 +247,17 @@
       noremap Zo <c-w>=
     '';
     extraLuaConfig = ''
+      --Configure black as the formatter for Python files
+      local black_bin = "${pkgs.python3Packages.black}/bin/black - --quiet"
+      -- Set the equalprg option for Python files
+      vim.api.nvim_create_augroup("python_format", { clear = true })
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "python",
+        group = "python_format",
+        callback = function()
+          vim.bo.equalprg = black_bin
+        end,
+      })
       --Remap space as leader key
       vim.g.mapleader = ' '
       vim.g.maplocalleader = ','
