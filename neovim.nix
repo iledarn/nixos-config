@@ -262,16 +262,16 @@
       })
       --Same for nix files
       -- Get the path to the nix executable
-      local nix_bin = "${pkgs.nix}/bin/nix"
+      --local nix_bin = "${pkgs.nix}/bin/nix"
       -- Set the equalprg option for Nix files
-      vim.api.nvim_create_augroup("nix_format", { clear = true })
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "nix",
-        group = "nix_format",
-        callback = function()
-        vim.bo.equalprg = string.format("%s fmt", nix_bin)
-        end,
-      })
+      -- vim.api.nvim_create_augroup("nix_format", { clear = true })
+      --vim.api.nvim_create_autocmd("FileType", {
+      --  pattern = "nix",
+      --  group = "nix_format",
+      --  callback = function()
+      --  vim.bo.equalprg = string.format("%s fmt", nix_bin)
+      --  end,
+      --})
 
       --Remap space as leader key
       vim.g.mapleader = ' '
