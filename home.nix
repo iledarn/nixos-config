@@ -72,6 +72,7 @@
     nil
     luajitPackages.lua-lsp
     lua-language-server
+    gedit
   ];
 
   programs.bash = {
