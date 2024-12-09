@@ -114,6 +114,16 @@
       vim-dadbod-ui
       vim-dadbod-completion
 
+      nvim-dap
+      # nvim-dap-ui
+      {
+        plugin = nvim-dap-python;
+        type = "lua";
+        config = ''
+          require('dap-python').setup('python3')
+        '';
+      }
+
       plenary-nvim
       telescope-nvim
       {
