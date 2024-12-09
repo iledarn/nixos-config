@@ -1,46 +1,35 @@
 {pkgs, ...}:
-# let
-#   tabnine-nvim3 = pkgs.vimUtils.buildVimPlugin {
-#     name = "tabnine-nvim3";
-#
-#     src = pkgs.fetchgit {
-#       url = "https://github.com/codota/tabnine-nvim";
-#       fetchSubmodules = true;
-#       hash = "sha256-1kzyPCfFb/wxzj8smkIZfIk2mdOCDjQKMe/C5mlIfZE=";
-#     };
-#   };
-# in
 {
   programs.neovim = {
     enable = true;
     defaultEditor = true;
     withPython3 = true;
     extraPython3Packages = pkgs:
-      with pkgs; [
-        python-lsp-server
+    with pkgs; [
+      python-lsp-server
         # Other Python packages for Neovim...
         black
         pyyaml
       ];
-    extraPackages = [
-      pkgs.pyright
-    ];
-    plugins = with pkgs.vimPlugins; [
-      {
-        plugin = nvim-lspconfig;
-        type = "lua";
-        config = ''
-          -- Nil language server setup
-          local lspconfig = require('lspconfig')
-          -- Get the Nil binary path from the Nix store
-          local nil_bin = "${pkgs.nil}/bin/nil"
-          lspconfig.nil_ls.setup {
+      extraPackages = [
+        pkgs.pyright
+      ];
+      plugins = with pkgs.vimPlugins; [
+        {
+          plugin = nvim-lspconfig;
+          type = "lua";
+          config = ''
+            -- Nil language server setup
+            local lspconfig = require('lspconfig')
+            -- Get the Nil binary path from the Nix store
+            local nil_bin = "${pkgs.nil}/bin/nil"
+            lspconfig.nil_ls.setup {
             cmd = { nil_bin },
             on_attach = on_attach,
             capabilities = capabilities,
-          }
-          local lua_lsp_bin = "${pkgs.lua-language-server}/bin/lua-language-server"
-          lspconfig.lua_ls.setup {
+            }
+            local lua_lsp_bin = "${pkgs.lua-language-server}/bin/lua-language-server"
+            lspconfig.lua_ls.setup {
             cmd = { lua_lsp_bin, "-E", "-e", "LANG=en" },
             capabilities = capabilities,
             on_attach = on_attach,
@@ -52,23 +41,8 @@
               }
             }
            }
-        '';
-      }
-      # {
-      #   plugin = tabnine-nvim3;
-      #   type = "lua";
-      #   config = ''
-      #     require('tabnine').setup({
-      #       disable_auto_comment=true,
-      #       accept_keymap = null,
-      #       dismiss_keymap = null,
-      #       debounce_ms = 800,
-      #       suggestion_color = {gui = "#808080", cterm = 244},
-      #       exclude_filetypes = {"TelescopePrompt", "NvimTree"},
-      #       -- log_file_path = nil, -- absolute path to Tabnine log file
-      #     })
-      #   '';
-      # }
+          '';
+        }
       vim-nix
       lush-nvim
       zenbones-nvim
