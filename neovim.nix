@@ -43,52 +43,52 @@
            }
           '';
         }
-      vim-nix
-      lush-nvim
-      zenbones-nvim
-      tokyonight-nvim
-      fugitive
-      vim-rhubarb
-      vimagit
-      {
-        plugin = oil-nvim;
-        type = "lua";
-        config = ''
-          require('oil').setup()
-          vim.keymap.set("n", "<leader>o", require("oil").open, { desc = "Open parent directory" })
-        '';
-      }
-      nvim-treesitter.withAllGrammars
-      nvim-treesitter-textobjects
+        vim-nix
+        lush-nvim
+        zenbones-nvim
+        tokyonight-nvim
+        fugitive
+        vim-rhubarb
+        vimagit
+        {
+          plugin = oil-nvim;
+          type = "lua";
+          config = ''
+            require('oil').setup()
+            vim.keymap.set("n", "<leader>o", require("oil").open, { desc = "Open parent directory" })
+          '';
+        }
+        nvim-treesitter.withAllGrammars
+        nvim-treesitter-textobjects
 
-      gruvbox-material
-      vim-code-dark
-      papercolor-theme
-      mini-nvim
-      nvim-web-devicons
-      {
-        plugin = nvim-tree-lua;
-        type = "lua";
-        config = ''
-          -- disable netrw at the very start of your init.lua
-          vim.g.loaded_netrw = 1
-          vim.g.loaded_netrwPlugin = 1
-          -- optionally enable 24-bit colour
-          -- vim.opt.termguicolors = true
-          -- empty setup using defaults
-          require('nvim-tree').setup()
-          vim.api.nvim_set_keymap('n', '<leader>\\', [[<cmd>NvimTreeToggle<CR>]], { })
-          vim.api.nvim_set_keymap('n', '<leader>\\\\', [[<cmd>NvimTreeFindFile<CR>]], { })
-        '';
-      }
-      vim-tmux-navigator
-      vim-tmux-clipboard
-      vim-unimpaired
-      vim-dadbod
-      vim-dadbod-ui
-      vim-dadbod-completion
+        gruvbox-material
+        vim-code-dark
+        papercolor-theme
+        mini-nvim
+        nvim-web-devicons
+        {
+          plugin = nvim-tree-lua;
+          type = "lua";
+          config = ''
+            -- disable netrw at the very start of your init.lua
+            vim.g.loaded_netrw = 1
+            vim.g.loaded_netrwPlugin = 1
+            -- optionally enable 24-bit colour
+            -- vim.opt.termguicolors = true
+            -- empty setup using defaults
+            require('nvim-tree').setup()
+            vim.api.nvim_set_keymap('n', '<leader>\\', [[<cmd>NvimTreeToggle<CR>]], { })
+            vim.api.nvim_set_keymap('n', '<leader>\\\\', [[<cmd>NvimTreeFindFile<CR>]], { })
+          '';
+        }
+        vim-tmux-navigator
+        vim-tmux-clipboard
+        vim-unimpaired
+        vim-dadbod
+        vim-dadbod-ui
+        vim-dadbod-completion
 
-      nvim-dap
+        nvim-dap
       # nvim-dap-ui
       {
         plugin = nvim-dap-python;
