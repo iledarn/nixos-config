@@ -93,6 +93,22 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  services.postgresql = {
+    enable = true;
+    package = pkgs.postgresql_15;
+    enableTCPIP = true;  # if you need TCP/IP connections
+    authentication = pkgs.lib.mkForce ''
+      # Configuration for authentication
+      local all all trust
+      host  all all 127.0.0.1/32 md5
+      host  all all localhost md5
+    '';
+    # Optional: Initialize with some databases/roles
+    initialScript = pkgs.writeText "backend-initScript" ''
+      CREATE USER odoo WITH PASSWORD 'mypassword' CREATEDB;
+    '';
+  };
+
   virtualisation.docker.enable = true;
 
   # Garbage collection can be automated
