@@ -1,11 +1,12 @@
 {
   config,
   pkgs,
+  username,
   ...
 }: {
   # TODO please change the username & home directory to your own
-  home.username = "ildarn";
-  home.homeDirectory = "/home/ildarn";
+  home.username = username;
+  home.homeDirectory = "/home/${username}";
 
   nixpkgs = {
     config = {

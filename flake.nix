@@ -35,6 +35,9 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.${username} = import ./home.nix;
+            home-manager.extraSpecialArgs = {
+              inherit username;  # This makes username available in home.nix
+            };
           }
         ];
       };
