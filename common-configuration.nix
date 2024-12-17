@@ -4,6 +4,7 @@
 {
   config,
   pkgs,
+  lib,
   hostname,
   username,
   ...

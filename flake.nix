@@ -25,13 +25,11 @@
     let
       mkSystem = { hostname, username }: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = {
+          inherit hostname username;
+        };
         modules = [
           ./common-configuration.nix
-          {
-            _module.args = {
-              inherit hostname username;
-            };
-          }
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
