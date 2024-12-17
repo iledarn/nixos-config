@@ -16,57 +16,48 @@
   };
 
   outputs = inputs @ {
+    self,
     nixpkgs,
     home-manager,
     ...
   }: {
-    # TODO please change the hostname to your own
-    nixosConfigurations = {
-      scnsoft = nixpkgs.lib.nixosSystem {
+    nixosConfigurations = 
+    let
+      mkSystem = { hostname, username }: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./scnsoft-configuration.nix
-
-          # make home-manager as a module of nixos
-          # so that home-manager configuration will be deployed automatically when executing `nixos-rebuild switch`
+          ./common-configuration.nix
+          {
+            _module.args = {
+              inherit hostname username;
+            };
+          }
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-
-            # TODO replace ryan with your own username
-            home-manager.users.ildar = import ./home.nix;
-
-            # Optionally, use home-manager.extraSpecialArgs to pass arguments
+            home-manager.users.${username} = import ./home.nix;
           }
         ];
       };
-      kaertech = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./kaertech-configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.ildar = import ./home.nix;
-          }
-        ];
-      };
-      gram = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./gram-configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.ildarn = import ./home.nix;
-          }
-        ];
+    in 
+    {
+      scnsoft = mkSystem {
+        hostname = "scnsoft";
+        username = "ildar";
       };
 
+      kaertech = mkSystem {
+        hostname = "kaertech";
+        username = "ildar";
+      };
+
+      gram = mkSystem {
+        hostname = "gram";
+        username = "ildarn";
+      };
     };
+
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
   };
 }
