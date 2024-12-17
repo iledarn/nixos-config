@@ -16,7 +16,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.initrd.luks.devices."luks-4608edec-17fe-4266-acd3-ea1acb4a1a60".device = "/dev/disk/by-uuid/4608edec-17fe-4266-acd3-ea1acb4a1a60";
+  # boot.initrd.luks.devices."luks-4608edec-17fe-4266-acd3-ea1acb4a1a60".device = "/dev/disk/by-uuid/4608edec-17fe-4266-acd3-ea1acb4a1a60";
   networking.hostName = "gram"; # Define your hostname.
   networking.extraHosts = ''
     127.0.0.1 doodba12
