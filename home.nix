@@ -217,7 +217,7 @@
   };
 
   home.sessionPath = [
-    "/home/ildarn/.config/emacs/bin"
+    "/home/${username}/.config/emacs/bin"
   ];
 
   programs.ssh.enable = true;
@@ -225,12 +225,12 @@
     kepiProd = {
       hostname = "139.162.11.95";
       user = "prod";
-      identityFile = "/home/ildarn/.ssh/id_ed25519";
+      identityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kepiOdoo16 = {
       hostname = "18.138.129.123";
       user = "ubuntu";
-      identityFile = "/home/ildarn/.ssh/id_ed25519";
+      identityFile = "/home/${username}/.ssh/id_ed25519";
     };
   };
 
