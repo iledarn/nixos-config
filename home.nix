@@ -4,8 +4,8 @@
   ...
 }: {
   # TODO please change the username & home directory to your own
-  home.username = "ildar";
-  home.homeDirectory = "/home/ildar";
+  home.username = "ildarn";
+  home.homeDirectory = "/home/ildarn";
 
   nixpkgs = {
     config = {
@@ -216,7 +216,7 @@
   };
 
   home.sessionPath = [
-    "/home/ildar/.config/emacs/bin"
+    "/home/ildarn/.config/emacs/bin"
   ];
 
   programs.ssh.enable = true;
@@ -224,12 +224,12 @@
     kepiProd = {
       hostname = "139.162.11.95";
       user = "prod";
-      identityFile = "/home/ildar/.ssh/id_ed25519";
+      identityFile = "/home/ildarn/.ssh/id_ed25519";
     };
     kepiOdoo16 = {
       hostname = "18.138.129.123";
       user = "ubuntu";
-      identityFile = "/home/ildar/.ssh/id_ed25519";
+      identityFile = "/home/ildarn/.ssh/id_ed25519";
     };
   };
 
@@ -243,7 +243,7 @@
     };
   };
 
-  home.stateVersion = "23.11";
+  home.stateVersion = "24.11";
 
   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
