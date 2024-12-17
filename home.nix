@@ -216,6 +216,7 @@
     };
   };
 
+  # this is for doom emacs - for its utilities to be available
   home.sessionPath = [
     "/home/${username}/.config/emacs/bin"
   ];
