@@ -324,14 +324,6 @@ with lib.hm.gvariant; {
       ignore-phase2-ca-cert = false;
     };
 
-    "org/gnome/portal/filechooser/Alacritty" = {
-      last-folder-path = "/home/ildar/Dropbox (Maestral)";
-    };
-
-    "org/gnome/portal/filechooser/bash" = {
-      last-folder-path = "/home/ildar/Pictures";
-    };
-
     "org/gnome/settings-daemon/plugins/color" = {
       night-light-enabled = false;
     };
