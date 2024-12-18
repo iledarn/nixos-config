@@ -2,35 +2,37 @@
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-    # home-manager, used for managing user configuration
-    home-manager = {
+    nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs-24-11.url = "github:NixOS/nixpkgs/nixos-24.11";
+    home-manager-23-11 = {
+      url = "github:nix-community/home-manager/release-23.11";
+      inputs.nixpkgs.follows = "nixpkgs-23-11";
+    };
+    home-manager-24-11 = {
       url = "github:nix-community/home-manager/release-24.11";
-      # The `follows` keyword in inputs is used for inheritance.
-      # Here, `inputs.nixpkgs` of home-manager is kept consistent with
-      # the `inputs.nixpkgs` of the current flake,
-      # to avoid problems caused by different versions of nixpkgs.
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-24-11";
     };
     hyprland.url = "github:hyprwm/Hyprland";
   };
 
   outputs = inputs @ {
     self,
-    nixpkgs,
-    home-manager,
+    nixpkgs-23-11,
+    nixpkgs-24-11,
+    home-manager-23-11,
+    home-manager-24-11,
     ...
   }: {
     nixosConfigurations = 
     let
-      mkSystem = { hostname, username }: nixpkgs.lib.nixosSystem {
+      mkSystem = { hostname, username, nixpkgsInput, homeManagerInput }: nixpkgsInput.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit hostname username;
         };
         modules = [
           ./common-configuration.nix
-          home-manager.nixosModules.home-manager
+          homeManagerInput.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -46,19 +48,25 @@
       scnsoft = mkSystem {
         hostname = "scnsoft";
         username = "ildar";
+        nixpkgsInput = nixpkgs-23-11;
+        homeManagerInput = home-manager-23-11;
       };
 
       kaertech = mkSystem {
         hostname = "kaertech";
         username = "ildar";
+        nixpkgsInput = nixpkgs-23-11;
+        homeManagerInput = home-manager-23-11;
       };
 
       gram = mkSystem {
         hostname = "gram";
         username = "ildarn";
+        nixpkgsInput = nixpkgs-24-11;
+        homeManagerInput = home-manager-24-11;
       };
     };
 
-    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+    formatter.x86_64-linux = nixpkgs-24-11.legacyPackages.x86_64-linux.alejandra;
   };
 }
