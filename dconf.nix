@@ -1,5 +1,5 @@
 # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
-{lib, ...}:
+{config, lib, ...}:
 with lib.hm.gvariant; {
   dconf.settings = {
     "apps/seahorse/listing" = {
@@ -334,7 +334,7 @@ with lib.hm.gvariant; {
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<Shift><Alt>c";
-      command = "bash /home/ildar/configfiles/launchtool.sh emacs";
+      command = "bash ${config.home.homeDirectory}/configfiles/launchtool.sh emacs";
       name = "emacs";
     };
 
