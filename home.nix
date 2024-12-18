@@ -76,7 +76,11 @@
     gedit
     google-drive-ocamlfuse
     fuse
+    jetbrains-mono
+    ubuntu_font_family
   ];
+
+  fonts.fontconfig.enable = true;
 
   systemd.user.services = {
     google-drive-mount = {
