@@ -29,6 +29,8 @@
     127.0.0.1 doodba16
     127.0.0.1 doodba17
     139.162.11.95 usdtest12.kaertech.com
+    127.0.0.1 erp1215.localhost
+    127.0.0.1 erp1202.localhost
   '';
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
