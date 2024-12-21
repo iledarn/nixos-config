@@ -25,7 +25,7 @@
   }: {
     nixosConfigurations = 
     let
-      mkSystem = { hostname, username, nixpkgsInput, homeManagerInput }: nixpkgsInput.lib.nixosSystem {
+      mkSystem = { hostname, username, nixpkgsInput, homeManagerInput, stateVersion }: nixpkgsInput.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit hostname username;
@@ -38,7 +38,7 @@
             home-manager.useUserPackages = true;
             home-manager.users.${username} = import ./home.nix;
             home-manager.extraSpecialArgs = {
-              inherit username;  # This makes username available in home.nix
+              inherit username stateVersion;  # This makes username available in home.nix
             };
           }
         ];

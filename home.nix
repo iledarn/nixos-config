@@ -2,6 +2,7 @@
   config,
   pkgs,
   username,
+  stateVersion,
   ...
 }: {
   # TODO please change the username & home directory to your own
@@ -249,7 +250,7 @@
     };
   };
 
-  home.stateVersion = "24.11";
+  home.stateVersion = stateVersion;
 
   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
