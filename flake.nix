@@ -50,6 +50,7 @@
         username = "ildar";
         nixpkgsInput = nixpkgs-23-11;
         homeManagerInput = home-manager-23-11;
+        stateVersion = "23.11";
       };
 
       kaertech = mkSystem {
@@ -57,6 +58,7 @@
         username = "ildar";
         nixpkgsInput = nixpkgs-23-11;
         homeManagerInput = home-manager-23-11;
+        stateVersion = "23.11";
       };
 
       gram = mkSystem {
@@ -64,6 +66,7 @@
         username = "ildarn";
         nixpkgsInput = nixpkgs-24-11;
         homeManagerInput = home-manager-24-11;
+        stateVersion = "24.11";
       };
     };
 
