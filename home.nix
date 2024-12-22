@@ -31,7 +31,7 @@
     alacritty
     brave
     htop
-    emacs
+    # emacs
     git
     gh
     keepassxc
