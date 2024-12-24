@@ -271,13 +271,6 @@
 
   home.stateVersion = stateVersion;
 
-  programs.emacs = {
-    enable = true;
-    extraPackages = epkgs: [
-      epkgs.vterm
-    ];
-  };
-
   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
