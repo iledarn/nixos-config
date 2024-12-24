@@ -29,7 +29,7 @@
     telegram-desktop
     wmctrl
     alacritty
-    brave
+    # brave
     htop
     # emacs
     git
@@ -84,6 +84,14 @@
     libtool
     gcc
   ];
+
+  programs.brave = {
+    enable = true;
+    extensions = [];
+    commandLineArgs = [
+      "--enable-features=TabScrolling,VerticalTabsFeature"
+    ];
+  };
 
   fonts.fontconfig.enable = true;
 
