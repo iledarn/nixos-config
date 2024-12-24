@@ -287,7 +287,6 @@ with lib.hm.gvariant; {
       edge-tiling = false;
       overlay-key = "Super_L";
       workspaces-only-on-primary = false;
-      focus-new-windows = "strict";
     };
 
     "org/gnome/mutter/keybindings" = {
@@ -366,7 +365,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/shell/extensions/auto-move-windows" = {
-      application-list = ["org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:6" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "org.keepassxc.KeePassXC.desktop:9" "org.gnome.Epiphany.desktop:5"];
+      application-list = ["org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:6" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:7" "org.keepassxc.KeePassXC.desktop:9" "org.gnome.Epiphany.desktop:5"];
     };
 
     "org/gnome/shell/extensions/caffeine" = {
@@ -381,8 +380,6 @@ with lib.hm.gvariant; {
     "org/gnome/shell/extensions/tiling-assistant" = {
       active-window-hint-color = "rgb(53,132,228)";
       last-version-installed = 44;
-      float-always = ["emacs-run-launcher"];
-      floating-class-exceptions = ["Emacs"];
     };
 
     "org/gnome/shell/world-clocks" = {
