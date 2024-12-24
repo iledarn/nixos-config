@@ -93,6 +93,13 @@
     ];
   };
 
+  programs.emacs = {
+    enable = true;
+    extraPackages = epkgs: [
+      epkgs.vterm
+    ];
+  };
+
   fonts.fontconfig.enable = true;
 
   systemd.user.services = {
