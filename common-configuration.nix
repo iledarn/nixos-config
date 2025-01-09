@@ -31,6 +31,8 @@
     139.162.11.95 usdtest12.kaertech.com
     127.0.0.1 erp2024_12_15.localhost
     127.0.0.1 erp2024_12_02.localhost
+    127.0.0.1 erp2024_12_01.localhost
+    127.0.0.1 erp2025_01_06.localhost
   '';
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
