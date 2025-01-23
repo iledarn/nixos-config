@@ -34,6 +34,7 @@
     127.0.0.1 erp2024_12_01.localhost
     127.0.0.1 erp2025_01_06.localhost
     127.0.0.1 erp2025_01_20.localhost
+    127.0.0.1 erp2025_01_20_2.localhost
   '';
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
