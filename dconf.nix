@@ -285,6 +285,7 @@ with lib.hm.gvariant; {
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
       edge-tiling = false;
+      experimental-features = [ "scale-monitor-framebuffer" ];
       overlay-key = "Super_L";
       workspaces-only-on-primary = false;
     };
