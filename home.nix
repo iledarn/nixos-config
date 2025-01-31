@@ -133,8 +133,6 @@
     enable = true;
     sessionVariables = {
       EDITOR = "nvim";
-      GOOGLE_CLIENT_SECRET_JSON_FILE = "${config.home.homeDirectory}/client_secrets.json";
-      GOOGLE_CREDENTIALS_FILE = "${config.home.homeDirectory}/drivecreds.json";
     };
   };
 
