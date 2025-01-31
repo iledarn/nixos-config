@@ -250,11 +250,6 @@
       user = "prod";
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
-    kepiOdoo16 = {
-      hostname = "18.138.129.123";
-      user = "ubuntu";
-      identityFile = "/home/${username}/.ssh/id_ed25519";
-    };
   };
 
   programs.foot = {
