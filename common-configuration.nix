@@ -111,6 +111,7 @@
       local all all trust
       host  all all 127.0.0.1/32 md5
       host  all all localhost md5
+      host  all all 172.18.0.1/16 md5
     '';
     # Optional: Initialize with some databases/roles
     initialScript = pkgs.writeText "backend-initScript" ''
