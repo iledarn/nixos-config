@@ -23,28 +23,33 @@
     home-manager-24-11,
     ...
   }: {
-    nixosConfigurations = 
-    let
-      mkSystem = { hostname, username, nixpkgsInput, homeManagerInput, stateVersion }: nixpkgsInput.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit hostname username;
+    nixosConfigurations = let
+      mkSystem = {
+        hostname,
+        username,
+        nixpkgsInput,
+        homeManagerInput,
+        stateVersion,
+      }:
+        nixpkgsInput.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit hostname username;
+          };
+          modules = [
+            ./common-configuration.nix
+            homeManagerInput.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.${username} = import ./home.nix;
+              home-manager.extraSpecialArgs = {
+                inherit username stateVersion; # This makes username available in home.nix
+              };
+            }
+          ];
         };
-        modules = [
-          ./common-configuration.nix
-          homeManagerInput.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${username} = import ./home.nix;
-            home-manager.extraSpecialArgs = {
-              inherit username stateVersion;  # This makes username available in home.nix
-            };
-          }
-        ];
-      };
-    in 
-    {
+    in {
       scnsoft = mkSystem {
         hostname = "scnsoft";
         username = "ildar";

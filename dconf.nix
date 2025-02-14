@@ -1,5 +1,9 @@
 # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
-{config, lib, ...}:
+{
+  config,
+  lib,
+  ...
+}:
 with lib.hm.gvariant; {
   dconf.settings = {
     "apps/seahorse/listing" = {
@@ -285,7 +289,7 @@ with lib.hm.gvariant; {
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
       edge-tiling = false;
-      experimental-features = [ "scale-monitor-framebuffer" ];
+      experimental-features = ["scale-monitor-framebuffer"];
       overlay-key = "Super_L";
       workspaces-only-on-primary = false;
     };

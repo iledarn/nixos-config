@@ -107,7 +107,7 @@
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_15;
-    enableTCPIP = true;  # if you need TCP/IP connections
+    enableTCPIP = true; # if you need TCP/IP connections
     authentication = pkgs.lib.mkForce ''
       # Configuration for authentication
       local all all trust
