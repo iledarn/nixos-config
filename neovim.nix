@@ -201,6 +201,16 @@
             ${builtins.readFile ./nvim/plugin/aerial-nvim.lua}
           '';
       }
+
+      {
+        plugin = comment-nvim;
+        type = "lua";
+        config =
+          # lua
+          ''
+            require('Comment').setup()
+          '';
+      }
     ];
     extraLuaConfig =
       # lua
