@@ -76,7 +76,15 @@
       }
       fugitive
       vim-rhubarb
-      vimagit
+      {
+        plugin = neogit;
+        type = "lua";
+        config =
+          # lua
+          ''
+            ${builtins.readFile ./nvim/plugin/neogit.lua}
+          '';
+      }
       {
         plugin = oil-nvim;
         type = "lua";
@@ -105,7 +113,15 @@
       vim-unimpaired
 
       vim-dadbod
-      vim-dadbod-ui
+      {
+        plugin = vim-dadbod-ui;
+        type = "lua";
+        config =
+          # lua
+          ''
+            ${builtins.readFile ./nvim/plugin/vim-dadbod.lua}
+          '';
+      }
       vim-dadbod-completion
 
       nvim-dap
@@ -189,6 +205,17 @@
     extraLuaConfig =
       # lua
       ''
+        local black_bin = "${pkgs.python3Packages.black}/bin/black - --quiet"
+        -- Set the equalprg option for Python files
+        vim.api.nvim_create_augroup("python_format", { clear = true })
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = "python",
+          group = "python_format",
+          callback = function()
+            vim.bo.equalprg = black_bin
+          end,
+        })
+
         ${builtins.readFile ./nvim/options.lua}
       '';
   };
