@@ -24,7 +24,7 @@
       #       ${builtins.readFile ./nvim/plugin/lazy.lua}
       #     '';
       # }
-      lazydev-nvim
+      # lazydev-nvim
       lualine-nvim
       nvim-web-devicons
       {
