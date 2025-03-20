@@ -21,8 +21,14 @@ with lib.hm.gvariant; {
 
     "org/gnome/Console" = {
       font-scale = 1.1;
+      last-window-maximised = true;
       last-window-size = mkTuple [652 480];
       theme = "night";
+    };
+
+    "org/gnome/Extensions" = {
+      window-height = 1214;
+      window-width = 1758;
     };
 
     "org/gnome/Snapshot" = {
@@ -51,8 +57,19 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/control-center" = {
-      last-panel = "keyboard";
+      last-panel = "applications";
       window-state = mkTuple [960 1048 false];
+    };
+
+    "org/gnome/desktop/a11y/applications" = {
+      screen-magnifier-enabled = false;
+    };
+
+    "org/gnome/desktop/a11y/magnifier" = {
+      cross-hairs-thickness = 66;
+      invert-lightness = false;
+      scroll-at-edges = false;
+      show-cross-hairs = false;
     };
 
     "org/gnome/desktop/app-folders" = {
@@ -95,10 +112,13 @@ with lib.hm.gvariant; {
 
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-light";
+      cursor-size = 32;
+      enable-animations = true;
       enable-hot-corners = false;
       font-antialiasing = "grayscale";
       font-hinting = "slight";
       show-battery-percentage = true;
+      toolkit-accessibility = false;
     };
 
     "org/gnome/desktop/notifications" = {
@@ -114,6 +134,10 @@ with lib.hm.gvariant; {
       application-id = "brave-browser.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/brave-jndlecohfigjmhidboiabnpjfmjgmacp-default" = {
+      application-id = "brave-jndlecohfigjmhidboiabnpjfmjgmacp-Default.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/calc" = {
       application-id = "calc.desktop";
     };
@@ -124,6 +148,10 @@ with lib.hm.gvariant; {
 
     "org/gnome/desktop/notifications/application/dropbox" = {
       application-id = "dropbox.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/emacsclient" = {
+      application-id = "emacsclient.desktop";
     };
 
     "org/gnome/desktop/notifications/application/firefox" = {
@@ -187,6 +215,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/desktop/peripherals/touchpad" = {
+      send-events = "enabled";
       two-finger-scrolling-enabled = true;
     };
 
@@ -214,6 +243,7 @@ with lib.hm.gvariant; {
     "org/gnome/desktop/wm/keybindings" = {
       maximize = [];
       move-to-workspace-1 = ["<Ctrl><Alt>1"];
+      move-to-workspace-10 = ["<Ctrl><Alt>g"];
       move-to-workspace-2 = ["<Ctrl><Alt>2"];
       move-to-workspace-3 = ["<Ctrl><Alt>3"];
       move-to-workspace-4 = ["<Ctrl><Alt>4"];
@@ -222,8 +252,8 @@ with lib.hm.gvariant; {
       move-to-workspace-7 = ["<Ctrl><Alt>7"];
       move-to-workspace-8 = ["<Ctrl><Alt>8"];
       move-to-workspace-9 = ["<Ctrl><Alt>9"];
-      move-to-workspace-10 = ["<Ctrl><Alt>g"];
       switch-to-workspace-1 = ["<Shift><Alt>1" "<Shift><Alt>x"];
+      switch-to-workspace-10 = ["<Shift><Alt>g"];
       switch-to-workspace-2 = ["<Shift><Alt>2" "<Shift><Alt>d"];
       switch-to-workspace-3 = ["<Shift><Alt>3" "<Shift><Alt>f"];
       switch-to-workspace-4 = ["<Shift><Alt>4" "<Shift><Alt>e"];
@@ -232,7 +262,6 @@ with lib.hm.gvariant; {
       switch-to-workspace-7 = ["<Shift><Alt>7"];
       switch-to-workspace-8 = ["<Shift><Alt>8" "<Shift><Alt>v"];
       switch-to-workspace-9 = ["<Shift><Alt>9" "<Shift><Alt>k"];
-      switch-to-workspace-10 = ["<Shift><Alt>g"];
       unmaximize = [];
     };
 
@@ -241,14 +270,19 @@ with lib.hm.gvariant; {
       num-workspaces = 10;
     };
 
-    "org/gnome/epiphany" = {
-      ask-for-default = false;
-      default-search-engine = "DuckDuckGo";
-      restore-session-policy = "crashed";
+    "org/gnome/epiphany/state" = {
+      is-maximized = false;
+      window-size = mkTuple [1024 768];
     };
 
     "org/gnome/epiphany/web" = {
+      default-zoom-level = 1.0;
       enable-user-js = false;
+      monospace-font = "Monospace 16";
+      remember-passwords = false;
+      sans-serif-font = "Sans 16";
+      serif-font = "Serif 16";
+      use-gnome-fonts = false;
     };
 
     "org/gnome/evince/default" = {
@@ -288,6 +322,25 @@ with lib.hm.gvariant; {
       window-width = 600;
     };
 
+    "org/gnome/gedit/state/window" = {
+      bottom-panel-size = 140;
+      side-panel-active-page = "GeditWindowDocumentsPanel";
+      side-panel-size = 200;
+      size = mkTuple [900 700];
+      state = 87168;
+    };
+
+    "org/gnome/gnome-system-monitor" = {
+      maximized = true;
+      show-dependencies = false;
+      show-whose-processes = "user";
+    };
+
+    "org/gnome/gnome-system-monitor/proctree" = {
+      col-26-visible = false;
+      col-26-width = 0;
+    };
+
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
       edge-tiling = false;
@@ -313,6 +366,7 @@ with lib.hm.gvariant; {
 
     "org/gnome/nautilus/window-state" = {
       initial-size = mkTuple [890 550];
+      initial-size-file-chooser = mkTuple [890 550];
       maximized = true;
     };
 
@@ -331,8 +385,13 @@ with lib.hm.gvariant; {
       ignore-phase2-ca-cert = false;
     };
 
+    "org/gnome/portal/filechooser/brave-browser" = {
+      last-folder-path = "/home/ildarn/Pictures/Screenshots";
+    };
+
     "org/gnome/settings-daemon/plugins/color" = {
       night-light-enabled = false;
+      night-light-schedule-automatic = false;
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
@@ -360,8 +419,9 @@ with lib.hm.gvariant; {
     "org/gnome/shell" = {
       command-history = ["lg"];
       disable-user-extensions = false;
-      disabled-extensions = [];
-      enabled-extensions = ["workspace-indicator@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "clipboard-indicator@tudmotu.com" "caffeine@patapon.info" "drive-menu@gnome-shell-extensions.gcampax.github.com" "tiling-assistant@leleat-on-github"];
+      disabled-extensions = ["places-menu@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "light-style@gnome-shell-extensions.gcampax.github.com" "status-icons@gnome-shell-extensions.gcampax.github.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "windowsNavigator@gnome-shell-extensions.gcampax.github.com"];
+      enabled-extensions = ["workspace-indicator@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "clipboard-indicator@tudmotu.com" "caffeine@patapon.info" "drive-menu@gnome-shell-extensions.gcampax.github.com" "tiling-assistant@leleat-on-github" "system-monitor@gnome-shell-extensions.gcampax.github.com"];
+      favorite-apps = ["org.gnome.Epiphany.desktop" "org.gnome.Geary.desktop" "org.gnome.Calendar.desktop" "org.gnome.Music.desktop" "org.gnome.Nautilus.desktop" "google-chrome.desktop"];
       last-selected-power-profile = "power-saver";
       remember-mount-password = false;
       welcome-dialog-last-shown-version = "45.3";
@@ -372,12 +432,13 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/shell/extensions/auto-move-windows" = {
-      application-list = ["org.codeberg.dnkl.foot.desktop:1" "org.telegram.desktop.desktop:6" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:7" "org.keepassxc.KeePassXC.desktop:9" "org.gnome.Epiphany.desktop:5"];
+      application-list = ["org.telegram.desktop.desktop:6" "brave-browser.desktop:2" "microsoft-edge.desktop:4" "firefox.desktop:3" "emacs.desktop:7" "org.keepassxc.KeePassXC.desktop:9" "org.gnome.Epiphany.desktop:5" "google-chrome.desktop:10"];
     };
 
     "org/gnome/shell/extensions/caffeine" = {
       indicator-position-max = 2;
       toggle-shortcut = ["<Shift><Alt>i"];
+      toggle-state = false;
     };
 
     "org/gnome/shell/extensions/clipboard-indicator" = {
@@ -385,8 +446,46 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/shell/extensions/tiling-assistant" = {
+      activate-layout0 = [];
+      activate-layout1 = [];
+      activate-layout2 = [];
+      activate-layout3 = [];
       active-window-hint-color = "rgb(53,132,228)";
+      auto-tile = [];
+      center-window = [];
+      debugging-free-rects = [];
+      debugging-show-tiled-rects = [];
+      default-move-mode = 0;
+      dynamic-keybinding-behavior = 0;
+      focus-hint = 0;
+      focus-hint-color = "rgb(53,132,228)";
+      import-layout-examples = false;
       last-version-installed = 44;
+      restore-window = ["<Super>Down"];
+      search-popup-layout = [];
+      tile-bottom-half = ["<Super>KP_2"];
+      tile-bottom-half-ignore-ta = [];
+      tile-bottomleft-quarter = ["<Super>KP_1"];
+      tile-bottomleft-quarter-ignore-ta = [];
+      tile-bottomright-quarter = ["<Super>KP_3"];
+      tile-bottomright-quarter-ignore-ta = [];
+      tile-edit-mode = [];
+      tile-left-half = ["<Super>Left" "<Super>KP_4"];
+      tile-left-half-ignore-ta = [];
+      tile-maximize = ["<Super>Up" "<Super>KP_5"];
+      tile-maximize-horizontally = [];
+      tile-maximize-vertically = [];
+      tile-right-half = ["<Super>Right" "<Super>KP_6"];
+      tile-right-half-ignore-ta = [];
+      tile-top-half = ["<Super>KP_8"];
+      tile-top-half-ignore-ta = [];
+      tile-topleft-quarter = ["<Super>KP_7"];
+      tile-topleft-quarter-ignore-ta = [];
+      tile-topright-quarter = ["<Super>KP_9"];
+      tile-topright-quarter-ignore-ta = [];
+      toggle-always-on-top = [];
+      toggle-tiling-popup = [];
+      window-gap = 0;
     };
 
     "org/gnome/shell/world-clocks" = {
