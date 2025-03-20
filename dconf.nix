@@ -222,6 +222,7 @@ with lib.hm.gvariant; {
       move-to-workspace-7 = ["<Ctrl><Alt>7"];
       move-to-workspace-8 = ["<Ctrl><Alt>8"];
       move-to-workspace-9 = ["<Ctrl><Alt>9"];
+      move-to-workspace-10 = ["<Ctrl><Alt>g"];
       switch-to-workspace-1 = ["<Shift><Alt>1" "<Shift><Alt>x"];
       switch-to-workspace-2 = ["<Shift><Alt>2" "<Shift><Alt>d"];
       switch-to-workspace-3 = ["<Shift><Alt>3" "<Shift><Alt>f"];
@@ -231,12 +232,13 @@ with lib.hm.gvariant; {
       switch-to-workspace-7 = ["<Shift><Alt>7"];
       switch-to-workspace-8 = ["<Shift><Alt>8" "<Shift><Alt>v"];
       switch-to-workspace-9 = ["<Shift><Alt>9" "<Shift><Alt>k"];
+      switch-to-workspace-10 = ["<Shift><Alt>g"];
       unmaximize = [];
     };
 
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "appmenu:close";
-      num-workspaces = 9;
+      num-workspaces = 10;
     };
 
     "org/gnome/epiphany" = {
