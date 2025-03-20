@@ -76,6 +76,7 @@
     lua-language-server
     gedit
     google-drive-ocamlfuse
+    google-chrome
     fuse
     jetbrains-mono
     ubuntu_font_family
