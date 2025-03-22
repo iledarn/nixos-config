@@ -84,6 +84,8 @@
     cmake
     libtool
     gcc
+    openconnect
+    slack
   ];
 
   programs.brave = {
