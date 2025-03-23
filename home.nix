@@ -84,7 +84,7 @@
     cmake
     libtool
     gcc
-    openconnect
+    # openconnect
     slack
   ];
 
