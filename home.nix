@@ -85,7 +85,6 @@
     libtool
     gcc
     openconnect
-    networkmanager-openconnect
     slack
   ];
 
