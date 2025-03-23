@@ -84,8 +84,8 @@
     cmake
     libtool
     gcc
-    openconnect
-    networkmanager-openconnect
+    # openconnect
+    # networkmanager-openconnect
     slack
   ];
 
