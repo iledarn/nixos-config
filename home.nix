@@ -254,6 +254,11 @@
       user = "prod";
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    work-github = {
+      hostname = "github.com";
+      user = "git";
+      identityFile = "/home/${username}/.ssh/id_ed25519work-github";
+    };
   };
 
   programs.foot = {
