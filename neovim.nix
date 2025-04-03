@@ -85,6 +85,8 @@
             ${builtins.readFile ./nvim/plugin/neogit.lua}
           '';
       }
+      # diffview - optional dependency for neogit
+      diffview-nvim
       {
         plugin = oil-nvim;
         type = "lua";
