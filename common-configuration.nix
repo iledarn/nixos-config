@@ -185,9 +185,15 @@
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
 
-
   systemd = {
     coredump.enable = false;
+  };
+
+  zramSwap = {
+    enable = true;
+    # Optional: customize settings
+    # memoryPercent = 50;  # Default is 50% of RAM
+    # algorithm = "zstd"; # Default is lz4
   };
 
   # This value determines the NixOS release from which the default
