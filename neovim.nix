@@ -3,6 +3,7 @@
     enable = true;
     defaultEditor = true;
     withPython3 = true;
+    withNodeJs = true;
     extraPython3Packages = pkgs:
       with pkgs; [
         python-lsp-server
@@ -15,16 +16,6 @@
       lua-language-server
     ];
     plugins = with pkgs.vimPlugins; [
-      # {
-      #   plugin = lazy-nvim;
-      #   type = "lua";
-      #   config =
-      #     # lua
-      #     ''
-      #       ${builtins.readFile ./nvim/plugin/lazy.lua}
-      #     '';
-      # }
-      # lazydev-nvim
       lualine-nvim
       nvim-web-devicons
       {
