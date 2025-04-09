@@ -134,7 +134,6 @@
           # lua
           ''
             ${builtins.readFile ./nvim/plugin/nvim-dap-ui.lua}
-            require("dapui").setup()
           '';
       }
 
