@@ -14,6 +14,7 @@
     extraPackages = with pkgs; [
       pyright
       lua-language-server
+      nodePackages.prettier
     ];
     plugins = with pkgs.vimPlugins; [
       lualine-nvim
