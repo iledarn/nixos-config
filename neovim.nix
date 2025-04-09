@@ -127,7 +127,16 @@
       vim-dadbod-completion
 
       nvim-dap
-      nvim-dap-ui
+      {
+        plugin = nvim-dap-ui;
+        type = "lua";
+        config =
+          # lua
+          ''
+            ${builtins.readFile ./nvim/plugin/nvim-dap-ui.lua}
+            require("dapui").setup()
+          '';
+      }
 
       {
         plugin = nvim-dap-python;
