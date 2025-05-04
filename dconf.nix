@@ -245,6 +245,7 @@ with lib.hm.gvariant; {
       move-to-workspace-1 = ["<Ctrl><Alt>1"];
       move-to-workspace-10 = ["<Ctrl><Alt>g"];
       move-to-workspace-11 = ["<Ctrl><Alt>s"];
+      move-to-workspace-12 = ["<Ctrl><Alt>o"];
       move-to-workspace-2 = ["<Ctrl><Alt>2"];
       move-to-workspace-3 = ["<Ctrl><Alt>3"];
       move-to-workspace-4 = ["<Ctrl><Alt>4"];
@@ -256,6 +257,7 @@ with lib.hm.gvariant; {
       switch-to-workspace-1 = ["<Shift><Alt>1" "<Shift><Alt>x"];
       switch-to-workspace-10 = ["<Shift><Alt>g"];
       switch-to-workspace-11 = ["<Shift><Alt>s"];
+      switch-to-workspace-12 = ["<Shift><Alt>o"];
       switch-to-workspace-2 = ["<Shift><Alt>2" "<Shift><Alt>d"];
       switch-to-workspace-3 = ["<Shift><Alt>3" "<Shift><Alt>f"];
       switch-to-workspace-4 = ["<Shift><Alt>4" "<Shift><Alt>e"];
@@ -269,7 +271,7 @@ with lib.hm.gvariant; {
 
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "appmenu:close";
-      num-workspaces = 11;
+      num-workspaces = 12;
     };
 
     "org/gnome/epiphany/state" = {

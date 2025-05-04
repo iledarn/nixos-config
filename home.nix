@@ -87,6 +87,7 @@
     # openconnect
     # networkmanager-openconnect
     slack
+    obsidian
   ];
 
   programs.brave = {
