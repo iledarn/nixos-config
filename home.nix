@@ -88,6 +88,8 @@
     # networkmanager-openconnect
     slack
     obsidian
+    postman
+    insomnia
   ];
 
   programs.brave = {
