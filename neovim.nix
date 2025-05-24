@@ -1,4 +1,15 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  gp-nvim = pkgs.vimUtils.buildVimPlugin {
+    pname = "gp.nvim";
+    version = "v3.9.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "robitx";
+      repo = "gp.nvim";
+      rev = "e6a01e9788dbc7c09df6ffe47b6d15d1cb455de8"; # <-- pin a known good commit
+      sha256 = "sha256-3tfhahQZPBYbAnRQXtMAnfwr4gH7mdjxtB8ZqrU3au4=";
+    };
+  };
+in {
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -75,6 +86,15 @@
           # lua
           ''
             ${builtins.readFile ./nvim/plugin/neogit.lua}
+          '';
+      }
+      {
+        plugin = gp-nvim;
+        type = "lua";
+        config =
+          # lua
+          ''
+            ${builtins.readFile ./nvim/plugin/gp-nvim.lua}
           '';
       }
       # diffview - optional dependency for neogit
