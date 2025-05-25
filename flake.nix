@@ -13,6 +13,7 @@
       inputs.nixpkgs.follows = "nixpkgs-24-11";
     };
     hyprland.url = "github:hyprwm/Hyprland";
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs = inputs @ {
@@ -39,6 +40,7 @@
           modules = [
             ./common-configuration.nix
             homeManagerInput.nixosModules.home-manager
+            inputs.sops-nix.nixosModules.sops
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
