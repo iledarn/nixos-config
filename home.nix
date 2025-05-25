@@ -47,7 +47,7 @@
     wl-clipboard
     docker-compose
     gnupg
-    # sops
+    sops
     mc
     libreoffice
     feh
@@ -90,6 +90,7 @@
     obsidian
     postman
     insomnia
+    age
   ];
 
   programs.brave = {
