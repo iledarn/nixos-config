@@ -142,6 +142,12 @@
     sessionVariables = {
       EDITOR = "nvim";
     };
+    initExtra = ''
+      # Export OpenAI key from the system-level secret file
+      if [ -r /run/secrets/openai_api_key ]; then
+        export OPENAI_API_KEY="$(cat /run/secrets/openai_api_key)"
+      fi
+    '';
   };
 
   programs.fzf.enable = true;
@@ -274,6 +280,10 @@
       };
     };
   };
+
+  # home.sessionVariables = {
+  #   OPENAI_API_KEY = builtins.readFile "/run/secrets/openai_api_key";
+  # };
 
   home.stateVersion = stateVersion;
 
