@@ -201,6 +201,14 @@
     package = pkgs.nix-ld-rs;
   };
 
+  sops = {
+    defaultSopsFile = ./sops/secrets.yaml;
+    secrets.openai_api_key = {
+      owner = "ildarn";
+    };
+    age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
