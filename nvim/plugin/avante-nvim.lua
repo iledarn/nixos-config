@@ -1,0 +1,4 @@
+-- require("avante").setup {
+--   model = "gpt-4o",
+--   key = os.getenv("OPENAI_API_KEY"),
+-- }
