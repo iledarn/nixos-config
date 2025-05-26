@@ -20,8 +20,8 @@ gp.setup({
 })
 
 -- Keymaps ------------------------------------------------------------------
-vim.keymap.set("n", "<leader>aa", ":GpChatNew<CR>", { desc = "New AI chat" })
-vim.keymap.set("v", "<leader>ar", ":<C-u>GpRewrite<CR>", {
-  desc   = "Rewrite with AI",
-  silent = true,
-})
+-- vim.keymap.set("n", "<leader>aa", ":GpChatNew<CR>", { desc = "New AI chat" })
+-- vim.keymap.set("v", "<leader>ar", ":<C-u>GpRewrite<CR>", {
+--   desc   = "Rewrite with AI",
+--   silent = true,
+-- })
