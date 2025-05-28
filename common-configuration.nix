@@ -91,6 +91,12 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  services.timesyncd.enable = false;
+  services.chrony = {
+    enable = true;
+    servers = [ "pool.ntp.org" "time.google.com" ];
+  };
+
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
