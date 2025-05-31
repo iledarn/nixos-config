@@ -49,7 +49,6 @@
             homeManagerInput.nixosModules.home-manager
             inputs.sops-nix.nixosModules.sops
             {
-              home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.${username} = import ./home.nix;
               home-manager.extraSpecialArgs = {
