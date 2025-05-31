@@ -79,13 +79,13 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
+  services.udev.packages = with pkgs; [gnome-settings-daemon];
 
   # Configure keymap in X11
   services.xserver = {
     layout = "us,ru";
-    xkbVariant = "";
-    xkbOptions = "ctrl:nocaps";
+    xkb.variant = "";
+    xkb.options = "ctrl:nocaps";
   };
 
   # Enable CUPS to print documents.
@@ -160,8 +160,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    gnome.gnome-tweaks
-    gnome.adwaita-icon-theme
+    gnome-tweaks
+    adwaita-icon-theme
     gnomeExtensions.appindicator
     wget
   ];
@@ -207,13 +207,13 @@
     package = pkgs.nix-ld-rs;
   };
 
-  sops = {
-    defaultSopsFile = ./sops/secrets.yaml;
-    secrets.openai_api_key = {
-      owner = "ildarn";
-    };
-    age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
-  };
+  #sops = {
+  #  defaultSopsFile = ./sops/secrets.yaml;
+  #  secrets.openai_api_key = {
+  #    owner = "ildarn";
+  #  };
+  #  age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
+  #};
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -221,5 +221,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 }

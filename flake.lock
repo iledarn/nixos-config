@@ -113,6 +113,27 @@
         "type": "github"
       }
     },
+    "home-manager-25-05": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-25-05"
+        ]
+      },
+      "locked": {
+        "lastModified": 1748627093,
+        "narHash": "sha256-1hFy+bZRZoYb7RaUXsW+9YFtjjFrQpschd8qZpy9org=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "afe9ce8b2014fa1230ade38bf07156cdcef63658",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-25.05",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "hyprcursor": {
       "inputs": {
         "hyprlang": [
@@ -381,6 +402,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-25-05": {
+      "locked": {
+        "lastModified": 1748437600,
+        "narHash": "sha256-hYKMs3ilp09anGO7xzfGs3JqEgUqFMnZ8GMAqI6/k04=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "7282cb574e0607e65224d33be8241eae7cfe0979",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-25.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1730741070,
@@ -441,9 +478,11 @@
       "inputs": {
         "home-manager-23-11": "home-manager-23-11",
         "home-manager-24-11": "home-manager-24-11",
+        "home-manager-25-05": "home-manager-25-05",
         "hyprland": "hyprland",
         "nixpkgs-23-11": "nixpkgs-23-11",
         "nixpkgs-24-11": "nixpkgs-24-11",
+        "nixpkgs-25-05": "nixpkgs-25-05",
         "sops-nix": "sops-nix"
       }
     },

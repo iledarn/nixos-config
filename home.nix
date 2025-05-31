@@ -22,6 +22,7 @@
   ];
 
   home.packages = with pkgs; [
+    nerd-fonts.hack
     atool
     inetutils
     httpie
@@ -39,10 +40,10 @@
     jq
     yq
     fzf
-    nerdfonts
-    microsoft-edge
+    # nerdfonts
+    # nerd-fonts
+    # microsoft-edge
     enlightenment.terminology
-    foot
     xsel
     wl-clipboard
     docker-compose
@@ -88,7 +89,7 @@
     # networkmanager-openconnect
     slack
     obsidian
-    postman
+    #postman
     insomnia
     age
   ];
