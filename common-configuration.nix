@@ -94,7 +94,7 @@
   services.timesyncd.enable = false;
   services.chrony = {
     enable = true;
-    servers = [ "pool.ntp.org" "time.google.com" ];
+    servers = ["pool.ntp.org" "time.google.com"];
   };
 
   # Enable sound with pipewire.
