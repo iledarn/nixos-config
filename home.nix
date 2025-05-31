@@ -30,9 +30,7 @@
     telegram-desktop
     wmctrl
     alacritty
-    # brave
     htop
-    # emacs
     git
     gh
     keepassxc
@@ -40,9 +38,6 @@
     jq
     yq
     fzf
-    # nerdfonts
-    # nerd-fonts
-    # microsoft-edge
     enlightenment.terminology
     xsel
     wl-clipboard
@@ -71,7 +66,6 @@
     gnomeExtensions.tiling-assistant
     gnomeExtensions.clipboard-indicator
     obs-studio
-    # lsp
     nil
     luajitPackages.lua-lsp
     lua-language-server
@@ -81,15 +75,11 @@
     fuse
     jetbrains-mono
     ubuntu_font_family
-    # vterm dependencies?
     cmake
     libtool
     gcc
-    # openconnect
-    # networkmanager-openconnect
     slack
     obsidian
-    #postman
     insomnia
     age
   ];
