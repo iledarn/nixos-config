@@ -83,7 +83,7 @@
 
   # Configure keymap in X11
   services.xserver = {
-    layout = "us,ru";
+    xkb.layout = "us,ru";
     xkb.variant = "";
     xkb.options = "ctrl:nocaps";
   };
