@@ -49,7 +49,6 @@
     feh
     teams-for-linux
     dconf2nix
-    dropbox
     ripgrep
     fd
     gimp
