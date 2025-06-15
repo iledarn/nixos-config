@@ -29,9 +29,7 @@
     telegram-desktop
     wmctrl
     alacritty
-    # brave
     htop
-    # emacs
     git
     gh
     keepassxc
@@ -70,7 +68,6 @@
     gnomeExtensions.tiling-assistant
     gnomeExtensions.clipboard-indicator
     obs-studio
-    # lsp
     nil
     luajitPackages.lua-lsp
     lua-language-server
@@ -80,17 +77,18 @@
     fuse
     jetbrains-mono
     ubuntu_font_family
-    # vterm dependencies?
     cmake
     libtool
     gcc
-    # openconnect
-    # networkmanager-openconnect
     slack
     obsidian
     postman
     insomnia
     age
+    flameshot
+    vlc
+    mplayer
+    exfatprogs
   ];
 
   programs.brave = {
