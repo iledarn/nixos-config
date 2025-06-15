@@ -279,10 +279,6 @@
     };
   };
 
-  # home.sessionVariables = {
-  #   OPENAI_API_KEY = builtins.readFile "/run/secrets/openai_api_key";
-  # };
-
   home.stateVersion = stateVersion;
 
   # Let home Manager install and manage itself.
