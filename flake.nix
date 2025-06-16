@@ -44,7 +44,6 @@
           modules = [
             ./common-configuration.nix
             homeManagerInput.nixosModules.home-manager
-            inputs.sops-nix.nixosModules.sops
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;

@@ -153,10 +153,6 @@
       GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
     };
     initExtra = ''
-      # Export OpenAI key from the system-level secret file
-      if [ -r /run/secrets/openai_api_key ]; then
-        export OPENAI_API_KEY="$(cat /run/secrets/openai_api_key)"
-      fi
     '';
   };
 

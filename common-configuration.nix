@@ -12,7 +12,6 @@
   imports = [
     # Include the results of the hardware scan.
     ./hosts/${hostname}/hardware-configuration.nix
-    # <sops-nix/modules/sops>
   ];
 
   # Bootloader.
@@ -205,14 +204,6 @@
   programs.nix-ld = {
     enable = true;
     package = pkgs.nix-ld-rs;
-  };
-
-  sops = {
-    defaultSopsFile = ./sops/secrets.yaml;
-    secrets.openai_api_key = {
-      owner = "ildarn";
-    };
-    age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
   };
 
   # This value determines the NixOS release from which the default
