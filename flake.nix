@@ -13,7 +13,10 @@
       inputs.nixpkgs.follows = "nixpkgs-24-11";
     };
     hyprland.url = "github:hyprwm/Hyprland";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-24-11";
+    };
   };
 
   outputs = inputs @ {
@@ -22,6 +25,7 @@
     nixpkgs-24-11,
     home-manager-23-11,
     home-manager-24-11,
+    sops-nix,
     ...
   }: {
     nixosConfigurations = let
@@ -46,7 +50,8 @@
               home-manager.useUserPackages = true;
               home-manager.users.${username} = import ./home.nix;
               home-manager.extraSpecialArgs = {
-                inherit username stateVersion; # This makes username available in home.nix
+                inherit username stateVersion;
+                inherit (inputs) sops-nix;
               };
             }
           ];
