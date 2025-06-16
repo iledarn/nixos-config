@@ -39,7 +39,7 @@
         nixpkgsInput.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit hostname username;
+            inherit hostname username stateVersion;
           };
           modules = [
             ./common-configuration.nix
