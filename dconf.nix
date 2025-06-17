@@ -1,12 +1,9 @@
 # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
-{
-  config,
-  lib,
-  ...
-}:
+{lib, ...}:
 with lib.hm.gvariant; {
   dconf.settings = {
     "apps/seahorse/listing" = {
+      item-filter = "personal";
       keyrings-selected = ["gnupg://"];
     };
 
@@ -57,7 +54,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/control-center" = {
-      last-panel = "applications";
+      last-panel = "keyboard";
       window-state = mkTuple [960 1048 false];
     };
 
@@ -122,7 +119,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/desktop/notifications" = {
-      application-children = ["gnome-power-panel" "org-gnome-nautilus" "org-gnome-epiphany" "org-gnome-console" "org-telegram-desktop" "gnome-network-panel" "org-keepassxc-keepassxc" "firefox" "org-gnome-settings" "brave-browser"];
+      application-children = ["gnome-power-panel" "org-gnome-nautilus" "org-gnome-epiphany" "org-gnome-console" "org-telegram-desktop" "gnome-network-panel" "org-keepassxc-keepassxc" "firefox" "org-gnome-settings" "brave-browser" "google-chrome"];
       show-banners = false;
     };
 
@@ -158,12 +155,20 @@ with lib.hm.gvariant; {
       application-id = "firefox.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/gimp" = {
+      application-id = "gimp.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/gnome-network-panel" = {
       application-id = "gnome-network-panel.desktop";
     };
 
     "org/gnome/desktop/notifications/application/gnome-power-panel" = {
       application-id = "gnome-power-panel.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/google-chrome" = {
+      application-id = "google-chrome.desktop";
     };
 
     "org/gnome/desktop/notifications/application/microsoft-edge" = {
@@ -190,6 +195,10 @@ with lib.hm.gvariant; {
       application-id = "org.gnome.Extensions.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/org-gnome-fileroller" = {
+      application-id = "org.gnome.FileRoller.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/org-gnome-nautilus" = {
       application-id = "org.gnome.Nautilus.desktop";
     };
@@ -206,12 +215,16 @@ with lib.hm.gvariant; {
       application-id = "org.telegram.desktop.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/slack" = {
+      application-id = "slack.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/teams-for-linux" = {
       application-id = "teams-for-linux.desktop";
     };
 
     "org/gnome/desktop/peripherals/keyboard" = {
-      numlock-state = true;
+      numlock-state = false;
     };
 
     "org/gnome/desktop/peripherals/touchpad" = {
@@ -362,6 +375,10 @@ with lib.hm.gvariant; {
       default-zoom-level = "extra-large";
     };
 
+    "org/gnome/nautilus/list-view" = {
+      default-zoom-level = "large";
+    };
+
     "org/gnome/nautilus/preferences" = {
       default-folder-viewer = "list-view";
       migrated-gtk-settings = true;
@@ -372,6 +389,16 @@ with lib.hm.gvariant; {
       initial-size = mkTuple [890 550];
       initial-size-file-chooser = mkTuple [890 550];
       maximized = true;
+    };
+
+    "org/gnome/nm-applet/eap/15154734-a28d-472b-9f54-87ac19227249" = {
+      ignore-ca-cert = false;
+      ignore-phase2-ca-cert = false;
+    };
+
+    "org/gnome/nm-applet/eap/26cfc02c-65c3-4789-b3fb-f1af8f858204" = {
+      ignore-ca-cert = false;
+      ignore-phase2-ca-cert = false;
     };
 
     "org/gnome/nm-applet/eap/45afec42-34bd-3d10-8e17-9c1e6c7cfc2c" = {
@@ -393,18 +420,22 @@ with lib.hm.gvariant; {
       last-folder-path = "/home/ildarn/Pictures/Screenshots";
     };
 
+    "org/gnome/portal/filechooser/google-chrome" = {
+      last-folder-path = "/home/ildarn/Pictures";
+    };
+
     "org/gnome/settings-daemon/plugins/color" = {
       night-light-enabled = false;
       night-light-schedule-automatic = false;
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
-      custom-keybindings = ["/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"];
+      custom-keybindings = ["/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"];
     };
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<Shift><Alt>c";
-      command = "bash ${config.home.homeDirectory}/configfiles/launchtool.sh emacs";
+      command = "bash /home/ildarn/configfiles/launchtool.sh emacs";
       name = "emacs";
     };
 
@@ -412,6 +443,12 @@ with lib.hm.gvariant; {
       binding = "<Shift><Alt>r";
       command = "emacsclient -cF \"((visibility . nil))\" -e \"(emacs-counsel-launcher)\"";
       name = "emacs-run-launcher";
+    };
+
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
+      binding = "<Shift><Alt>p";
+      command = "/home/ildarn/flameshot-launch.sh";
+      name = "flameshot";
     };
 
     "org/gnome/settings-daemon/plugins/power" = {
@@ -440,13 +477,18 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = 2;
+      indicator-position-max = 3;
       toggle-shortcut = ["<Shift><Alt>i"];
-      toggle-state = false;
     };
 
     "org/gnome/shell/extensions/clipboard-indicator" = {
       strip-text = true;
+    };
+
+    "org/gnome/shell/extensions/system-monitor" = {
+      show-download = true;
+      show-memory = true;
+      show-swap = true;
     };
 
     "org/gnome/shell/extensions/tiling-assistant" = {
@@ -464,7 +506,7 @@ with lib.hm.gvariant; {
       focus-hint = 0;
       focus-hint-color = "rgb(53,132,228)";
       import-layout-examples = false;
-      last-version-installed = 44;
+      last-version-installed = 49;
       restore-window = ["<Super>Down"];
       search-popup-layout = [];
       tile-bottom-half = ["<Super>KP_2"];
@@ -500,6 +542,10 @@ with lib.hm.gvariant; {
       show-extensions-notice = false;
     };
 
+    "org/gtk/gtk4/settings/color-chooser" = {
+      selected-color = mkTuple [true 0.8784313797950745 0.10588235408067703 0.1411764770746231 1.0];
+    };
+
     "org/gtk/gtk4/settings/file-chooser" = {
       date-format = "regular";
       location-mode = "path-bar";
@@ -522,11 +568,11 @@ with lib.hm.gvariant; {
       show-size-column = true;
       show-type-column = true;
       sidebar-width = 170;
-      sort-column = "modified";
+      sort-column = "name";
       sort-directories-first = false;
-      sort-order = "descending";
+      sort-order = "ascending";
       type-format = "category";
-      window-position = mkTuple [26 23];
+      window-position = mkTuple [678 341];
       window-size = mkTuple [1203 902];
     };
   };
