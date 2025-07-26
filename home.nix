@@ -81,6 +81,7 @@
     obsidian
     insomnia
     age
+    # icloudpd
   ];
 
   programs.brave = {
@@ -269,10 +270,6 @@
         dpi-aware = "yes";
       };
     };
-  };
-
-  home.sessionVariables = {
-    OPENAI_API_KEY = builtins.readFile "/run/secrets/openai_api_key";
   };
 
   home.stateVersion = stateVersion;
