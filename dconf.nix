@@ -399,19 +399,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
-      custom-keybindings = ["/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"];
-    };
-
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-      binding = "<Shift><Alt>c";
-      command = "bash ${config.home.homeDirectory}/configfiles/launchtool.sh emacs";
-      name = "emacs";
-    };
-
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-      binding = "<Shift><Alt>r";
-      command = "emacsclient -cF \"((visibility . nil))\" -e \"(emacs-counsel-launcher)\"";
-      name = "emacs-run-launcher";
+      custom-keybindings = [];
     };
 
     "org/gnome/settings-daemon/plugins/power" = {
