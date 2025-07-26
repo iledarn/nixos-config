@@ -79,13 +79,13 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
+  services.udev.packages = with pkgs; [gnome-settings-daemon];
 
   # Configure keymap in X11
-  services.xserver = {
+  services.xserver.xkb = {
     layout = "us,ru";
-    xkbVariant = "";
-    xkbOptions = "ctrl:nocaps";
+    variant = "";
+    options = "ctrl:nocaps";
   };
 
   # Enable CUPS to print documents.
@@ -160,8 +160,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    gnome.gnome-tweaks
-    gnome.adwaita-icon-theme
+    gnome-tweaks
+    adwaita-icon-theme
     gnomeExtensions.appindicator
     wget
   ];
