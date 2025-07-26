@@ -271,9 +271,9 @@
     };
   };
 
-  # home.sessionVariables = {
-  #   OPENAI_API_KEY = builtins.readFile "/run/secrets/openai_api_key";
-  # };
+  home.sessionVariables = {
+    OPENAI_API_KEY = builtins.readFile "/run/secrets/openai_api_key";
+  };
 
   home.stateVersion = stateVersion;
 
