@@ -83,7 +83,7 @@
     obsidian
     insomnia
     age
-    # icloudpd
+    icloudpd
   ];
 
   programs.brave = {
