@@ -79,6 +79,7 @@
     insomnia
     age
     icloudpd
+    flameshot
   ];
 
   programs.brave = {

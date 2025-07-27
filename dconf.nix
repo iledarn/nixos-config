@@ -390,7 +390,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/portal/filechooser/brave-browser" = {
-      last-folder-path = "/home/ildarn/Pictures/Screenshots";
+      last-folder-path = "${config.home.homeDirectory}/Pictures/Screenshots";
     };
 
     "org/gnome/settings-daemon/plugins/color" = {
@@ -399,7 +399,13 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
-      custom-keybindings = [];
+      custom-keybindings = ["/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"];
+    };
+
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      binding = "<Shift><Alt>p";
+      command = "${config.home.homeDirectory}/configfiles/flameshot-launch.sh";
+      name = "flameshot";
     };
 
     "org/gnome/settings-daemon/plugins/power" = {
