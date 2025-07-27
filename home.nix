@@ -125,11 +125,6 @@
     };
   };
 
-  # home.file.googleDrive = {
-  #   target = "GoogleDrive";
-  #   directory = true;
-  # };
-
   sops = {
     age = {
       keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
