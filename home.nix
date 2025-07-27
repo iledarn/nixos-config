@@ -66,6 +66,7 @@
     gnomeExtensions.caffeine
     gnomeExtensions.tiling-assistant
     gnomeExtensions.clipboard-indicator
+    gnomeExtensions.workspace-indicator
     obs-studio
     nil
     luajitPackages.lua-lsp
