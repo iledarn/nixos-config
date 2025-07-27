@@ -30,18 +30,14 @@
     httpie
     tmux
     telegram-desktop
-    wmctrl
-    alacritty
     htop
     git
     gh
     keepassxc
-    surfraw
     jq
     yq
     fzf
     enlightenment.terminology
-    xsel
     wl-clipboard
     docker-compose
     gnupg
@@ -49,7 +45,6 @@
     mc
     libreoffice
     feh
-    teams-for-linux
     dconf2nix
     ripgrep
     fd
@@ -59,7 +54,6 @@
     nixpkgs-fmt
     bat
     tcpdump
-    ngrok
     openvpn
     awscli2
     s3fs
