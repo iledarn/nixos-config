@@ -3,6 +3,7 @@
   pkgs,
   username,
   stateVersion,
+  sops-nix,
   ...
 }: {
   # TODO please change the username & home directory to your own
@@ -19,6 +20,7 @@
   imports = [
     ./dconf.nix
     ./neovim.nix
+    sops-nix.homeManagerModules.sops
   ];
 
   home.packages = with pkgs; [
@@ -134,7 +136,7 @@
       EDITOR = "nvim";
     };
     initExtra = ''
-      # Export OpenAI key from the system-level secret file
+      # Export secrets from the system-level secret files
       if [ -r /run/secrets/openai_api_key ]; then
         export OPENAI_API_KEY="$(cat /run/secrets/openai_api_key)"
       fi
