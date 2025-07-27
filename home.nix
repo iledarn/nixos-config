@@ -130,16 +130,27 @@
   #   directory = true;
   # };
 
+  sops = {
+    age = {
+      keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    };
+    defaultSopsFile = ./sops/secrets.yaml;
+    secrets = {
+      google_client_id = {};
+      google_client_secret = {};
+      openai_api_key = {};
+    };
+  };
+
   programs.bash = {
     enable = true;
     sessionVariables = {
       EDITOR = "nvim";
+      OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
+      GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
+      GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
     };
     initExtra = ''
-      # Export secrets from the system-level secret files
-      if [ -r /run/secrets/openai_api_key ]; then
-        export OPENAI_API_KEY="$(cat /run/secrets/openai_api_key)"
-      fi
     '';
   };
 
