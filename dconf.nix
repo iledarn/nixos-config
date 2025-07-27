@@ -263,7 +263,7 @@ with lib.hm.gvariant; {
       switch-to-workspace-4 = ["<Ctrl><Alt>4" "<Ctrl><Alt>e"];
       switch-to-workspace-5 = ["<Ctrl><Alt>5" "<Ctrl><Alt>w"];
       switch-to-workspace-6 = ["<Ctrl><Alt>6" "<Ctrl><Alt>t"];
-      switch-to-workspace-7 = ["<Ctrl><Alt>7"];
+      switch-to-workspace-7 = ["<Ctrl><Alt>7" "<Ctrl><Alt>c"];
       switch-to-workspace-8 = ["<Ctrl><Alt>8" "<Ctrl><Alt>v"];
       switch-to-workspace-9 = ["<Ctrl><Alt>9" "<Ctrl><Alt>k"];
       unmaximize = [];
