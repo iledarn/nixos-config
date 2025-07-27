@@ -61,6 +61,7 @@
     gnomeExtensions.tiling-assistant
     gnomeExtensions.clipboard-indicator
     gnomeExtensions.workspace-indicator
+    gnomeExtensions.system-monitor
     obs-studio
     nil
     luajitPackages.lua-lsp
@@ -80,6 +81,7 @@
     age
     icloudpd
     flameshot
+    digikam
   ];
 
   programs.brave = {
