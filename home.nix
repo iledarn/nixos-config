@@ -24,6 +24,7 @@
   ];
 
   home.packages = with pkgs; [
+    amazon-q-cli
     nerd-fonts.hack
     atool
     inetutils

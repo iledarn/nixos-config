@@ -164,6 +164,7 @@
     adwaita-icon-theme
     gnomeExtensions.appindicator
     wget
+    unzip
   ];
 
   environment.sessionVariables = {
@@ -208,11 +209,11 @@
   };
 
   sops = {
-   defaultSopsFile = ./sops/secrets.yaml;
-   secrets.openai_api_key = {
-     owner = "${username}";
-   };
-   age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
+    defaultSopsFile = ./sops/secrets.yaml;
+    secrets.openai_api_key = {
+      owner = "${username}";
+    };
+    age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
   };
 
   # This value determines the NixOS release from which the default
