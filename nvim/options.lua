@@ -10,8 +10,8 @@ vim.keymap.set("n", "<leader>fs", "<cmd>w<cr>")
 vim.keymap.set("n", "<leader><Tab>", "<cmd>b#<cr>")
 
 vim.g.gruvbox_material_enable_italic = true
--- vim.cmd.colorscheme('gruvbox-material')
-vim.cmd.colorscheme('codedark')
+vim.cmd.colorscheme('gruvbox-material')
+-- vim.cmd.colorscheme('codedark')
 
 vim.opt.termguicolors = true
 
