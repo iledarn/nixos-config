@@ -85,10 +85,6 @@
     digikam
   ];
 
-  programs.claude-code = {
-    enable = true;
-  };
-
   programs.brave = {
     enable = true;
     extensions = [];
