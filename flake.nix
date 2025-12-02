@@ -109,6 +109,6 @@
       };
     };
 
-    formatter.x86_64-linux = nixpkgs-24-11.legacyPackages.x86_64-linux.alejandra;
+    formatter.x86_64-linux = nixpkgs-25-11.legacyPackages.x86_64-linux.alejandra;
   };
 }

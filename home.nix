@@ -72,7 +72,7 @@
     google-chrome
     fuse
     jetbrains-mono
-    ubuntu_font_family
+    ubuntu-classic
     cmake
     libtool
     gcc
