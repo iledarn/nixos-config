@@ -5,6 +5,7 @@
     nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
     nixpkgs-24-11.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs-25-05.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs-25-11.url = "github:NixOS/nixpkgs/nixos-25.11";
     home-manager-23-11 = {
       url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs-23-11";
@@ -17,10 +18,13 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs-25-05";
     };
-    hyprland.url = "github:hyprwm/Hyprland";
+    home-manager-25-11 = {
+      url = "github:nix-community/home-manager/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs-25-11";
+    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-25-05";
+      inputs.nixpkgs.follows = "nixpkgs-25-11";
     };
   };
 
@@ -29,9 +33,11 @@
     nixpkgs-23-11,
     nixpkgs-24-11,
     nixpkgs-25-05,
+    nixpkgs-25-11,
     home-manager-23-11,
     home-manager-24-11,
     home-manager-25-05,
+    home-manager-25-11,
     sops-nix,
     ...
   }: {
@@ -92,6 +98,14 @@
         nixpkgsInput = nixpkgs-25-05;
         homeManagerInput = home-manager-25-05;
         stateVersion = "25.05";
+      };
+
+      lenovo2511 = mkSystem {
+        hostname = "lenovo2511";
+        username = "ildar";
+        nixpkgsInput = nixpkgs-25-11;
+        homeManagerInput = home-manager-25-11;
+        stateVersion = "25.11";
       };
     };
 
