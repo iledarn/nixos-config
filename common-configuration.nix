@@ -44,6 +44,8 @@
     127.0.0.1 erp2025_03_05.localhost
     127.0.0.1 erp2025_03_05_2.localhost
     127.0.0.1 erp2025_03_12.localhost
+    127.0.0.1 erp.localhost
+    127.0.0.1 odoo.localhost
   '';
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
