@@ -244,12 +244,16 @@
 
   programs.git = {
     enable = true;
-    userName = "Ildar Nasyrov";
-    userEmail = "iledarnp@gmail.com";
-    aliases = {
-      co = "checkout";
-      st = "status";
-      hist = "log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short";
+    settings = {
+      user = {
+        name = "Ildar Nasyrov";
+        email = "iledarnp@gmail.com";
+      };
+      alias = {
+        co = "checkout";
+        st = "status";
+        hist = ''log --pretty=format:"%h %ad | %s%d [%an]" --graph --date=short'';
+      };
     };
   };
 
@@ -258,17 +262,32 @@
     "/home/${username}/.config/emacs/bin"
   ];
 
-  programs.ssh.enable = true;
-  programs.ssh.matchBlocks = {
-    kepiProd = {
-      hostname = "139.162.11.95";
-      user = "prod";
-      identityFile = "/home/${username}/.ssh/id_ed25519";
-    };
-    work-github = {
-      hostname = "github.com";
-      user = "git";
-      identityFile = "/home/${username}/.ssh/id_ed25519work-github";
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    matchBlocks = {
+      "*" = {
+        forwardAgent = false;
+        addKeysToAgent = "no";
+        compression = false;
+        serverAliveInterval = 0;
+        serverAliveCountMax = 3;
+        hashKnownHosts = false;
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        controlMaster = "no";
+        controlPath = "~/.ssh/master-%r@%n:%p";
+        controlPersist = "no";
+      };
+      kepiProd = {
+        hostname = "139.162.11.95";
+        user = "prod";
+        identityFile = "/home/${username}/.ssh/id_ed25519";
+      };
+      work-github = {
+        hostname = "github.com";
+        user = "git";
+        identityFile = "/home/${username}/.ssh/id_ed25519work-github";
+      };
     };
   };
 

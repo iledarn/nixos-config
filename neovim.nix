@@ -53,28 +53,7 @@ in {
         config =
           # lua
           ''
-            -- Nil language server setup
-            local lspconfig = require('lspconfig')
-            -- Get the Nil binary path from the Nix store
-            local nil_bin = "${pkgs.nil}/bin/nil"
-            lspconfig.nil_ls.setup {
-              cmd = { nil_bin },
-              on_attach = on_attach,
-              capabilities = capabilities,
-            }
-            local lua_lsp_bin = "${pkgs.lua-language-server}/bin/lua-language-server"
-            lspconfig.lua_ls.setup {
-              cmd = { lua_lsp_bin, "-E", "-e", "LANG=en" },
-              capabilities = capabilities,
-              on_attach = on_attach,
-              settings = {
-                Lua = {
-                  diagnostics = {
-                    globals = { "vim" }
-                  }
-                }
-              }
-            }
+            ${builtins.readFile ./nvim/plugin/nvim-lspconfig.lua}
           '';
       }
       fugitive
@@ -95,18 +74,6 @@ in {
           # lua
           ''
             ${builtins.readFile ./nvim/plugin/gp-nvim.lua}
-          '';
-      }
-      # avante's dependencies first
-      dressing-nvim
-      nui-nvim
-      {
-        plugin = avante-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/avante-nvim.lua}
           '';
       }
       # diffview - optional dependency for neogit
