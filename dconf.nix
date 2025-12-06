@@ -410,6 +410,7 @@ with lib.hm.gvariant; {
 
     "org/gnome/settings-daemon/plugins/power" = {
       idle-dim = false;
+      power-button-action = "suspend";
       sleep-inactive-ac-timeout = 7200;
       sleep-inactive-battery-timeout = 3600;
     };

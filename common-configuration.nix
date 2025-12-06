@@ -35,7 +35,7 @@
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "Europe/Nicosia";
+  time.timeZone = "Asia/Manila";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_PH.UTF-8";
@@ -58,6 +58,11 @@
   # Enable the GNOME Desktop Environment.
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
+  # Ensure lid close triggers suspend.
+  services.logind = {
+    lidSwitch = "suspend";
+    powerKey = "suspend";
+  };
 
   services.udev.packages = with pkgs; [gnome-settings-daemon];
 
@@ -187,6 +192,8 @@
     enable = true;
     package = pkgs.nix-ld;
   };
+  # Baseline power savings.
+  powerManagement.enable = true;
 
   sops = {
     defaultSopsFile = ./sops/secrets.yaml;
