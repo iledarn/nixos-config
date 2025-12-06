@@ -60,8 +60,11 @@
   services.desktopManager.gnome.enable = true;
   # Ensure lid close triggers suspend.
   services.logind = {
-    lidSwitch = "suspend";
-    powerKey = "suspend";
+    settings.Login = {
+      HandleLidSwitch = "suspend";
+      HandlePowerKey = "suspend";
+      HandlePowerKeyLongPress = "poweroff";
+    };
   };
 
   services.udev.packages = with pkgs; [gnome-settings-daemon];
