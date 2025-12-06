@@ -22,28 +22,8 @@
   # boot.initrd.luks.devices."luks-4608edec-17fe-4266-acd3-ea1acb4a1a60".device = "/dev/disk/by-uuid/4608edec-17fe-4266-acd3-ea1acb4a1a60";
   networking.hostName = hostname; # Define your hostname.
   networking.extraHosts = ''
-    127.0.0.1 doodba12
-    127.0.0.1 doodba13
-    127.0.0.1 doodba14
-    127.0.0.1 doodba15
-    127.0.0.1 doodba16
-    127.0.0.1 doodba17
-    139.162.11.95 usdtest12.kaertech.com
-    127.0.0.1 erp2024_12_15.localhost
-    127.0.0.1 erp2024_12_02.localhost
-    127.0.0.1 erp2024_12_01.localhost
-    127.0.0.1 erp2025_01_06.localhost
-    127.0.0.1 erp2025_01_20.localhost
-    127.0.0.1 erp2025_01_20_2.localhost
-    127.0.0.1 erp2025_01_26.localhost
-    127.0.0.1 erp2025_02_07.localhost
-    127.0.0.1 erp2025_02_05.localhost
-    127.0.0.1 erp2025_02_10.localhost
-    127.0.0.1 erp2025_01_17.localhost
-    127.0.0.1 erp2025_02_25.localhost
-    127.0.0.1 erp2025_03_05.localhost
-    127.0.0.1 erp2025_03_05_2.localhost
-    127.0.0.1 erp2025_03_12.localhost
+    127.0.0.1 erp.localhost
+    127.0.0.1 odoo.localhost
   '';
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
