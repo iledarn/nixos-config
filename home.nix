@@ -88,6 +88,13 @@
     kiro
   ];
 
+  services.flameshot = {
+    enable = true;
+    package = pkgs.flameshot.override {
+      enableWlrSupport = true;
+    };
+  };
+
   programs.brave = {
     enable = true;
     extensions = [];
