@@ -83,6 +83,9 @@
     icloudpd
     flameshot
     digikam
+    claude-code
+    codex
+    kiro
   ];
 
   programs.brave = {
