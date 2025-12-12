@@ -58,12 +58,21 @@
   # Enable the GNOME Desktop Environment.
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
-  # Ensure lid close triggers suspend.
-  services.logind = {
-    settings.Login = {
-      HandleLidSwitch = "suspend";
-    };
-  };
+  # Lid-close handling: default to suspend, but keep lenovo2511 awake and just blank the display.
+  services.logind.settings = lib.mkMerge [
+    {
+      # Default: suspend on lid close.
+      Login.HandleLidSwitch = lib.mkDefault "suspend";
+    }
+    (lib.mkIf (hostname == "lenovo2511") {
+      # lenovo2511: keep running, just blank the display.
+      Login = {
+        HandleLidSwitch = lib.mkForce "ignore";
+        HandleLidSwitchExternalPower = lib.mkForce "ignore";
+        HandleLidSwitchDocked = lib.mkForce "ignore";
+      };
+    })
+  ];
 
   services.udev.packages = with pkgs; [gnome-settings-daemon];
 
