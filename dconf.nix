@@ -412,7 +412,9 @@ with lib.hm.gvariant; {
       idle-dim = false;
       power-button-action = "suspend";
       sleep-inactive-ac-timeout = 7200;
+      sleep-inactive-ac-type = "nothing";
       sleep-inactive-battery-timeout = 3600;
+      sleep-inactive-battery-type = "nothing";
     };
 
     "org/gnome/shell" = {
