@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  pkgs25_11,
   username,
   stateVersion,
   sops-nix,
@@ -23,67 +24,72 @@
     sops-nix.homeManagerModules.sops
   ];
 
-  home.packages = with pkgs; [
-    amazon-q-cli
-    nerd-fonts.hack
-    atool
-    inetutils
-    httpie
-    tmux
-    telegram-desktop
-    htop
-    git
-    gh
-    keepassxc
-    jq
-    yq
-    fzf
-    enlightenment.terminology
-    wl-clipboard
-    docker-compose
-    gnupg
-    sops
-    mc
-    libreoffice
-    feh
-    dconf2nix
-    ripgrep
-    fd
-    gimp
-    gparted
-    ntfs3g
-    nixpkgs-fmt
-    bat
-    tcpdump
-    openvpn
-    awscli2
-    s3fs
-    gnomeExtensions.caffeine
-    gnomeExtensions.tiling-assistant
-    gnomeExtensions.clipboard-indicator
-    gnomeExtensions.workspace-indicator
-    gnomeExtensions.system-monitor
-    obs-studio
-    nil
-    luajitPackages.lua-lsp
-    lua-language-server
-    gedit
-    google-drive-ocamlfuse
-    google-chrome
-    fuse
-    jetbrains-mono
-    ubuntu_font_family
-    cmake
-    libtool
-    gcc
-    slack
-    obsidian
-    insomnia
-    age
-    icloudpd
-    flameshot
-    digikam
-  ];
+  home.packages =
+    (with pkgs; [
+      amazon-q-cli
+      nerd-fonts.hack
+      atool
+      inetutils
+      httpie
+      tmux
+      telegram-desktop
+      htop
+      git
+      gh
+      keepassxc
+      jq
+      yq
+      fzf
+      enlightenment.terminology
+      wl-clipboard
+      docker-compose
+      gnupg
+      sops
+      mc
+      libreoffice
+      feh
+      dconf2nix
+      ripgrep
+      fd
+      gimp
+      gparted
+      ntfs3g
+      nixpkgs-fmt
+      bat
+      tcpdump
+      openvpn
+      awscli2
+      s3fs
+      gnomeExtensions.caffeine
+      gnomeExtensions.tiling-assistant
+      gnomeExtensions.clipboard-indicator
+      gnomeExtensions.workspace-indicator
+      gnomeExtensions.system-monitor
+      obs-studio
+      nil
+      luajitPackages.lua-lsp
+      lua-language-server
+      gedit
+      google-drive-ocamlfuse
+      google-chrome
+      fuse
+      jetbrains-mono
+      ubuntu_font_family
+      cmake
+      libtool
+      gcc
+      slack
+      obsidian
+      insomnia
+      age
+      icloudpd
+      flameshot
+      digikam
+    ])
+    ++ (with pkgs25_11; [
+      codex
+      kiro-fhs
+    ]);
 
   programs.brave = {
     enable = true;
