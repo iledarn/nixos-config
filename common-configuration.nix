@@ -57,7 +57,7 @@
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "Europe/Nicosia";
+  time.timeZone = "Asia/Manila";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_PH.UTF-8";
