@@ -175,6 +175,16 @@ in {
       telescope-nvim
 
       {
+        plugin = telescope-dap-nvim;
+        type = "lua";
+        config =
+          # lua
+          ''
+            ${builtins.readFile ./nvim/plugin/telescope-dap-nvim.lua}
+          '';
+      }
+
+      {
         plugin = fzf-lua;
         type = "lua";
         config =
