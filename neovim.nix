@@ -150,6 +150,7 @@ in {
       }
       vim-dadbod-completion
 
+      nvim-nio
       nvim-dap
       {
         plugin = nvim-dap-ui;
@@ -168,6 +169,16 @@ in {
           # lua
           ''
             ${builtins.readFile ./nvim/plugin/nvim-dap-python.lua}
+          '';
+      }
+
+      {
+        plugin = nvim-dap-virtual-text;
+        type = "lua";
+        config =
+          # lua
+          ''
+            ${builtins.readFile ./nvim/plugin/nvim-dap-virtual-text.lua}
           '';
       }
 
