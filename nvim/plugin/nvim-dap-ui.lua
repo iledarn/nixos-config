@@ -1,3 +1,6 @@
 require("dapui").setup()
 vim.keymap.set("n", "\\do", "<cmd>lua require('dapui').open()<CR>", { silent = true })
 vim.keymap.set("n", "\\dc", "<cmd>lua require('dapui').close()<CR>", { silent = true })
+vim.keymap.set("n", "\\dh", function()
+  require("dapui").eval(nil, { width = 80, height = 10, enter = true })
+end, { silent = true })
