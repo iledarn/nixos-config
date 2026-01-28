@@ -23,9 +23,11 @@ in {
         pyyaml
       ];
     extraPackages = with pkgs; [
-      pyright
+      # pyright
       lua-language-server
       nodePackages.prettier
+      ruff
+      ty
     ];
     plugins = with pkgs.vimPlugins; [
       lualine-nvim
@@ -53,28 +55,8 @@ in {
         config =
           # lua
           ''
-            -- Nil language server setup
-            local lspconfig = require('lspconfig')
-            -- Get the Nil binary path from the Nix store
-            local nil_bin = "${pkgs.nil}/bin/nil"
-            lspconfig.nil_ls.setup {
-              cmd = { nil_bin },
-              on_attach = on_attach,
-              capabilities = capabilities,
-            }
-            local lua_lsp_bin = "${pkgs.lua-language-server}/bin/lua-language-server"
-            lspconfig.lua_ls.setup {
-              cmd = { lua_lsp_bin, "-E", "-e", "LANG=en" },
-              capabilities = capabilities,
-              on_attach = on_attach,
-              settings = {
-                Lua = {
-                  diagnostics = {
-                    globals = { "vim" }
-                  }
-                }
-              }
-            }
+            ${builtins.readFile ./nvim/plugin/nvim-lspconfig.lua}
+            ${builtins.readFile ./nvim/plugin/ty-lsp.lua}
           '';
       }
       fugitive
@@ -270,14 +252,14 @@ in {
     extraLuaConfig =
       # lua
       ''
-        local black_bin = "${pkgs.python3Packages.black}/bin/black - --quiet"
+        local ruff_format = "${pkgs.ruff}/bin/ruff format --stdin-filename % -"
         -- Set the equalprg option for Python files
         vim.api.nvim_create_augroup("python_format", { clear = true })
         vim.api.nvim_create_autocmd("FileType", {
           pattern = "python",
           group = "python_format",
           callback = function()
-            vim.bo.equalprg = black_bin
+            vim.bo.equalprg = ruff_format
           end,
         })
 
