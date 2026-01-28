@@ -22,7 +22,13 @@ end
 
 local ty_cfg = {
   name = "ty",
-  cmd = { ty_bin, "server" },
+  -- Include sibling odoo sources for import resolution
+  cmd = {
+    ty_bin,
+    "server",
+    "--extra-search-path",
+    "/home/iledarn/KAERTECH/nixod/odoo-12/src/odoo",
+  },
   filetypes = { "python" },
   root_dir = ty_root(0),
   settings = {
