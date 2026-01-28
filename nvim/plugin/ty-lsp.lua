@@ -21,13 +21,14 @@ local function ty_root(bufnr)
 end
 
 -- compute an extra search path: sibling "odoo" directory next to the project root, if present
-local function sibling_odoo_path(root)
-  if not root or root == "" then return nil end
-  local parent = vim.fs.dirname(root)
-  if not parent or parent == "" then return nil end
-  local candidate = parent .. "/odoo"
-  return vim.fn.isdirectory(candidate) == 1 and candidate or nil
-end
+
+-- local function sibling_odoo_path(root)
+--   if not root or root == "" then return nil end
+--   local parent = vim.fs.dirname(root)
+--   if not parent or parent == "" then return nil end
+--   local candidate = parent .. "/odoo"
+--   return vim.fn.isdirectory(candidate) == 1 and candidate or nil
+-- end
 
 local ty_cfg = {
   name = "ty",
@@ -49,12 +50,12 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local root = ty_root(args.buf)
     if not root or root == "" then return end
-    local extra = sibling_odoo_path(root)
+    -- local extra = sibling_odoo_path(root)
     local cmd = { ty_bin, "server" }
-    if extra then
-      table.insert(cmd, "--extra-search-path")
-      table.insert(cmd, extra)
-    end
+    -- if extra then
+    --   table.insert(cmd, "--extra-search-path")
+    --   table.insert(cmd, extra)
+    -- end
     vim.lsp.start(vim.tbl_extend("force", ty_cfg, {
       root_dir = root,
       cmd = cmd,
