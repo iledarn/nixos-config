@@ -1,31 +1,46 @@
 -- ty (Astral) language server for Python
--- Requires: `ty` installed and available in PATH
--- Neovim will spawn: `ty server`
+-- Uses the Nix-provided binary if available; falls back to PATH
+local ty_bin = "${pkgs.ty}/bin/ty"
+if vim.fn.filereadable(ty_bin) == 0 then
+  local path_bin = vim.fn.exepath("ty")
+  if path_bin == "" then
+    vim.notify("[ty] 'ty' executable not found; skipping Ty LSP setup", vim.log.levels.WARN)
+    return
+  end
+  ty_bin = path_bin
+end
 
-vim.lsp.config("ty", {
-  cmd = { "ty", "server" },
-  filetypes = { "python" },
-
-  -- Optional but recommended: set root detection
-  -- (adjust if you have a different project layout)
-  root_dir = vim.fs.root(0, {
+local function ty_root(bufnr)
+  return vim.fs.root(bufnr, {
     "pyproject.toml",
     "setup.py",
     "setup.cfg",
     "requirements.txt",
     ".git",
-  }),
+  }) or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr))
+end
 
+local ty_cfg = {
+  name = "ty",
+  cmd = { ty_bin, "server" },
+  filetypes = { "python" },
+  root_dir = ty_root(0),
   settings = {
     ty = {
       -- If you already use pyright/pylance for hover/completions,
       -- keep ty focused on diagnostics:
       -- disableLanguageServices = true,
-
-      -- Choose diagnostics scope:
-      -- "openFilesOnly" (faster/less noisy) or "workspace" (more thorough)
       -- diagnosticMode = "openFilesOnly",
       -- diagnosticMode = "workspace",
     },
   },
+}
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  callback = function(args)
+    local root = ty_root(args.buf)
+    if not root or root == "" then return end
+    vim.lsp.start(vim.tbl_extend("force", ty_cfg, { root_dir = root }))
+  end,
 })

@@ -56,7 +56,6 @@ in {
           # lua
           ''
             ${builtins.readFile ./nvim/plugin/nvim-lspconfig.lua}
-            ${builtins.readFile ./nvim/plugin/ty-lsp.lua}
           '';
       }
       fugitive
@@ -264,6 +263,7 @@ in {
         })
 
         ${builtins.readFile ./nvim/options.lua}
+        ${builtins.readFile ./nvim/plugin/ty-lsp.lua}
       '';
   };
 }
