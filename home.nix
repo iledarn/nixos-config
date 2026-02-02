@@ -139,6 +139,7 @@
       google_client_id = {};
       google_client_secret = {};
       openai_api_key = {};
+      github_pat = {};
     };
   };
 
@@ -149,6 +150,7 @@
       OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
       GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
       GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
+      GITHUB_PAT = "$(cat ${config.sops.secrets.github_pat.path})";
     };
     initExtra = ''
     '';
