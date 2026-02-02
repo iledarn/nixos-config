@@ -64,6 +64,8 @@
             inputs.sops-nix.nixosModules.sops
             {
               home-manager.useUserPackages = true;
+              # Automatically back up files that clash with Home Manager links
+              home-manager.backupFileExtension = "bak";
               home-manager.users.${username} = import ./home.nix;
               home-manager.extraSpecialArgs = {
                 inherit username stateVersion pkgs25_11; # This makes username available in home.nix

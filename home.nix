@@ -5,8 +5,16 @@
   username,
   stateVersion,
   sops-nix,
+  lib,
   ...
-}: {
+}:
+let
+  # Wrapper to expose GITHUB_PAT only for Codex invocations
+  codexWithGitHub = pkgs.writeShellScriptBin "codex" ''
+    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    exec ${pkgs25_11.codex}/bin/codex "$@"
+  '';
+in {
   # TODO please change the username & home directory to your own
   home.username = username;
   home.homeDirectory = "/home/${username}";
@@ -86,8 +94,10 @@
       flameshot
       digikam
     ])
+    ++ [
+      codexWithGitHub
+    ]
     ++ (with pkgs25_11; [
-      codex
       kiro-fhs
     ]);
 
@@ -150,16 +160,25 @@
       OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
       GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
       GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
-      GITHUB_PAT = "$(cat ${config.sops.secrets.github_pat.path})";
     };
     initExtra = ''
     '';
   };
 
-  # Make GITHUB_PAT available to all sessions (not just bash)
-  home.sessionVariables = {
-    GITHUB_PAT = "$(cat ${config.sops.secrets.github_pat.path})";
-  };
+  home.file.".codex/config.toml".text = ''
+    [mcp_servers.github]
+    url = "https://api.githubcopilot.com/mcp/"
+    bearer_token_env_var = "GITHUB_PAT"
+  '';
+
+  home.activation.codexBackup =
+    lib.hm.dag.entryBefore ["checkLinkTargets"] ''
+      if [ -f "$HOME/.codex/config.toml" ]; then
+        mkdir -p "$HOME/.codex"
+        ts=$(date -u +"%Y%m%dT%H%M%S%N")
+        mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
+      fi
+    '';
 
   programs.fzf.enable = true;
 
