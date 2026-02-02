@@ -156,6 +156,11 @@
     '';
   };
 
+  # Make GITHUB_PAT available to all sessions (not just bash)
+  home.sessionVariables = {
+    GITHUB_PAT = "$(cat ${config.sops.secrets.github_pat.path})";
+  };
+
   programs.fzf.enable = true;
 
   programs.starship.enable = true;
