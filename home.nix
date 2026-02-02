@@ -14,6 +14,11 @@ let
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
     exec ${pkgs25_11.codex}/bin/codex "$@"
   '';
+  # Wrapper to expose GITHUB_PAT only for Kiro invocations
+  kiroWithGitHub = pkgs.writeShellScriptBin "kiro" ''
+    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    exec ${pkgs25_11.kiro-fhs}/bin/kiro "$@"
+  '';
 in {
   # TODO please change the username & home directory to your own
   home.username = username;
@@ -96,10 +101,8 @@ in {
     ])
     ++ [
       codexWithGitHub
-    ]
-    ++ (with pkgs25_11; [
-      kiro-fhs
-    ]);
+      kiroWithGitHub
+    ];
 
   programs.brave = {
     enable = true;
@@ -107,6 +110,18 @@ in {
     commandLineArgs = [
       "--enable-features=TabScrolling,VerticalTabsFeature"
     ];
+  };
+
+  xdg = {
+    enable = true;
+    desktopEntries.kiro = {
+      name = "Kiro";
+      genericName = "Coding agent";
+      exec = "${kiroWithGitHub}/bin/kiro";
+      terminal = false;
+      categories = ["Development" "Utility"];
+      comment = "Launch Kiro with GITHUB_PAT available";
+    };
   };
 
   programs.emacs = {
@@ -169,6 +184,22 @@ in {
     [mcp_servers.github]
     url = "https://api.githubcopilot.com/mcp/"
     bearer_token_env_var = "GITHUB_PAT"
+  '';
+
+  home.file.".kiro/settings/mcp.json".text = ''
+    {
+      "mcpServers": {
+        "github": {
+          "type": "http",
+          "url": "https://api.githubcopilot.com/mcp/",
+          "headers": {
+            "Authorization": "''${GITHUB_PAT}"
+          },
+          "disabled": false,
+          "autoApprove": []
+        }
+      }
+    }
   '';
 
   home.activation.codexBackup =
