@@ -80,6 +80,8 @@
     evdev:input:b0003v046Dp4089*
       KEYBOARD_KEY_700e2=leftmeta
       KEYBOARD_KEY_700e3=leftalt
+      KEYBOARD_KEY_700e6=rightmeta
+      KEYBOARD_KEY_700e7=rightalt
   '';
 
   # Configure keymap in X11

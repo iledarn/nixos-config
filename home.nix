@@ -82,6 +82,7 @@
     age
     icloudpd
     flameshot
+    evtest
     digikam
     claude-code
     codex
