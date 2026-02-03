@@ -75,6 +75,12 @@
   ];
 
   services.udev.packages = with pkgs; [gnome-settings-daemon];
+  services.udev.extraHwdb = ''
+    # Logitech K580 via USB receiver ships with macOS-style modifier mapping; swap Alt/Super back to PC order
+    evdev:input:b0003v046Dp4089*
+      KEYBOARD_KEY_700e2=leftmeta
+      KEYBOARD_KEY_700e3=leftalt
+  '';
 
   # Configure keymap in X11
   services.xserver = {
