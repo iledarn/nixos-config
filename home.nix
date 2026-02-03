@@ -118,6 +118,7 @@ in {
       name = "Kiro";
       genericName = "Coding agent";
       exec = "${kiroWithGitHub}/bin/kiro";
+      icon = "${pkgs25_11.kiro}/share/pixmaps/kiro.png";
       terminal = false;
       categories = ["Development" "Utility"];
       comment = "Launch Kiro with GITHUB_PAT available";
