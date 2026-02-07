@@ -27,6 +27,7 @@ in {
       lua-language-server
       nodePackages.prettier
       ruff
+      taplo
       ty
     ];
     plugins = with pkgs.vimPlugins; [
@@ -40,6 +41,7 @@ in {
           p.tree-sitter-lua
           p.tree-sitter-python
           p.tree-sitter-json
+          p.tree-sitter-toml
         ]);
         type = "lua";
         config =
@@ -235,6 +237,16 @@ in {
           # lua
           ''
             ${builtins.readFile ./nvim/plugin/aerial-nvim.lua}
+          '';
+      }
+
+      {
+        plugin = conform-nvim;
+        type = "lua";
+        config =
+          # lua
+          ''
+            ${builtins.readFile ./nvim/plugin/conform.lua}
           '';
       }
 

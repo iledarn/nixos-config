@@ -7,8 +7,7 @@
   sops-nix,
   lib,
   ...
-}:
-let
+}: let
   # Wrapper to expose GITHUB_PAT only for Codex invocations
   codexWithGitHub = pkgs.writeShellScriptBin "codex" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
@@ -203,14 +202,13 @@ in {
     }
   '';
 
-  home.activation.codexBackup =
-    lib.hm.dag.entryBefore ["checkLinkTargets"] ''
-      if [ -f "$HOME/.codex/config.toml" ]; then
-        mkdir -p "$HOME/.codex"
-        ts=$(date -u +"%Y%m%dT%H%M%S%N")
-        mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
-      fi
-    '';
+  home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
+    if [ -f "$HOME/.codex/config.toml" ]; then
+      mkdir -p "$HOME/.codex"
+      ts=$(date -u +"%Y%m%dT%H%M%S%N")
+      mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
+    fi
+  '';
 
   programs.fzf.enable = true;
 

@@ -28,3 +28,11 @@ lspconfig.lua_ls.setup {
     }
   }
 }
+
+-- TOML language server (great for pyproject.toml)
+local taplo_bin = resolve_bin("taplo")
+lspconfig.taplo.setup {
+  cmd = { taplo_bin, "lsp", "stdio" },
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
