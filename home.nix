@@ -4,19 +4,23 @@
   pkgs25_11,
   username,
   stateVersion,
-  sops-nix,
   lib,
   ...
 }: let
   # Wrapper to expose MCP tokens only for Codex invocations
   codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
-    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
+    set -euo pipefail
+    github_pat="$(sudo cat /run/secrets/github_pat)"
+    context7="$(sudo cat /run/secrets/context7_api_key)"
+    export GITHUB_PAT="$github_pat"
+    export CONTEXT7="$context7"
     exec ${pkgs25_11.codex}/bin/codex "$@"
   '';
   # Wrapper to expose GITHUB_PAT only for Kiro invocations
   kiroWithGitHub = pkgs.writeShellScriptBin "kiro" ''
-    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    set -euo pipefail
+    github_pat="$(sudo cat /run/secrets/github_pat)"
+    export GITHUB_PAT="$github_pat"
     exec ${pkgs25_11.kiro-fhs}/bin/kiro "$@"
   '';
 in {
@@ -34,7 +38,6 @@ in {
   imports = [
     ./dconf.nix
     ./neovim.nix
-    sops-nix.homeManagerModules.sops
   ];
 
   home.packages =
@@ -156,27 +159,10 @@ in {
     };
   };
 
-  sops = {
-    age = {
-      keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    };
-    defaultSopsFile = ./sops/secrets.yaml;
-    secrets = {
-      google_client_id = {};
-      google_client_secret = {};
-      openai_api_key = {};
-      github_pat = {};
-      context7_api_key = {};
-    };
-  };
-
   programs.bash = {
     enable = true;
     sessionVariables = {
       EDITOR = "nvim";
-      OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
-      GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
-      GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
     };
     initExtra = ''
     '';

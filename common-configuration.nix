@@ -15,6 +15,20 @@
     # <sops-nix/modules/sops>
   ];
 
+  sops = {
+    defaultSopsFile = ./sops/secrets.yaml;
+    age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
+    secrets = let
+      rootOnly = {owner = "root"; group = "root"; mode = "0400";};
+    in {
+      google_client_id = rootOnly;
+      google_client_secret = rootOnly;
+      openai_api_key = rootOnly;
+      github_pat = rootOnly;
+      context7_api_key = rootOnly;
+    };
+  };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -209,14 +223,6 @@
   programs.nix-ld = {
     enable = true;
     package = pkgs.nix-ld-rs;
-  };
-
-  sops = {
-    defaultSopsFile = ./sops/secrets.yaml;
-    secrets.openai_api_key = {
-      owner = "${username}";
-    };
-    age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
   };
 
   # This value determines the NixOS release from which the default
