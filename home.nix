@@ -11,7 +11,7 @@
   # Wrapper to expose MCP tokens only for Codex invocations
   codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    export CONTEXT7_API_KEY="$(cat ${config.sops.secrets.context7_api_key.path})"
+    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
     exec ${pkgs25_11.codex}/bin/codex "$@"
   '';
   # Wrapper to expose GITHUB_PAT only for Kiro invocations
@@ -189,7 +189,7 @@ in {
 
     [mcp_servers.context7]
     url = "https://mcp.context7.com/mcp"
-    bearer_token_env_var = "CONTEXT7_API_KEY"
+    bearer_token_env_var = "CONTEXT7"
   '';
 
   home.file.".kiro/settings/mcp.json".text = ''
