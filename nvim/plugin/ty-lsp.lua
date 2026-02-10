@@ -1,13 +1,8 @@
--- ty (Astral) language server for Python
--- Uses the Nix-provided binary if available; falls back to PATH
-local ty_bin = "${pkgs.ty}/bin/ty"
-if vim.fn.filereadable(ty_bin) == 0 then
-  local path_bin = vim.fn.exepath("ty")
-  if path_bin == "" then
-    vim.notify("[ty] 'ty' executable not found; skipping Ty LSP setup", vim.log.levels.WARN)
-    return
-  end
-  ty_bin = path_bin
+-- Resolves from PATH
+local ty_bin = vim.fn.exepath("ty")
+if ty_bin == "" then
+  vim.notify("[ty] 'ty' executable not found; skipping Ty LSP setup", vim.log.levels.WARN)
+  return
 end
 
 local function ty_root(bufnr)
