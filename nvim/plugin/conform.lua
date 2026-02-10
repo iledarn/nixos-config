@@ -8,16 +8,16 @@ conform.setup({
   },
 
   -- Format on save (fast + predictable)
-  format_on_save = function(bufnr)
-    local ft = vim.bo[bufnr].filetype
-    if ft == "python" or ft == "toml" then
-      return {
-        timeout_ms = 2000,
-        lsp_fallback = true,
-      }
-    end
-    return nil
-  end,
+  -- format_on_save = function(bufnr)
+  --   local ft = vim.bo[bufnr].filetype
+  --   if ft == "python" or ft == "toml" then
+  --     return {
+  --       timeout_ms = 2000,
+  --       lsp_fallback = true,
+  --     }
+  --   end
+  --   return nil
+  -- end,
 })
 
 -- Manual format key (normal + visual)
