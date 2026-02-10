@@ -8,9 +8,10 @@
   lib,
   ...
 }: let
-  # Wrapper to expose GITHUB_PAT only for Codex invocations
-  codexWithGitHub = pkgs.writeShellScriptBin "codex" ''
+  # Wrapper to expose MCP tokens only for Codex invocations
+  codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    export CONTEXT7_API_KEY="$(cat ${config.sops.secrets.context7_api_key.path})"
     exec ${pkgs25_11.codex}/bin/codex "$@"
   '';
   # Wrapper to expose GITHUB_PAT only for Kiro invocations
@@ -99,7 +100,7 @@ in {
       digikam
     ])
     ++ [
-      codexWithGitHub
+      codexWithMcpTokens
       kiroWithGitHub
     ];
 
@@ -165,6 +166,7 @@ in {
       google_client_secret = {};
       openai_api_key = {};
       github_pat = {};
+      context7_api_key = {};
     };
   };
 
@@ -184,6 +186,10 @@ in {
     [mcp_servers.github]
     url = "https://api.githubcopilot.com/mcp/"
     bearer_token_env_var = "GITHUB_PAT"
+
+    [mcp_servers.context7]
+    url = "https://mcp.context7.com/mcp"
+    bearer_token_env_var = "CONTEXT7_API_KEY"
   '';
 
   home.file.".kiro/settings/mcp.json".text = ''
