@@ -98,6 +98,7 @@ in {
       icloudpd
       flameshot
       digikam
+      pkgs25_11.claude-code
     ])
     ++ [
       codexWithMcpTokens
