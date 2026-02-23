@@ -14,9 +14,10 @@
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
     exec ${pkgsUnstable.codex}/bin/codex "$@"
   '';
-  # Wrapper to expose GITHUB_PAT only for Kiro invocations
+  # Wrapper to expose MCP tokens only for Kiro invocations
   kiroWithGitHub = pkgs.writeShellScriptBin "kiro" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
     exec ${pkgsUnstable.kiro-fhs}/bin/kiro "$@"
   '';
   # Avoid collision with kiro desktop app binary name.
@@ -205,6 +206,15 @@ in {
           "url": "https://api.githubcopilot.com/mcp/",
           "headers": {
             "Authorization": "''${GITHUB_PAT}"
+          },
+          "disabled": false,
+          "autoApprove": []
+        },
+        "context7": {
+          "type": "http",
+          "url": "https://mcp.context7.com/mcp",
+          "headers": {
+            "Authorization": "''${CONTEXT7}"
           },
           "disabled": false,
           "autoApprove": []
