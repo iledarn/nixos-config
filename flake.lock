@@ -418,22 +418,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-25-11": {
-      "locked": {
-        "lastModified": 1770617025,
-        "narHash": "sha256-1jZvgZoAagZZB6NwGRv2T2ezPy+X6EFDsJm+YSlsvEs=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "2db38e08fdadcc0ce3232f7279bab59a15b94482",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-25.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1730741070,
@@ -446,6 +430,22 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-unstable": {
+      "locked": {
+        "lastModified": 1771207753,
+        "narHash": "sha256-b9uG8yN50DRQ6A7JdZBfzq718ryYrlmGgqkRm9OOwCE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "d1c15b7d5806069da59e819999d70e1cec0760bf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -483,7 +483,7 @@
         "nixpkgs-23-11": "nixpkgs-23-11",
         "nixpkgs-24-11": "nixpkgs-24-11",
         "nixpkgs-25-05": "nixpkgs-25-05",
-        "nixpkgs-25-11": "nixpkgs-25-11",
+        "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix"
       }
     },

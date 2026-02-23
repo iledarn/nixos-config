@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-  pkgs25_11,
+  pkgsUnstable,
   username,
   stateVersion,
   sops-nix,
@@ -12,12 +12,16 @@
   codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    exec ${pkgs25_11.codex}/bin/codex "$@"
+    exec ${pkgsUnstable.codex}/bin/codex "$@"
   '';
   # Wrapper to expose GITHUB_PAT only for Kiro invocations
   kiroWithGitHub = pkgs.writeShellScriptBin "kiro" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    exec ${pkgs25_11.kiro-fhs}/bin/kiro "$@"
+    exec ${pkgsUnstable.kiro-fhs}/bin/kiro "$@"
+  '';
+  # Avoid collision with kiro desktop app binary name.
+  kiroCliWrapper = pkgs.writeShellScriptBin "kiro-cli" ''
+    exec ${pkgsUnstable."kiro-cli"}/bin/kiro "$@"
   '';
 in {
   # TODO please change the username & home directory to your own
@@ -39,7 +43,6 @@ in {
 
   home.packages =
     (with pkgs; [
-      amazon-q-cli
       nerd-fonts.hack
       atool
       inetutils
@@ -98,11 +101,12 @@ in {
       icloudpd
       flameshot
       digikam
-      pkgs25_11.claude-code
+      pkgsUnstable.claude-code
     ])
     ++ [
       codexWithMcpTokens
       kiroWithGitHub
+      kiroCliWrapper
     ];
 
   programs.brave = {
@@ -119,7 +123,7 @@ in {
       name = "Kiro";
       genericName = "Coding agent";
       exec = "${kiroWithGitHub}/bin/kiro";
-      icon = "${pkgs25_11.kiro}/share/pixmaps/kiro.png";
+      icon = "${pkgsUnstable.kiro}/share/pixmaps/kiro.png";
       terminal = false;
       categories = ["Development" "Utility"];
       comment = "Launch Kiro with GITHUB_PAT available";
