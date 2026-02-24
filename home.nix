@@ -200,7 +200,41 @@ in {
     bearer_token_env_var = "CONTEXT7"
   '';
 
-  home.file.".kiro/settings/mcp.json".text = ''
+  # Disabled while kiro-cli ignores env-based MCP auth; avoid store exposure later.
+  # home.file.".kiro/settings/mcp.json".text = ''
+  #   {
+  #     "mcpServers": {
+  #       "github": {
+  #         "type": "http",
+  #         "url": "https://api.githubcopilot.com/mcp/",
+  #         "headers": {
+  #           "Authorization": "''${GITHUB_PAT}"
+  #         },
+  #         "disabled": false,
+  #         "autoApprove": []
+  #       },
+  #       "context7": {
+  #         "type": "http",
+  #         "url": "https://mcp.context7.com/mcp",
+  #         "headers": {
+  #           "Authorization": "''${CONTEXT7}"
+  #         },
+  #         "disabled": false,
+  #         "autoApprove": []
+  #       }
+  #     }
+  #   }
+  # '';
+
+  home.activation.kiroMcpJson = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    install -m 700 -d "$HOME/.kiro/settings"
+    # Remove any existing symlink created by prior home.file config.
+    if [ -e "$HOME/.kiro/settings/mcp.json" ] || [ -L "$HOME/.kiro/settings/mcp.json" ]; then
+      rm -f "$HOME/.kiro/settings/mcp.json"
+    fi
+    GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
+    cat > "$HOME/.kiro/settings/mcp.json" <<EOF
     {
       "mcpServers": {
         "github": {
@@ -223,6 +257,8 @@ in {
         }
       }
     }
+    EOF
+    chmod 600 "$HOME/.kiro/settings/mcp.json"
   '';
 
   home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
