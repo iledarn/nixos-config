@@ -104,6 +104,7 @@ in {
       icloudpd
       flameshot
       digikam
+      nodejs
       pkgsUnstable.claude-code
     ])
     ++ [
@@ -198,6 +199,11 @@ in {
     [mcp_servers.context7]
     url = "https://mcp.context7.com/mcp"
     bearer_token_env_var = "CONTEXT7"
+
+    [mcp_servers.playwright]
+    command = "npx"
+    args = ["@playwright/mcp@latest"]
+    env = { PLAYWRIGHT_HEADLESS = "false" }
   '';
 
   # Disabled while kiro-cli ignores env-based MCP auth; avoid store exposure later.
@@ -254,6 +260,15 @@ in {
           },
           "disabled": false,
           "autoApprove": []
+        },
+        "playwright": {
+          "command": "npx",
+          "args": [
+            "@playwright/mcp@latest"
+          ],
+          "env": {
+            "PLAYWRIGHT_HEADLESS": "false"
+          }
         }
       }
     }

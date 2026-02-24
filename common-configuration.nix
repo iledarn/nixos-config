@@ -174,6 +174,11 @@
     NIXOS_OZONE_WL = "1";
   };
 
+  system.activationScripts.playwrightChrome = ''
+    mkdir -p /opt/google/chrome
+    ln -sfn ${pkgs.google-chrome}/bin/google-chrome-stable /opt/google/chrome/chrome
+  '';
+
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Some programs need SUID wrappers, can be configured further or are
