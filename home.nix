@@ -21,7 +21,7 @@
     exec ${pkgsUnstable.kiro-fhs}/bin/kiro "$@"
   '';
   # Avoid collision with kiro desktop app binary name.
-  kiroCliWrapper = pkgs.writeShellScriptBin "kiro-cli" ''
+  kiroCliWrapped = pkgs.writeShellScriptBin "kiro-cli" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
     exec ${pkgsUnstable."kiro-cli"}/bin/kiro "$@"
@@ -109,7 +109,7 @@ in {
     ++ [
       codexWithMcpTokens
       kiroWithGitHub
-      kiroCliWrapper
+      kiroCliWrapped
     ];
 
   programs.brave = {
