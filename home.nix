@@ -204,6 +204,10 @@ in {
     command = "npx"
     args = ["@playwright/mcp@latest"]
     env = { PLAYWRIGHT_HEADLESS = "false" }
+
+    [mcp_servers."pdf-reader"]
+    command = "npx"
+    args = ["@sylphx/pdf-reader-mcp"]
   '';
 
   # Disabled while kiro-cli ignores env-based MCP auth; avoid store exposure later.
@@ -269,6 +273,12 @@ in {
           "env": {
             "PLAYWRIGHT_HEADLESS": "false"
           }
+        },
+        "pdf-reader": {
+          "command": "npx",
+          "args": [
+            "@sylphx/pdf-reader-mcp"
+          ]
         }
       }
     }
