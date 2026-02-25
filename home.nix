@@ -101,6 +101,7 @@ in {
       obsidian
       insomnia
       age
+      uv
       icloudpd
       flameshot
       digikam
@@ -208,6 +209,13 @@ in {
     [mcp_servers."pdf-reader"]
     command = "npx"
     args = ["@sylphx/pdf-reader-mcp"]
+
+    [mcp_servers.postgres]
+    command = "uvx"
+    args = ["postgres-mcp", "--access-mode=unrestricted"]
+    env = {
+      DATABASE_URI = "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
+    }
   '';
 
   # Disabled while kiro-cli ignores env-based MCP auth; avoid store exposure later.
@@ -279,6 +287,16 @@ in {
           "args": [
             "@sylphx/pdf-reader-mcp"
           ]
+        },
+        "postgres": {
+          "command": "uvx",
+          "args": [
+            "postgres-mcp",
+            "--access-mode=unrestricted"
+          ],
+          "env": {
+            "DATABASE_URI": "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
+          }
         }
       }
     }
