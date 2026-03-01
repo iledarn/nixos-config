@@ -12,6 +12,7 @@
   codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
+    export UV_PYTHON="${pkgs.python312}/bin/python3.12"
     exec ${pkgsUnstable.codex}/bin/codex "$@"
   '';
   # Wrapper to expose MCP tokens only for Kiro invocations
@@ -451,7 +452,7 @@ in {
     command = "uvx"
     args = ["postgres-mcp", "--access-mode=unrestricted"]
     env = {
-      DATABASE_URI = "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
+      DATABASE_URI = "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15",
     }
     EOF
 
