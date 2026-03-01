@@ -174,6 +174,27 @@
     NIXOS_OZONE_WL = "1";
   };
 
+  specialisation.hyprland.configuration = {
+    # Hyprland session via greetd (Wayland-native DM).
+    services.xserver.enable = lib.mkForce false;
+    services.xserver.displayManager.gdm.enable = lib.mkForce false;
+    services.xserver.desktopManager.gnome.enable = lib.mkForce false;
+
+    programs.hyprland.enable = true;
+    xdg.portal = {
+      enable = true;
+      extraPortals = [pkgs.xdg-desktop-portal-hyprland];
+    };
+
+    services.greetd = {
+      enable = true;
+      settings.default_session = {
+        command = "${pkgs.hyprland}/bin/Hyprland";
+        user = "${username}";
+      };
+    };
+  };
+
   system.activationScripts.playwrightChrome = ''
     mkdir -p /opt/google/chrome
     ln -sfn ${pkgs.google-chrome}/bin/google-chrome-stable /opt/google/chrome/chrome
