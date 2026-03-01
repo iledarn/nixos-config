@@ -137,6 +137,8 @@ in {
       {
         "layer": "top",
         "position": "top",
+        "height": 32,
+        "spacing": 6,
         "modules-left": ["hyprland/workspaces", "hyprland/window"],
         "modules-center": ["custom/media", "clock"],
         "modules-right": ["cpu", "memory", "temperature", "battery", "bluetooth", "network", "pulseaudio", "tray"],
@@ -175,73 +177,89 @@ in {
     '';
     configFile."waybar/style.css".text = ''
       * {
-        font-family: "Iosevka", "JetBrains Mono", monospace;
+        font-family: "JetBrains Mono", "Hack Nerd Font Mono", monospace;
         font-size: 12px;
         min-height: 0;
         border: none;
-        border-radius: 0;
       }
 
       window#waybar {
-        background: linear-gradient(90deg, #111827 0%, #0f172a 50%, #111827 100%);
-        color: #e5e7eb;
+        background: rgba(0, 0, 0, 0.21);
+        color: #ffffff;
+      }
+
+      #workspaces {
+        margin: 2px 6px;
       }
 
       #workspaces button {
-        padding: 0 8px;
-        margin: 4px 3px;
-        background: transparent;
-        color: #94a3b8;
-        border: 1px solid #1f2937;
-        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.3);
+        color: #cbd5f5;
+        border-radius: 999px;
+        margin: 6px 3px;
+        min-width: 16px;
+        padding: 0 6px;
+        transition: 120ms linear;
       }
 
       #workspaces button.active {
-        color: #f9fafb;
-        border-color: #38bdf8;
-        background: #0b1220;
+        background: #9d5b7a;
+        color: #ffffff;
+        min-width: 32px;
       }
 
       #workspaces button.urgent {
-        color: #111827;
-        background: #f59e0b;
-        border-color: #f59e0b;
+        background: #f38ba8;
+        color: #111111;
       }
 
       #window {
         padding: 0 10px;
-        margin: 4px 6px;
-        color: #cbd5f5;
+        margin: 6px 6px;
+        color: #ffffff;
       }
 
       #custom-media {
         padding: 0 10px;
-        margin: 4px 6px;
-        color: #fbbf24;
+        margin: 6px 6px;
+        color: #f9e2af;
       }
 
-      #clock, #cpu, #memory, #temperature, #battery, #bluetooth, #network, #pulseaudio, #tray {
+      #clock,
+      #cpu,
+      #memory,
+      #temperature,
+      #battery,
+      #bluetooth,
+      #network,
+      #pulseaudio,
+      #tray {
         padding: 0 10px;
-        margin: 4px 3px;
-        background: #0b1220;
-        border: 1px solid #1f2937;
-        border-radius: 6px;
+        margin: 6px 3px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+      }
+
+      #tray button {
+        background: none;
+        border-radius: 999px;
+        padding: 0 6px;
       }
 
       #battery.charging {
-        color: #22c55e;
+        color: #a6e3a1;
       }
 
       #battery.critical:not(.charging) {
-        color: #ef4444;
+        color: #f38ba8;
       }
 
       #temperature.critical {
-        color: #ef4444;
+        color: #f38ba8;
       }
 
       #pulseaudio.muted {
-        color: #94a3b8;
+        color: #cbd5f5;
       }
     '';
     desktopEntries.kiro = {
@@ -407,7 +425,11 @@ in {
     '';
   };
 
-  home.file.".codex/config.toml".text = ''
+  home.activation.codexConfigMerge = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    install -m 700 -d "$HOME/.codex"
+    cfg="$HOME/.codex/config.toml"
+    tmp="$(mktemp)"
+    cat > "$tmp" <<'EOF'
     [mcp_servers.github]
     url = "https://api.githubcopilot.com/mcp/"
     bearer_token_env_var = "GITHUB_PAT"
@@ -431,6 +453,20 @@ in {
     env = {
       DATABASE_URI = "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
     }
+    EOF
+
+    if [ -f "$cfg" ]; then
+      echo "" >> "$tmp"
+      ${pkgs.gawk}/bin/awk '
+        BEGIN { inblock=0 }
+        /^\[projects\./ { inblock=1 }
+        /^\[.*\]/ && $0 !~ /^\[projects\./ { inblock=0 }
+        { if (inblock) print }
+      ' "$cfg" >> "$tmp"
+    fi
+
+    chmod 600 "$tmp"
+    mv "$tmp" "$cfg"
   '';
 
   # Disabled while kiro-cli ignores env-based MCP auth; avoid store exposure later.
@@ -519,13 +555,6 @@ in {
     chmod 600 "$HOME/.kiro/settings/mcp.json"
   '';
 
-  home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
-    if [ -f "$HOME/.codex/config.toml" ]; then
-      mkdir -p "$HOME/.codex"
-      ts=$(date -u +"%Y%m%dT%H%M%S%N")
-      mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
-    fi
-  '';
 
   programs.fzf.enable = true;
 
