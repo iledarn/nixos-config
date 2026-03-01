@@ -452,6 +452,7 @@ in {
     command = "uvx"
     args = ["postgres-mcp", "--access-mode=unrestricted"]
     env = {
+      UV_PYTHON = "${pkgs.python312}/bin/python3.12",
       DATABASE_URI = "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15",
     }
     EOF
