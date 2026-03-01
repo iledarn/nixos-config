@@ -289,6 +289,7 @@ in {
       env = [
         "NIXOS_OZONE_WL,1"
         "XCURSOR_SIZE,24"
+        "KDEWALLET_DISABLE,1"
       ];
 
       input = {

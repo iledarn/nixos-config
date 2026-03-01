@@ -174,6 +174,13 @@
     NIXOS_OZONE_WL = "1";
   };
 
+  # Disable Brave's built-in password manager via managed policy.
+  environment.etc."brave/policies/managed/disable-password-manager.json".text = ''
+    {
+      "PasswordManagerEnabled": false
+    }
+  '';
+
   specialisation.hyprland.configuration = {
     # Hyprland session via greetd (Wayland-native DM).
     services.xserver.enable = lib.mkForce false;
