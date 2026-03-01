@@ -106,6 +106,8 @@ in {
       flameshot
       digikam
       nodejs
+      grim
+      slurp
       pkgsUnstable.claude-code
     ])
     ++ [
