@@ -104,7 +104,9 @@ in {
       age
       uv
       icloudpd
-      flameshot
+      (flameshot.overrideAttrs (old: {
+        cmakeFlags = (old.cmakeFlags or []) ++ [ "-DUSE_WAYLAND_GRIM=ON" ];
+      }))
       digikam
       nodejs
       grim
