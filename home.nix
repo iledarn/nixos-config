@@ -112,6 +112,9 @@ in {
       foot
       wofi
       waybar
+      swww
+      hyprlock
+      dunst
       playerctl
       blueman
       xfce.thunar
@@ -131,6 +134,13 @@ in {
       "--enable-features=TabScrolling,VerticalTabsFeature"
     ];
   };
+
+  home.file."Pictures/wallpapers/minimal.ppm".text = ''
+P3
+1 1
+255
+16 16 16
+'';
 
   xdg = {
     enable = true;
@@ -272,6 +282,79 @@ in {
       categories = ["Development" "Utility"];
       comment = "Launch Kiro with GITHUB_PAT available";
     };
+    configFile."dunst/dunstrc".text = ''
+      [global]
+      monitor = 0
+      follow = keyboard
+      width = (0, 360)
+      height = (0, 200)
+      origin = top-right
+      offset = 20x20
+      padding = 10
+      horizontal_padding = 10
+      frame_width = 1
+      frame_color = "#2b2f36"
+      separator_height = 4
+      separator_color = frame
+      font = JetBrains Mono 10
+      line_height = 3
+      corner_radius = 8
+      transparency = 10
+      idle_threshold = 120
+      word_wrap = yes
+      ellipsize = middle
+
+      [urgency_low]
+      background = "#111318"
+      foreground = "#d0d4dc"
+      timeout = 4
+
+      [urgency_normal]
+      background = "#151820"
+      foreground = "#d0d4dc"
+      timeout = 6
+
+      [urgency_critical]
+      background = "#2a0f13"
+      foreground = "#ffd3d8"
+      timeout = 0
+    '';
+    configFile."hypr/hyprlock.conf".text = ''
+      general {
+        no_fade_in = true
+        no_fade_out = true
+      }
+
+      background {
+        color = rgba(14, 16, 19, 1.0)
+      }
+
+      input-field {
+        size = 260, 48
+        outline_thickness = 2
+        dots_size = 0.2
+        dots_spacing = 0.2
+        dots_center = true
+        inner_color = rgba(20, 23, 28, 0.9)
+        outer_color = rgba(60, 68, 80, 0.6)
+        font_color = rgba(220, 224, 232, 1.0)
+        fade_on_empty = false
+        placeholder_text = "Password"
+        position = 0, -80
+        halign = center
+        valign = center
+      }
+
+      label {
+        text = "$TIME"
+        font_size = 48
+        font_family = JetBrains Mono
+        color = rgba(220, 224, 232, 1.0)
+        position = 0, 80
+        halign = center
+        valign = center
+      }
+    '';
   };
 
   programs.emacs = {
@@ -299,6 +382,8 @@ in {
 
       exec-once = [
         "waybar"
+        "swww-daemon"
+        "swww img $HOME/Pictures/wallpapers/minimal.ppm --transition-type fade --transition-duration 1"
         "blueman-applet"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
       ];
@@ -307,6 +392,7 @@ in {
         "$mod, Return, exec, foot"
         "$mod, D, exec, wofi --show drun"
         "$mod, Space, exec, wofi --show run"
+        "$mod, L, exec, hyprlock"
         "$mod, Q, killactive,"
         "$mod, F, fullscreen,"
         "$mod, V, togglefloating,"
@@ -376,6 +462,8 @@ in {
       ];
     };
   };
+
+  services.dunst.enable = true;
 
   fonts.fontconfig.enable = true;
 
