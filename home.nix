@@ -111,14 +111,13 @@ in {
       slurp
       foot
       wofi
-      waybar
       swww
       hyprlock
-      dunst
       playerctl
-      blueman
       xfce.thunar
       polkit_gnome
+      material-symbols
+      nerd-fonts.caskaydia-cove
       pkgsUnstable.claude-code
     ])
     ++ [
@@ -282,43 +281,6 @@ P3
       categories = ["Development" "Utility"];
       comment = "Launch Kiro with GITHUB_PAT available";
     };
-    configFile."dunst/dunstrc".text = ''
-      [global]
-      monitor = 0
-      follow = keyboard
-      width = (0, 360)
-      height = (0, 200)
-      origin = top-right
-      offset = 20x20
-      padding = 10
-      horizontal_padding = 10
-      frame_width = 1
-      frame_color = "#2b2f36"
-      separator_height = 4
-      separator_color = frame
-      font = JetBrains Mono 10
-      line_height = 3
-      corner_radius = 8
-      transparency = 10
-      idle_threshold = 120
-      word_wrap = yes
-      ellipsize = middle
-
-      [urgency_low]
-      background = "#111318"
-      foreground = "#d0d4dc"
-      timeout = 4
-
-      [urgency_normal]
-      background = "#151820"
-      foreground = "#d0d4dc"
-      timeout = 6
-
-      [urgency_critical]
-      background = "#2a0f13"
-      foreground = "#ffd3d8"
-      timeout = 0
-    '';
     configFile."hypr/hyprlock.conf".text = ''
       general {
         no_fade_in = true
@@ -364,6 +326,93 @@ P3
     ];
   };
 
+  programs.caelestia = {
+    enable = true;
+    cli.enable = true;
+    settings = {
+      appearance = {
+        transparency = {
+          enabled = true;
+          base = 0.85;
+          layers = 0.4;
+        };
+        font = {
+          family = {
+            sans = "Ubuntu";
+            mono = "CaskaydiaCove NF";
+            clock = "Ubuntu";
+            material = "Material Symbols Rounded";
+          };
+          size = {scale = 1;};
+        };
+      };
+      paths = {
+        wallpaperDir = "~/Pictures/wallpapers";
+      };
+      bar = {
+        showOnHover = true;
+        entries = [
+          {
+            id = "logo";
+            enabled = true;
+          }
+          {
+            id = "workspaces";
+            enabled = true;
+          }
+          {
+            id = "spacer";
+            enabled = true;
+          }
+          {
+            id = "activeWindow";
+            enabled = true;
+          }
+          {
+            id = "spacer";
+            enabled = true;
+          }
+          {
+            id = "tray";
+            enabled = true;
+          }
+          {
+            id = "clock";
+            enabled = true;
+          }
+          {
+            id = "statusIcons";
+            enabled = true;
+          }
+          {
+            id = "power";
+            enabled = true;
+          }
+        ];
+        status = {
+          showBattery = true;
+          showBluetooth = true;
+          showNetwork = true;
+          showWifi = true;
+        };
+      };
+      launcher = {
+        useFuzzy = {
+          apps = true;
+          actions = true;
+        };
+      };
+      services = {
+        smartScheme = true;
+      };
+    };
+    cli.settings = {
+      theme = {
+        enableGtk = false;
+      };
+    };
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     settings = {
@@ -381,10 +430,8 @@ P3
       };
 
       exec-once = [
-        "waybar"
         "swww-daemon"
         "swww img $HOME/Pictures/wallpapers/minimal.ppm --transition-type fade --transition-duration 1"
-        "blueman-applet"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
       ];
 
@@ -437,6 +484,7 @@ P3
         "CTRL SHIFT, O, movetoworkspace, 12"
       ];
 
+
       bindm = [
         "$mod, mouse:272, movewindow"
         "$mod, mouse:273, resizewindow"
@@ -462,8 +510,6 @@ P3
       ];
     };
   };
-
-  services.dunst.enable = true;
 
   fonts.fontconfig.enable = true;
 

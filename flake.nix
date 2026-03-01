@@ -19,6 +19,7 @@
       inputs.nixpkgs.follows = "nixpkgs-25-05";
     };
     hyprland.url = "github:hyprwm/Hyprland";
+    caelestia-shell.url = "github:caelestia-dots/shell";
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-25-05";
@@ -66,6 +67,9 @@
               home-manager.useUserPackages = true;
               # Automatically back up files that clash with Home Manager links
               home-manager.backupFileExtension = "bak";
+              home-manager.sharedModules = [
+                inputs."caelestia-shell".homeManagerModules.default
+              ];
               home-manager.users.${username} = import ./home.nix;
               home-manager.extraSpecialArgs = {
                 inherit username stateVersion pkgsUnstable; # This makes username available in home.nix

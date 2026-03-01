@@ -170,9 +170,13 @@
     unzip
   ];
 
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-  };
+  environment.sessionVariables =
+    {
+      NIXOS_OZONE_WL = "1";
+    }
+    // lib.optionalAttrs (hostname == "gram990") {
+      KDEWALLET_DISABLE = "1";
+    };
 
   # Disable Brave's built-in password manager via managed policy.
   environment.etc."brave/policies/managed/disable-password-manager.json".text = ''
@@ -234,7 +238,7 @@
     powerOnBoot = true;
   };
 
-  services.blueman.enable = true;
+  services.blueman.enable = false;
 
   systemd = {
     coredump.enable = false;
