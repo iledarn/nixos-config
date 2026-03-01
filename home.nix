@@ -108,6 +108,13 @@ in {
       nodejs
       grim
       slurp
+      foot
+      wofi
+      waybar
+      playerctl
+      blueman
+      xfce.thunar
+      polkit_gnome
       pkgsUnstable.claude-code
     ])
     ++ [
@@ -126,6 +133,117 @@ in {
 
   xdg = {
     enable = true;
+    configFile."waybar/config".text = ''
+      {
+        "layer": "top",
+        "position": "top",
+        "modules-left": ["hyprland/workspaces", "hyprland/window"],
+        "modules-center": ["custom/media", "clock"],
+        "modules-right": ["cpu", "memory", "temperature", "battery", "bluetooth", "network", "pulseaudio", "tray"],
+
+        "custom/media": {
+          "format": "{}",
+          "exec": "playerctl metadata --format '{{ artist }} - {{ title }}'",
+          "interval": 2,
+          "max-length": 40,
+          "tooltip": true,
+          "return-type": "string"
+        },
+        "clock": {
+          "format": "{:%a %b %d  %H:%M}"
+        },
+        "cpu": {
+          "format": "CPU {usage}%"
+        },
+        "memory": {
+          "format": "RAM {used:0.1f}G"
+        },
+        "temperature": {
+          "format": "TEMP {temperatureC}C",
+          "critical-threshold": 85
+        },
+        "battery": {
+          "format": "BAT {capacity}%",
+          "format-charging": "BAT {capacity}% AC",
+          "format-plugged": "BAT {capacity}% AC"
+        },
+        "pulseaudio": {
+          "format": "VOL {volume}%",
+          "format-muted": "MUTE"
+        }
+      }
+    '';
+    configFile."waybar/style.css".text = ''
+      * {
+        font-family: "Iosevka", "JetBrains Mono", monospace;
+        font-size: 12px;
+        min-height: 0;
+        border: none;
+        border-radius: 0;
+      }
+
+      window#waybar {
+        background: linear-gradient(90deg, #111827 0%, #0f172a 50%, #111827 100%);
+        color: #e5e7eb;
+      }
+
+      #workspaces button {
+        padding: 0 8px;
+        margin: 4px 3px;
+        background: transparent;
+        color: #94a3b8;
+        border: 1px solid #1f2937;
+        border-radius: 6px;
+      }
+
+      #workspaces button.active {
+        color: #f9fafb;
+        border-color: #38bdf8;
+        background: #0b1220;
+      }
+
+      #workspaces button.urgent {
+        color: #111827;
+        background: #f59e0b;
+        border-color: #f59e0b;
+      }
+
+      #window {
+        padding: 0 10px;
+        margin: 4px 6px;
+        color: #cbd5f5;
+      }
+
+      #custom-media {
+        padding: 0 10px;
+        margin: 4px 6px;
+        color: #fbbf24;
+      }
+
+      #clock, #cpu, #memory, #temperature, #battery, #bluetooth, #network, #pulseaudio, #tray {
+        padding: 0 10px;
+        margin: 4px 3px;
+        background: #0b1220;
+        border: 1px solid #1f2937;
+        border-radius: 6px;
+      }
+
+      #battery.charging {
+        color: #22c55e;
+      }
+
+      #battery.critical:not(.charging) {
+        color: #ef4444;
+      }
+
+      #temperature.critical {
+        color: #ef4444;
+      }
+
+      #pulseaudio.muted {
+        color: #94a3b8;
+      }
+    '';
     desktopEntries.kiro = {
       name = "Kiro";
       genericName = "Coding agent";
@@ -142,6 +260,101 @@ in {
     extraPackages = epkgs: [
       epkgs.vterm
     ];
+  };
+
+  wayland.windowManager.hyprland = {
+    enable = true;
+    settings = {
+      "$mod" = "SUPER";
+
+      env = [
+        "NIXOS_OZONE_WL,1"
+        "XCURSOR_SIZE,24"
+      ];
+
+      input = {
+        kb_layout = "us,ru";
+        kb_options = "terminalte:ctrl_alt_bksp,lv4:ralt_switch,ctrl:nocaps,grp:shifts_toggle";
+      };
+
+      exec-once = [
+        "waybar"
+        "blueman-applet"
+        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+      ];
+
+      bind = [
+        "$mod, Return, exec, foot"
+        "$mod, D, exec, wofi --show drun"
+        "$mod, Space, exec, wofi --show run"
+        "$mod, Q, killactive,"
+        "$mod, F, fullscreen,"
+        "$mod, V, togglefloating,"
+        "$mod, E, exec, thunar"
+        "$mod, M, exit,"
+        "$mod SHIFT, R, exec, hyprctl reload"
+        "SHIFT ALT, P, exec, ${config.home.homeDirectory}/configfiles/flameshot-launch.sh"
+
+        "CTRL ALT, 1, workspace, 1"
+        "CTRL ALT, 2, workspace, 2"
+        "CTRL ALT, 3, workspace, 3"
+        "CTRL ALT, 4, workspace, 4"
+        "CTRL ALT, 5, workspace, 5"
+        "CTRL ALT, 6, workspace, 6"
+        "CTRL ALT, 7, workspace, 7"
+        "CTRL ALT, 8, workspace, 8"
+        "CTRL ALT, 9, workspace, 9"
+        "CTRL ALT, G, workspace, 10"
+        "CTRL ALT, S, workspace, 11"
+        "CTRL ALT, O, workspace, 12"
+        "CTRL ALT, X, workspace, 1"
+        "CTRL ALT, D, workspace, 2"
+        "CTRL ALT, F, workspace, 3"
+        "CTRL ALT, E, workspace, 4"
+        "CTRL ALT, W, workspace, 5"
+        "CTRL ALT, T, workspace, 6"
+        "CTRL ALT, C, workspace, 7"
+        "CTRL ALT, V, workspace, 8"
+        "CTRL ALT, K, workspace, 9"
+
+        "CTRL SHIFT, 1, movetoworkspace, 1"
+        "CTRL SHIFT, 2, movetoworkspace, 2"
+        "CTRL SHIFT, 3, movetoworkspace, 3"
+        "CTRL SHIFT, 4, movetoworkspace, 4"
+        "CTRL SHIFT, 5, movetoworkspace, 5"
+        "CTRL SHIFT, 6, movetoworkspace, 6"
+        "CTRL SHIFT, 7, movetoworkspace, 7"
+        "CTRL SHIFT, 8, movetoworkspace, 8"
+        "CTRL SHIFT, 9, movetoworkspace, 9"
+        "CTRL SHIFT, G, movetoworkspace, 10"
+        "CTRL SHIFT, S, movetoworkspace, 11"
+        "CTRL SHIFT, O, movetoworkspace, 12"
+      ];
+
+      bindm = [
+        "$mod, mouse:272, movewindow"
+        "$mod, mouse:273, resizewindow"
+      ];
+
+      misc = {
+        disable_hyprland_logo = true;
+      };
+
+      workspace = [
+        "1, persistent:true, default:true"
+        "2, persistent:true"
+        "3, persistent:true"
+        "4, persistent:true"
+        "5, persistent:true"
+        "6, persistent:true"
+        "7, persistent:true"
+        "8, persistent:true"
+        "9, persistent:true"
+        "10, persistent:true"
+        "11, persistent:true"
+        "12, persistent:true"
+      ];
+    };
   };
 
   fonts.fontconfig.enable = true;

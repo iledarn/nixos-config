@@ -189,8 +189,8 @@
     services.greetd = {
       enable = true;
       settings.default_session = {
-        command = "${pkgs.hyprland}/bin/Hyprland";
-        user = "${username}";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
+        user = "greeter";
       };
     };
   };
@@ -220,6 +220,13 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
+  services.blueman.enable = true;
 
   systemd = {
     coredump.enable = false;
