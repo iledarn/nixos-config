@@ -435,6 +435,7 @@ P3
         "swww-daemon"
         "swww img $HOME/Pictures/wallpapers/minimal.ppm --transition-type fade --transition-duration 1"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+        "flameshot"
       ];
 
       bind = [
