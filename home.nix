@@ -28,7 +28,11 @@
     exec ${pkgsUnstable."kiro-cli"}/bin/kiro "$@"
   '';
   flameshotPkg = pkgs.flameshot.overrideAttrs (old: {
-    cmakeFlags = (old.cmakeFlags or []) ++ [ "-DUSE_WAYLAND_GRIM=ON" ];
+    cmakeFlags = (old.cmakeFlags or [])
+      ++ [
+        "-DUSE_WAYLAND_GRIM=ON"
+        "-DUSE_WAYLAND_CLIPBOARD=ON"
+      ];
   });
   flameshotWrapped = pkgs.writeShellScriptBin "flameshot-wrapped" ''
     # Avoid Qt HiDPI scaling mismatch in Flameshot selection overlay.
@@ -36,7 +40,10 @@
     export QT_AUTO_SCREEN_SCALE_FACTOR=0
     # Inverse of Hyprland monitor scale (1/1.25).
     export QT_SCALE_FACTOR=0.8
-    exec ${flameshotPkg}/bin/flameshot gui "$@"
+    exec ${pkgs.bash}/bin/bash -c '
+      "${flameshotPkg}/bin/flameshot" gui --raw "$@" \
+        | "${pkgs.wl-clipboard}/bin/wl-copy" --type image/png
+    ' -- "$@"
   '';
 in {
   # TODO please change the username & home directory to your own
