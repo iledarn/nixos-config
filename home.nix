@@ -140,6 +140,7 @@ in {
       nerd-fonts.caskaydia-cove
       pkgsUnstable.claude-code
       zen-browser.packages.${pkgs.system}.default
+      eza
     ])
     ++ [
       codexWithMcpTokens
