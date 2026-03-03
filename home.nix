@@ -274,6 +274,28 @@ P3
         color: #cbd5f5;
       }
     '';
+    configFile."gtk-3.0/gtk.css".text = ''
+      * {
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      decoration, window, headerbar, .titlebar {
+        border-radius: 0;
+        box-shadow: none;
+      }
+    '';
+    configFile."gtk-4.0/gtk.css".text = ''
+      * {
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      decoration, window, headerbar, .titlebar {
+        border-radius: 0;
+        box-shadow: none;
+      }
+    '';
     desktopEntries.kiro = {
       name = "Kiro";
       genericName = "Coding agent";
@@ -445,6 +467,8 @@ P3
         "NIXOS_OZONE_WL,1"
         "XCURSOR_SIZE,24"
         "KDEWALLET_DISABLE,1"
+        "GTK_CSD,0"
+        "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
       ];
 
       input = {
