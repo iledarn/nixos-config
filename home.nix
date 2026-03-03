@@ -72,6 +72,7 @@ in {
       tmux
       telegram-desktop
       htop
+      btop
       git
       gh
       keepassxc
