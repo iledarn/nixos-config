@@ -360,6 +360,9 @@ P3
           base = 0.85;
           layers = 0.4;
         };
+        rounding = {
+          scale = 0;
+        };
         font = {
           family = {
             sans = "Ubuntu";
@@ -367,13 +370,14 @@ P3
             clock = "Ubuntu";
             material = "Material Symbols Rounded";
           };
-          size = {scale = 1;};
+          size = {scale = 0.7;};
         };
       };
       paths = {
         wallpaperDir = "~/Pictures/wallpapers";
       };
       bar = {
+        persistent = true;
         showOnHover = true;
         entries = [
           {
@@ -425,6 +429,10 @@ P3
           apps = true;
           actions = true;
         };
+      };
+      border = {
+        rounding = 0;
+        thickness = 0;
       };
       general = {
         idle = {
