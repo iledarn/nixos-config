@@ -27,11 +27,16 @@
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
     exec ${pkgsUnstable."kiro-cli"}/bin/kiro "$@"
   '';
+  flameshotPkg = pkgs.flameshot.overrideAttrs (old: {
+    cmakeFlags = (old.cmakeFlags or []) ++ [ "-DUSE_WAYLAND_GRIM=ON" ];
+  });
   flameshotWrapped = pkgs.writeShellScriptBin "flameshot-wrapped" ''
     # Avoid Qt HiDPI scaling mismatch in Flameshot selection overlay.
+    export QT_QPA_PLATFORM=wayland
     export QT_AUTO_SCREEN_SCALE_FACTOR=0
-    export QT_SCALE_FACTOR=1
-    exec ${pkgs.flameshot}/bin/flameshot gui "$@"
+    # Inverse of Hyprland monitor scale (1/1.25).
+    export QT_SCALE_FACTOR=0.8
+    exec ${flameshotPkg}/bin/flameshot gui "$@"
   '';
 in {
   # TODO please change the username & home directory to your own
@@ -110,9 +115,7 @@ in {
       age
       uv
       icloudpd
-      (flameshot.overrideAttrs (old: {
-        cmakeFlags = (old.cmakeFlags or []) ++ [ "-DUSE_WAYLAND_GRIM=ON" ];
-      }))
+      flameshotPkg
       digikam
       nodejs
       grim
@@ -484,6 +487,9 @@ P3
         "KDEWALLET_DISABLE,1"
         "GTK_CSD,0"
         "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+      ];
+      monitor = [
+        "eDP-1, preferred, auto, 1.25"
       ];
 
       input = {
