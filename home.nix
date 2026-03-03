@@ -5,6 +5,7 @@
   username,
   stateVersion,
   sops-nix,
+  zen-browser,
   lib,
   ...
 }: let
@@ -138,6 +139,7 @@ in {
       material-symbols
       nerd-fonts.caskaydia-cove
       pkgsUnstable.claude-code
+      zen-browser.packages.${pkgs.system}.default
     ])
     ++ [
       codexWithMcpTokens
@@ -551,6 +553,7 @@ P3
         "CTRL ALT, G, workspace, 10"
         "CTRL ALT, S, workspace, 11"
         "CTRL ALT, O, workspace, 12"
+        "CTRL ALT, Z, workspace, 13"
         "CTRL ALT, X, workspace, 1"
         "CTRL ALT, D, workspace, 2"
         "CTRL ALT, F, workspace, 3"
@@ -573,6 +576,7 @@ P3
         "CTRL SHIFT, G, movetoworkspace, 10"
         "CTRL SHIFT, S, movetoworkspace, 11"
         "CTRL SHIFT, O, movetoworkspace, 12"
+        "CTRL SHIFT, Z, movetoworkspace, 13"
       ];
 
 
@@ -598,6 +602,7 @@ P3
         "10, persistent:true"
         "11, persistent:true"
         "12, persistent:true"
+        "13, persistent:true"
       ];
     };
   };
