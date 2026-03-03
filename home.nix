@@ -27,6 +27,12 @@
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
     exec ${pkgsUnstable."kiro-cli"}/bin/kiro "$@"
   '';
+  flameshotWrapped = pkgs.writeShellScriptBin "flameshot-wrapped" ''
+    # Avoid Qt HiDPI scaling mismatch in Flameshot selection overlay.
+    export QT_AUTO_SCREEN_SCALE_FACTOR=0
+    export QT_SCALE_FACTOR=1
+    exec ${pkgs.flameshot}/bin/flameshot gui "$@"
+  '';
 in {
   # TODO please change the username & home directory to your own
   home.username = username;
@@ -126,6 +132,7 @@ in {
       codexWithMcpTokens
       kiroWithGitHub
       kiroCliWrapped
+      flameshotWrapped
     ];
 
   programs.brave = {
@@ -501,7 +508,7 @@ P3
         "swww-daemon"
         "swww img $HOME/Pictures/wallpapers/minimal.ppm --transition-type fade --transition-duration 1"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-        "flameshot"
+        "flameshot-wrapped"
       ];
 
       bind = [
@@ -515,7 +522,8 @@ P3
         "$mod, E, exec, thunar"
         "$mod, M, exit,"
         "$mod SHIFT, R, exec, hyprctl reload"
-        "SHIFT ALT, P, exec, ${config.home.homeDirectory}/configfiles/flameshot-launch.sh"
+        "SHIFT ALT, P, exec, flameshot-wrapped"
+        "CTRL SHIFT, P, exec, flameshot-wrapped"
 
         "CTRL ALT, 1, workspace, 1"
         "CTRL ALT, 2, workspace, 2"
