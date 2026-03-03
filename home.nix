@@ -452,6 +452,19 @@ P3
         kb_options = "terminalte:ctrl_alt_bksp,lv4:ralt_switch,ctrl:nocaps,grp:shifts_toggle";
       };
 
+      general = {
+        gaps_in = 0;
+        gaps_out = 0;
+        border_size = 0;
+      };
+
+      decoration = {
+        rounding = 0;
+        shadow = {
+          enabled = false;
+        };
+      };
+
       exec-once = [
         "swww-daemon"
         "swww img $HOME/Pictures/wallpapers/minimal.ppm --transition-type fade --transition-duration 1"
