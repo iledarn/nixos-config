@@ -404,6 +404,27 @@ P3
           actions = true;
         };
       };
+      general = {
+        idle = {
+          lockBeforeSleep = true;
+          inhibitWhenAudio = true;
+          timeouts = [
+            {
+              timeout = 1800;
+              idleAction = "lock";
+            }
+            {
+              timeout = 2100;
+              idleAction = "dpms off";
+              returnAction = "dpms on";
+            }
+            {
+              timeout = 3600;
+              idleAction = ["systemctl" "suspend-then-hibernate"];
+            }
+          ];
+        };
+      };
       services = {
         smartScheme = true;
       };
