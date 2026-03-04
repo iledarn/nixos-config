@@ -46,6 +46,23 @@
         | "${pkgs.wl-clipboard}/bin/wl-copy" --type image/png
     ' -- "$@"
   '';
+  ramUsageNotify = pkgs.writeShellScript "ram-usage-notify" ''
+    set -euo pipefail
+    threshold=75
+    cache_dir="''${XDG_CACHE_HOME:-$HOME/.cache}"
+    state_file="$cache_dir/ram-usage-notify.state"
+    mkdir -p "$cache_dir"
+
+    used_pct="$(${pkgs.procps}/bin/free -m | ${pkgs.gawk}/bin/awk '/Mem:/ {printf "%.0f", $3/$2*100}')"
+    if [ "$used_pct" -ge "$threshold" ]; then
+      if [ ! -f "$state_file" ]; then
+        ${pkgs.libnotify}/bin/notify-send -u normal -a "System" "RAM usage ''${used_pct}%"
+        touch "$state_file"
+      fi
+    else
+      rm -f "$state_file"
+    fi
+  '';
 in {
   # TODO please change the username & home directory to your own
   home.username = username;
@@ -626,6 +643,28 @@ P3
       Install = {
         WantedBy = ["default.target"];
       };
+    };
+    ram-usage-notify = {
+      Unit = {
+        Description = "Notify when RAM usage is high";
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = ramUsageNotify;
+      };
+    };
+  };
+
+  systemd.user.timers.ram-usage-notify = {
+    Unit = {
+      Description = "Check RAM usage";
+    };
+    Timer = {
+      OnBootSec = "2m";
+      OnUnitActiveSec = "1m";
+    };
+    Install = {
+      WantedBy = ["timers.target"];
     };
   };
 
