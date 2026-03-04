@@ -207,6 +207,122 @@
     };
   };
 
+  specialisation.hyprland-quickshell.configuration = {
+    # Hyprland session via greetd (Wayland-native DM).
+    services.xserver.enable = lib.mkForce false;
+    services.xserver.displayManager.gdm.enable = lib.mkForce false;
+    services.xserver.desktopManager.gnome.enable = lib.mkForce false;
+
+    programs.hyprland.enable = true;
+    xdg.portal = {
+      enable = true;
+      extraPortals = [pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk];
+      configPackages = [pkgs.xdg-desktop-portal-hyprland];
+    };
+
+    services.greetd = {
+      enable = true;
+      settings.default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
+        user = "greeter";
+      };
+    };
+
+    services.blueman.enable = lib.mkForce true;
+
+    home-manager.users.${username} = {lib, pkgs, ...}: {
+      programs.caelestia.enable = lib.mkForce false;
+
+      qt.enable = true;
+
+      services.mako.enable = true;
+
+      home.packages = lib.mkAfter [
+        pkgs.quickshell
+        pkgs.networkmanagerapplet
+        pkgs.blueman
+      ];
+
+      xdg.configFile."quickshell/shell.qml".text = ''
+        import QtQuick 6.0
+        import Quickshell
+        import Quickshell.Services.SystemTray
+
+        ShellRoot {
+          Variants {
+            variants: Quickshell.screens
+            delegate: PanelWindow {
+              id: panel
+              screen: modelData
+
+              anchors {
+                top: true
+                right: true
+              }
+
+              margins {
+                top: 8
+                right: 8
+              }
+
+              height: 28
+              width: trayRow.implicitWidth + 16
+              exclusiveZone: 0
+
+              Rectangle {
+                anchors.fill: parent
+                radius: 6
+                color: "#1a1d24"
+                border.color: "#2a2f3a"
+              }
+
+              Row {
+                id: trayRow
+                anchors.centerIn: parent
+                spacing: 6
+
+                Repeater {
+                  model: SystemTray.items
+                  delegate: Item {
+                    width: 18
+                    height: 18
+                    property var trayItem: modelData
+
+                    Image {
+                      anchors.fill: parent
+                      source: trayItem.icon
+                      fillMode: Image.PreserveAspectFit
+                    }
+
+                    MouseArea {
+                      anchors.fill: parent
+                      acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+                      onClicked: {
+                        if (mouse.button === Qt.LeftButton) {
+                          trayItem.activate()
+                        } else if (mouse.button === Qt.RightButton) {
+                          trayItem.display(panel, mouse.x + parent.x, mouse.y + parent.y)
+                        } else if (mouse.button === Qt.MiddleButton) {
+                          trayItem.secondaryActivate()
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      '';
+
+      wayland.windowManager.hyprland.settings.exec-once = lib.mkAfter [
+        "quickshell -n"
+        "nm-applet --indicator"
+        "blueman-applet"
+      ];
+    };
+  };
+
   system.activationScripts.playwrightChrome = ''
     mkdir -p /opt/google/chrome
     ln -sfn ${pkgs.google-chrome}/bin/google-chrome-stable /opt/google/chrome/chrome
