@@ -19,6 +19,11 @@ local function set_lsp_keymaps(bufnr)
   local opts = { buffer = bufnr, silent = true }
   vim.keymap.set("n", "gT", vim.lsp.buf.type_definition, opts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+  -- Diagnostics: float for cursor, loclist for current buffer
+  vim.keymap.set("n", "<leader>td", vim.diagnostic.open_float, opts)
+  vim.keymap.set("n", "<leader>tD", function()
+    vim.diagnostic.setloclist({ open = true })
+  end, opts)
 end
 
 local ty_cfg = {
