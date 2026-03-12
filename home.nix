@@ -14,6 +14,11 @@
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
     exec ${pkgsUnstable.codex}/bin/codex "$@"
   '';
+  # Wrapper to expose GitHub token only for Claude Code invocations
+  claudeWithGitHub = pkgs.writeShellScriptBin "claude" ''
+    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    exec ${pkgsUnstable.claude-code}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
+  '';
   # Wrapper to expose MCP tokens only for Kiro invocations
   kiroWithGitHub = pkgs.writeShellScriptBin "kiro" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
@@ -108,10 +113,10 @@ in {
       nodejs
       grim
       slurp
-      pkgsUnstable.claude-code
     ])
     ++ [
       codexWithMcpTokens
+      claudeWithGitHub
       kiroWithGitHub
       kiroCliWrapped
     ];
@@ -217,6 +222,20 @@ in {
     args = ["postgres-mcp", "--access-mode=unrestricted"]
     env = {
       DATABASE_URI = "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
+    }
+  '';
+
+  home.file.".config/claude/mcp.json".text = ''
+    {
+      "mcpServers": {
+        "github": {
+          "type": "http",
+          "url": "https://api.githubcopilot.com/mcp/",
+          "headers": {
+            "Authorization": "Bearer ''${GITHUB_PAT}"
+          }
+        }
+      }
     }
   '';
 
