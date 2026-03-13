@@ -23,6 +23,7 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-25-11";
     };
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
     hyprland.url = "github:hyprwm/Hyprland";
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -41,6 +42,7 @@
     home-manager-24-11,
     home-manager-25-05,
     home-manager-25-11,
+    nix-flatpak,
     sops-nix,
     ...
   }: {
@@ -67,6 +69,7 @@
           };
           modules = [
             ./common-configuration.nix
+            nix-flatpak.nixosModules.nix-flatpak
             homeManagerInput.nixosModules.home-manager
             inputs.sops-nix.nixosModules.sops
             {

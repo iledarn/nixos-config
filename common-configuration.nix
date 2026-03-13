@@ -61,10 +61,26 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   services.udev.packages = with pkgs; [gnome-settings-daemon];
+
+  services.flatpak = {
+    enable = true;
+    remotes = [
+      {
+        name = "flathub";
+        location = "https://flathub.org/repo/flathub.flatpakrepo";
+      }
+    ];
+    packages = ["org.telegram.desktop"];
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gnome];
+  };
 
   # Configure keymap in X11
   services.xserver = {
@@ -160,8 +176,8 @@
   specialisation.hyprland.configuration = {
     # Hyprland session via greetd (Wayland-native DM).
     services.xserver.enable = lib.mkForce false;
-    services.xserver.displayManager.gdm.enable = lib.mkForce false;
-    services.xserver.desktopManager.gnome.enable = lib.mkForce false;
+    services.displayManager.gdm.enable = lib.mkForce false;
+    services.desktopManager.gnome.enable = lib.mkForce false;
 
     programs.hyprland.enable = true;
     xdg.portal = {
