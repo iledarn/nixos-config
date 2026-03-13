@@ -34,7 +34,7 @@
       inetutils
       httpie
       tmux
-      #telegram-desktop
+      # telegram-desktop
       htop
       git
       gh
@@ -347,12 +347,16 @@ codex
 
   programs.git = {
     enable = true;
-    userName = "Ildar Nasyrov";
-    userEmail = "iledarnp@gmail.com";
-    aliases = {
-      co = "checkout";
-      st = "status";
-      hist = "log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short";
+    settings = {
+      user = {
+        name = "Ildar Nasyrov";
+        email = "iledarnp@gmail.com";
+      };
+      alias = {
+        co = "checkout";
+        st = "status";
+        hist = "log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short";
+      };
     };
   };
 
@@ -362,6 +366,7 @@ codex
   ];
 
   programs.ssh.enable = true;
+  programs.ssh.enableDefaultConfig = true;
   programs.ssh.matchBlocks = {
     kepiProd = {
       hostname = "139.162.11.95";
