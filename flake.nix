@@ -5,6 +5,7 @@
     nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
     nixpkgs-24-11.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs-25-05.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs-25-11.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager-23-11 = {
       url = "github:nix-community/home-manager/release-23.11";
@@ -18,6 +19,10 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs-25-05";
     };
+    home-manager-25-11 = {
+      url = "github:nix-community/home-manager/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs-25-11";
+    };
     hyprland.url = "github:hyprwm/Hyprland";
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -30,10 +35,12 @@
     nixpkgs-23-11,
     nixpkgs-24-11,
     nixpkgs-25-05,
+    nixpkgs-25-11,
     nixpkgs-unstable,
     home-manager-23-11,
     home-manager-24-11,
     home-manager-25-05,
+    home-manager-25-11,
     sops-nix,
     ...
   }: {
@@ -104,6 +111,14 @@
         nixpkgsInput = nixpkgs-25-05;
         homeManagerInput = home-manager-25-05;
         stateVersion = "25.05";
+      };
+
+      p171g = mkSystem {
+        hostname = "p171g";
+        username = "ildar";
+        nixpkgsInput = nixpkgs-25-11;
+        homeManagerInput = home-manager-25-11;
+        stateVersion = "25.11";
       };
     };
 
