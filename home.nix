@@ -34,7 +34,7 @@
       inetutils
       httpie
       tmux
-      telegram-desktop
+      # telegram-desktop
       htop
       git
       gh
