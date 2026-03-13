@@ -116,9 +116,9 @@
       p171g = mkSystem {
         hostname = "p171g";
         username = "ildar";
-        nixpkgsInput = nixpkgs-25-11;
-        homeManagerInput = home-manager-25-11;
-        stateVersion = "25.11";
+        nixpkgsInput = nixpkgs-25-05;
+        homeManagerInput = home-manager-25-05;
+        stateVersion = "25.05";
       };
     };
 
