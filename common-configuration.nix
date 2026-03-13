@@ -217,16 +217,16 @@
 
   programs.nix-ld = {
     enable = true;
-    package = pkgs.nix-ld-rs;
+    package = pkgs.nix-ld;
   };
 
-  sops = {
-    defaultSopsFile = ./sops/secrets.yaml;
-    secrets.openai_api_key = {
-      owner = "${username}";
-    };
-    age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
-  };
+  #sops = {
+  #  defaultSopsFile = ./sops/secrets.yaml;
+  #  secrets.openai_api_key = {
+  #    owner = "${username}";
+  #  };
+  #  age.keyFile = "/home/${username}/.config/sops/age/keys.txt";
+  #};
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

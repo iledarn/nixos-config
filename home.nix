@@ -4,34 +4,12 @@
   pkgsUnstable,
   username,
   stateVersion,
-  sops-nix,
+  #sops-nix,
   lib,
   ...
-}: let
-  # Wrapper to expose MCP tokens only for Codex invocations
-  codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
-    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    exec ${pkgsUnstable.codex}/bin/codex "$@"
-  '';
-  # Wrapper to expose GitHub token only for Claude Code invocations
-  claudeWithGitHub = pkgs.writeShellScriptBin "claude" ''
-    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    exec ${pkgsUnstable.claude-code}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
-  '';
-  # Wrapper to expose MCP tokens only for Kiro invocations
-  kiroWithGitHub = pkgs.writeShellScriptBin "kiro" ''
-    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    exec ${pkgsUnstable.kiro-fhs}/bin/kiro "$@"
-  '';
-  # Avoid collision with kiro desktop app binary name.
-  kiroCliWrapped = pkgs.writeShellScriptBin "kiro-cli" ''
-    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    exec ${pkgsUnstable."kiro-cli"}/bin/kiro "$@"
-  '';
-in {
+}:
+
+{
   # TODO please change the username & home directory to your own
   home.username = username;
   home.homeDirectory = "/home/${username}";
@@ -46,7 +24,7 @@ in {
   imports = [
     ./dconf.nix
     ./neovim.nix
-    sops-nix.homeManagerModules.sops
+  #  sops-nix.homeManagerModules.sops
   ];
 
   home.packages =
@@ -56,7 +34,7 @@ in {
       inetutils
       httpie
       tmux
-      telegram-desktop
+      #telegram-desktop
       htop
       git
       gh
@@ -68,7 +46,7 @@ in {
       wl-clipboard
       docker-compose
       gnupg
-      sops
+      #sops
       mc
       libreoffice
       feh
@@ -98,7 +76,7 @@ in {
       google-chrome
       fuse
       jetbrains-mono
-      ubuntu_font_family
+      ubuntu-classic
       cmake
       libtool
       gcc
@@ -113,13 +91,14 @@ in {
       nodejs
       grim
       slurp
-    ])
-    ++ [
-      codexWithMcpTokens
-      claudeWithGitHub
-      kiroWithGitHub
-      kiroCliWrapped
-    ];
+codex
+    ]);
+ #   ++ [
+ #     codexWithMcpTokens
+ #     claudeWithGitHub
+ #     kiroWithGitHub
+ #     kiroCliWrapped
+ #   ];
 
   programs.brave = {
     enable = true;
@@ -131,15 +110,6 @@ in {
 
   xdg = {
     enable = true;
-    desktopEntries.kiro = {
-      name = "Kiro";
-      genericName = "Coding agent";
-      exec = "${kiroWithGitHub}/bin/kiro";
-      icon = "${pkgsUnstable.kiro}/share/pixmaps/kiro.png";
-      terminal = false;
-      categories = ["Development" "Utility"];
-      comment = "Launch Kiro with GITHUB_PAT available";
-    };
   };
 
   programs.emacs = {
@@ -173,27 +143,27 @@ in {
     };
   };
 
-  sops = {
-    age = {
-      keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    };
-    defaultSopsFile = ./sops/secrets.yaml;
-    secrets = {
-      google_client_id = {};
-      google_client_secret = {};
-      openai_api_key = {};
-      github_pat = {};
-      context7_api_key = {};
-    };
-  };
+  #sops = {
+  #  age = {
+  #    keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+  #  };
+  #  defaultSopsFile = ./sops/secrets.yaml;
+  #  secrets = {
+  #    google_client_id = {};
+  #    google_client_secret = {};
+  #    openai_api_key = {};
+  #    github_pat = {};
+  #    context7_api_key = {};
+  #  };
+  #};
 
   programs.bash = {
     enable = true;
     sessionVariables = {
       EDITOR = "nvim";
-      OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
-      GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
-      GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
+#      OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
+#      GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
+#      GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
     };
     initExtra = ''
     '';
@@ -265,73 +235,73 @@ in {
   #   }
   # '';
 
-  home.activation.kiroMcpJson = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    install -m 700 -d "$HOME/.kiro/settings"
-    # Remove any existing symlink created by prior home.file config.
-    if [ -e "$HOME/.kiro/settings/mcp.json" ] || [ -L "$HOME/.kiro/settings/mcp.json" ]; then
-      rm -f "$HOME/.kiro/settings/mcp.json"
-    fi
-    GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    cat > "$HOME/.kiro/settings/mcp.json" <<EOF
-    {
-      "mcpServers": {
-        "github": {
-          "type": "http",
-          "url": "https://api.githubcopilot.com/mcp/",
-          "headers": {
-            "Authorization": "''${GITHUB_PAT}"
-          },
-          "disabled": false,
-          "autoApprove": []
-        },
-        "context7": {
-          "type": "http",
-          "url": "https://mcp.context7.com/mcp",
-          "headers": {
-            "Authorization": "''${CONTEXT7}"
-          },
-          "disabled": false,
-          "autoApprove": []
-        },
-        "playwright": {
-          "command": "npx",
-          "args": [
-            "@playwright/mcp@latest"
-          ],
-          "env": {
-            "PLAYWRIGHT_HEADLESS": "false"
-          }
-        },
-        "pdf-reader": {
-          "command": "npx",
-          "args": [
-            "@sylphx/pdf-reader-mcp"
-          ]
-        },
-        "postgres": {
-          "command": "uvx",
-          "args": [
-            "postgres-mcp",
-            "--access-mode=unrestricted"
-          ],
-          "env": {
-            "DATABASE_URI": "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
-          }
-        }
-      }
-    }
-    EOF
-    chmod 600 "$HOME/.kiro/settings/mcp.json"
-  '';
+  #home.activation.kiroMcpJson = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  #  install -m 700 -d "$HOME/.kiro/settings"
+  #  # Remove any existing symlink created by prior home.file config.
+  #  if [ -e "$HOME/.kiro/settings/mcp.json" ] || [ -L "$HOME/.kiro/settings/mcp.json" ]; then
+  #    rm -f "$HOME/.kiro/settings/mcp.json"
+  #  fi
+  #  GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+  #  CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
+  #  cat > "$HOME/.kiro/settings/mcp.json" <<EOF
+  #  {
+  #    "mcpServers": {
+  #      "github": {
+  #        "type": "http",
+  #        "url": "https://api.githubcopilot.com/mcp/",
+  #        "headers": {
+  #          "Authorization": "''${GITHUB_PAT}"
+  #        },
+  #        "disabled": false,
+  #        "autoApprove": []
+  ##      },
+  #      "context7": {
+  #        "type": "http",
+  #        "url": "https://mcp.context7.com/mcp",
+  #        "headers": {
+  #          "Authorization": "''${CONTEXT7}"
+  #        },
+  #        "disabled": false,
+  #        "autoApprove": []
+  #      },
+  #      "playwright": {
+  #        "command": "npx",
+  #        "args": [
+  #          "@playwright/mcp@latest"
+  #        ],
+  #        "env": {
+  #          "PLAYWRIGHT_HEADLESS": "false"
+  #        }
+  #      },
+  #      "pdf-reader": {
+  #        "command": "npx",
+  #        "args": [
+  #          "@sylphx/pdf-reader-mcp"
+  #        ]
+  #      },
+  #      "postgres": {
+  #        "command": "uvx",
+  #        "args": [
+  #          "postgres-mcp",
+  #          "--access-mode=unrestricted"
+  #        ],
+  #        "env": {
+  #          "DATABASE_URI": "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
+  #        }
+  #      }
+  #    }
+  #  }
+  #  EOF
+  #  chmod 600 "$HOME/.kiro/settings/mcp.json"
+  #'';
 
-  home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
-    if [ -f "$HOME/.codex/config.toml" ]; then
-      mkdir -p "$HOME/.codex"
-      ts=$(date -u +"%Y%m%dT%H%M%S%N")
-      mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
-    fi
-  '';
+#  home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
+#    if [ -f "$HOME/.codex/config.toml" ]; then
+#      mkdir -p "$HOME/.codex"
+#      ts=$(date -u +"%Y%m%dT%H%M%S%N")
+#      mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
+#    fi
+#  '';
 
   programs.fzf.enable = true;
 
@@ -343,55 +313,6 @@ in {
     nix-direnv.enable = true;
   };
 
-  programs.vscode = {
-    enable = true;
-    profiles.default.extensions = with pkgs.vscode-extensions;
-      [
-        brettm12345.nixfmt-vscode
-        mkhl.direnv
-        dracula-theme.theme-dracula
-        vscodevim.vim
-        yzhang.markdown-all-in-one
-        bbenoist.nix
-        ms-azuretools.vscode-docker
-        ms-python.black-formatter
-        ms-python.python
-        ms-python.isort
-        xyz.local-history
-      ]
-      ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "vsc-invoke";
-          publisher = "dchanco";
-          version = "0.0.12";
-          sha256 = "sha256-+YpNftJ9qIfZqGQXZAb4+E0V8/aa8zWTjRSphddQw68=";
-        }
-        {
-          name = "tasks";
-          publisher = "actboy168";
-          version = "0.16.0";
-          sha256 = "sha256-btYWdOuxqSBclBHKyICo2yNmTjB7tOpiKNFNASPgihU=";
-        }
-        {
-          name = "aws-toolkit-vscode";
-          publisher = "AmazonWebServices";
-          version = "3.12.0";
-          sha256 = "sha256-110Hn80Nll8vO8EgeQ7coKyspjUR6TyyCTmdIdkzHZ4=";
-        }
-        {
-          name = "amazon-q-vscode";
-          publisher = "AmazonWebServices";
-          version = "1.11.0";
-          sha256 = "sha256-5Op1ivgeVzPvIuT5qeY67Oe8xm1wWWIaSgp4jzDBau0=";
-        }
-        {
-          name = "prettier-vscode";
-          publisher = "esbenp";
-          version = "10.4.0";
-          sha256 = "sha256-8+90cZpqyH+wBgPFaX5GaU6E02yBWUoB+T9C2z2Ix8c=";
-        }
-      ];
-  };
 
   programs.tmux = {
     enable = true;
