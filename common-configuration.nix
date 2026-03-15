@@ -12,7 +12,6 @@
   imports = [
     # Include the results of the hardware scan.
     ./hosts/${hostname}/hardware-configuration.nix
-    # <sops-nix/modules/sops>
   ];
 
   # Bootloader.

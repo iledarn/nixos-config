@@ -4,7 +4,7 @@
   pkgsUnstable,
   username,
   stateVersion,
-  #sops-nix,
+  sops-nix,
   lib,
   ...
 }:
@@ -24,7 +24,7 @@
   imports = [
     ./dconf.nix
     ./neovim.nix
-  #  sops-nix.homeManagerModules.sops
+    sops-nix.homeManagerModules.sops
   ];
 
   home.packages =
@@ -46,7 +46,7 @@
       wl-clipboard
       docker-compose
       gnupg
-      #sops
+      sops
       mc
       libreoffice
       feh
