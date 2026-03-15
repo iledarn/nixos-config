@@ -7,9 +7,19 @@
   sops-nix,
   lib,
   ...
-}:
-
-{
+}: let
+  # Wrapper to expose MCP tokens only for Codex invocations
+  codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
+    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
+    exec ${pkgsUnstable.codex}/bin/codex "$@"
+  '';
+  # Wrapper to expose GitHub token only for Claude Code invocations
+  claudeWithGitHub = pkgs.writeShellScriptBin "claude" ''
+    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    exec ${pkgsUnstable.claude-code}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
+  '';
+in {
   # TODO please change the username & home directory to your own
   home.username = username;
   home.homeDirectory = "/home/${username}";
@@ -27,8 +37,8 @@
     sops-nix.homeManagerModules.sops
   ];
 
-  home.packages =
-    (with pkgs; [
+  home.packages = with pkgs;
+    [
       nerd-fonts.hack
       atool
       inetutils
@@ -91,14 +101,11 @@
       nodejs
       grim
       slurp
-codex
-    ]);
- #   ++ [
- #     codexWithMcpTokens
- #     claudeWithGitHub
- #     kiroWithGitHub
- #     kiroCliWrapped
- #   ];
+    ]
+    ++ [
+      codexWithMcpTokens
+      claudeWithGitHub
+    ];
 
   programs.brave = {
     enable = true;
@@ -143,27 +150,25 @@ codex
     };
   };
 
-  #sops = {
-  #  age = {
-  #    keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-  #  };
-  #  defaultSopsFile = ./sops/secrets.yaml;
-  #  secrets = {
-  #    google_client_id = {};
-  #    google_client_secret = {};
-  #    openai_api_key = {};
-  #    github_pat = {};
-  #    context7_api_key = {};
-  #  };
-  #};
+  sops = {
+    age = {
+      keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    };
+    defaultSopsFile = ./sops/secrets.yaml;
+    secrets = {
+      google_client_id = {};
+      google_client_secret = {};
+      github_pat = {};
+      context7_api_key = {};
+    };
+  };
 
   programs.bash = {
     enable = true;
     sessionVariables = {
       EDITOR = "nvim";
-#      OPENAI_API_KEY = "$(cat ${config.sops.secrets.openai_api_key.path})";
-#      GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
-#      GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
+      GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
+      GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
     };
     initExtra = ''
     '';
@@ -209,99 +214,13 @@ codex
     }
   '';
 
-  # Disabled while kiro-cli ignores env-based MCP auth; avoid store exposure later.
-  # home.file.".kiro/settings/mcp.json".text = ''
-  #   {
-  #     "mcpServers": {
-  #       "github": {
-  #         "type": "http",
-  #         "url": "https://api.githubcopilot.com/mcp/",
-  #         "headers": {
-  #           "Authorization": "''${GITHUB_PAT}"
-  #         },
-  #         "disabled": false,
-  #         "autoApprove": []
-  #       },
-  #       "context7": {
-  #         "type": "http",
-  #         "url": "https://mcp.context7.com/mcp",
-  #         "headers": {
-  #           "Authorization": "''${CONTEXT7}"
-  #         },
-  #         "disabled": false,
-  #         "autoApprove": []
-  #       }
-  #     }
-  #   }
-  # '';
-
-  #home.activation.kiroMcpJson = lib.hm.dag.entryAfter ["writeBoundary"] ''
-  #  install -m 700 -d "$HOME/.kiro/settings"
-  #  # Remove any existing symlink created by prior home.file config.
-  #  if [ -e "$HOME/.kiro/settings/mcp.json" ] || [ -L "$HOME/.kiro/settings/mcp.json" ]; then
-  #    rm -f "$HOME/.kiro/settings/mcp.json"
-  #  fi
-  #  GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-  #  CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-  #  cat > "$HOME/.kiro/settings/mcp.json" <<EOF
-  #  {
-  #    "mcpServers": {
-  #      "github": {
-  #        "type": "http",
-  #        "url": "https://api.githubcopilot.com/mcp/",
-  #        "headers": {
-  #          "Authorization": "''${GITHUB_PAT}"
-  #        },
-  #        "disabled": false,
-  #        "autoApprove": []
-  ##      },
-  #      "context7": {
-  #        "type": "http",
-  #        "url": "https://mcp.context7.com/mcp",
-  #        "headers": {
-  #          "Authorization": "''${CONTEXT7}"
-  #        },
-  #        "disabled": false,
-  #        "autoApprove": []
-  #      },
-  #      "playwright": {
-  #        "command": "npx",
-  #        "args": [
-  #          "@playwright/mcp@latest"
-  #        ],
-  #        "env": {
-  #          "PLAYWRIGHT_HEADLESS": "false"
-  #        }
-  #      },
-  #      "pdf-reader": {
-  #        "command": "npx",
-  #        "args": [
-  #          "@sylphx/pdf-reader-mcp"
-  #        ]
-  #      },
-  #      "postgres": {
-  #        "command": "uvx",
-  #        "args": [
-  #          "postgres-mcp",
-  #          "--access-mode=unrestricted"
-  #        ],
-  #        "env": {
-  #          "DATABASE_URI": "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
-  #        }
-  #      }
-  #    }
-  #  }
-  #  EOF
-  #  chmod 600 "$HOME/.kiro/settings/mcp.json"
-  #'';
-
-#  home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
-#    if [ -f "$HOME/.codex/config.toml" ]; then
-#      mkdir -p "$HOME/.codex"
-#      ts=$(date -u +"%Y%m%dT%H%M%S%N")
-#      mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
-#    fi
-#  '';
+  home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
+    if [ -f "$HOME/.codex/config.toml" ]; then
+      mkdir -p "$HOME/.codex"
+      ts=$(date -u +"%Y%m%dT%H%M%S%N")
+      mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
+    fi
+  '';
 
   programs.fzf.enable = true;
 
@@ -312,7 +231,6 @@ codex
     enableBashIntegration = true;
     nix-direnv.enable = true;
   };
-
 
   programs.tmux = {
     enable = true;
