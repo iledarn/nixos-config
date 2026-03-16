@@ -5,6 +5,7 @@
   username,
   stateVersion,
   sops-nix,
+zen-browser,
   lib,
   ...
 }: let
@@ -101,6 +102,8 @@ in {
       nodejs
       grim
       slurp
+      btop
+      zen-browser.packages.${pkgs.system}.default
     ]
     ++ [
       codexWithMcpTokens

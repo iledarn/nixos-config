@@ -29,6 +29,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-25-05";
     };
+        zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs @ {
@@ -79,7 +83,7 @@
               home-manager.users.${username} = import ./home.nix;
               home-manager.extraSpecialArgs = {
                 inherit username stateVersion pkgsUnstable; # This makes username available in home.nix
-                inherit (inputs) sops-nix;
+                inherit (inputs) sops-nix zen-browser;
               };
             }
           ];
