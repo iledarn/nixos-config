@@ -177,6 +177,15 @@ in {
     '';
   };
 
+  sops.templates."gdfuse-config" = {
+    path = "${config.home.homeDirectory}/.gdfuse/default/config";
+    content = ''
+      client_id = ${config.sops.placeholder."google_client_id"}
+      client_secret = ${config.sops.placeholder."google_client_secret"}
+    '';
+    mode = "0600";
+  };
+
   home.file.".codex/config.toml".text = ''
     [mcp_servers.github]
     url = "https://api.githubcopilot.com/mcp/"
