@@ -170,8 +170,6 @@ in {
     enable = true;
     sessionVariables = {
       EDITOR = "nvim";
-      GOOGLE_CLIENT_ID = "$(cat ${config.sops.secrets.google_client_id.path})";
-      GOOGLE_CLIENT_SECRET = "$(cat ${config.sops.secrets.google_client_secret.path})";
     };
     initExtra = ''
     '';
