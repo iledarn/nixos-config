@@ -91,6 +91,9 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # Enable firmware updates via fwupd.
+  services.fwupd.enable = true;
+
   services.timesyncd.enable = false;
   services.chrony = {
     enable = true;
