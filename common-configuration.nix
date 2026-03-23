@@ -93,6 +93,7 @@
 
   # Enable firmware updates via fwupd.
   services.fwupd.enable = true;
+  services.thermald.enable = lib.mkIf (hostname == "p171g") true;
 
   services.timesyncd.enable = false;
   services.chrony = {
