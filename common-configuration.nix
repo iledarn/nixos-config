@@ -171,6 +171,26 @@
     unzip
   ];
 
+  systemd.services.cpupower-max-frequency = lib.mkIf (hostname == "p171g") {
+    description = "Limit CPU maximum frequency to 2.2 GHz";
+    wantedBy = ["multi-user.target"];
+    after = ["multi-user.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.linuxPackages.cpupower}/bin/cpupower frequency-set -u 2.2GHz";
+    };
+  };
+
+  systemd.services.disable-intel-turbo = lib.mkIf (hostname == "p171g") {
+    description = "Disable Intel turbo boost";
+    wantedBy = ["multi-user.target"];
+    after = ["multi-user.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.runtimeShell} -c 'echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo'";
+    };
+  };
+
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };

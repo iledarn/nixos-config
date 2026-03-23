@@ -5,7 +5,7 @@
   username,
   stateVersion,
   sops-nix,
-zen-browser,
+  zen-browser,
   lib,
   ...
 }: let
@@ -103,7 +103,8 @@ in {
       grim
       slurp
       btop
-      zen-browser.packages.${pkgs.system}.default
+      zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+      linuxPackages.cpupower
     ]
     ++ [
       codexWithMcpTokens
