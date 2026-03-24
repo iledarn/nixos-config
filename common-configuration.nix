@@ -172,14 +172,15 @@
     unzip
   ];
 
-  systemd.services.cpupower-max-frequency = lib.mkIf (hostname == "p171g") {
-    description = "Limit CPU maximum frequency to 2.2 GHz";
+  systemd.services.cpupower-performance = lib.mkIf (hostname == "p171g") {
+    description = "Apply persistent cpupower settings";
     wantedBy = ["multi-user.target"];
     after = ["multi-user.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.linuxPackages.cpupower}/bin/cpupower frequency-set -u 2.2GHz";
-    };
+    script = ''
+      ${pkgs.linuxPackages.cpupower}/bin/cpupower frequency-set -g performance
+      ${pkgs.linuxPackages.cpupower}/bin/cpupower frequency-set -u 2.2GHz
+    '';
+    serviceConfig.Type = "oneshot";
   };
 
   systemd.services.disable-intel-turbo = lib.mkIf (hostname == "p171g") {
