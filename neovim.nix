@@ -85,18 +85,6 @@ in {
               ${builtins.readFile ./nvim/plugin/gp-nvim.lua}
             '';
         }
-        # avante's dependencies first
-        dressing-nvim
-        nui-nvim
-        {
-          plugin = avante-nvim;
-          type = "lua";
-          config =
-            # lua
-            ''
-              ${builtins.readFile ./nvim/plugin/avante-nvim.lua}
-            '';
-        }
         # diffview - optional dependency for neogit
         diffview-nvim
         {

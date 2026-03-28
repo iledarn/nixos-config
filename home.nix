@@ -5,6 +5,7 @@
   username,
   stateVersion,
   sops-nix,
+  zen-browser,
   lib,
   ...
 }: let
@@ -45,7 +46,6 @@ in {
       inetutils
       httpie
       tmux
-      telegram-desktop
       htop
       git
       gh
@@ -85,6 +85,7 @@ in {
       gedit
       google-drive-ocamlfuse
       google-chrome
+      zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       fuse
       jetbrains-mono
       ubuntu_font_family
