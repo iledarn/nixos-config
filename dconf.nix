@@ -112,7 +112,7 @@ with lib.hm.gvariant; {
 
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-light";
-      cursor-size = 32;
+      cursor-size = 24;
       enable-animations = true;
       enable-hot-corners = false;
       font-antialiasing = "grayscale";

@@ -25,7 +25,6 @@
       monitor = [",preferred,auto,1"];
 
       env = [
-        "XCURSOR_SIZE,32"
         "NIXOS_OZONE_WL,1"
       ];
 
