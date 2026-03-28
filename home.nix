@@ -33,6 +33,7 @@ in {
 
   imports = [
     ./dconf.nix
+    ./hyprland.nix
     ./neovim.nix
     sops-nix.homeManagerModules.sops
   ];
