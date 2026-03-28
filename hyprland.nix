@@ -25,6 +25,9 @@
       monitor = [",preferred,auto,1"];
 
       env = [
+        "XCURSOR_THEME,Adwaita"
+        "HYPRCURSOR_THEME,Adwaita"
+        "HYPRCURSOR_SIZE,24"
         "NIXOS_OZONE_WL,1"
       ];
 
