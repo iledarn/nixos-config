@@ -170,6 +170,7 @@
     gnomeExtensions.appindicator
     wget
     unzip
+    nmap
   ];
 
   systemd.services.cpupower-performance = lib.mkIf (hostname == "p171g") {
