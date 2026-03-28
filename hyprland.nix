@@ -1,9 +1,22 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     networkmanagerapplet
-    blueman
+    bluetuith
     polkit_gnome
   ];
+
+  services.mako = {
+    enable = true;
+    settings = {
+      anchor = "top-right";
+      default-timeout = 5000;
+      border-radius = 6;
+      background-color = "#101010dd";
+      border-color = "#3a3a3a";
+      text-color = "#e6e6e6";
+      margin = "12";
+    };
+  };
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -53,7 +66,6 @@
       exec-once = [
         "waybar"
         "nm-applet --indicator"
-        "blueman-applet"
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
       ];
 
