@@ -19,18 +19,6 @@
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
     exec ${pkgsUnstable.claude-code}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
   '';
-  # Wrapper to expose MCP tokens only for Kiro invocations
-  kiroWithGitHub = pkgs.writeShellScriptBin "kiro" ''
-    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    exec ${pkgsUnstable.kiro-fhs}/bin/kiro "$@"
-  '';
-  # Avoid collision with kiro desktop app binary name.
-  kiroCliWrapped = pkgs.writeShellScriptBin "kiro-cli" ''
-    export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    exec ${pkgsUnstable."kiro-cli"}/bin/kiro "$@"
-  '';
 in {
   # TODO please change the username & home directory to your own
   home.username = username;
@@ -117,8 +105,6 @@ in {
     ++ [
       codexWithMcpTokens
       claudeWithGitHub
-      kiroWithGitHub
-      kiroCliWrapped
     ];
 
   programs.brave = {
@@ -131,15 +117,6 @@ in {
 
   xdg = {
     enable = true;
-    desktopEntries.kiro = {
-      name = "Kiro";
-      genericName = "Coding agent";
-      exec = "${kiroWithGitHub}/bin/kiro";
-      icon = "${pkgsUnstable.kiro}/share/pixmaps/kiro.png";
-      terminal = false;
-      categories = ["Development" "Utility"];
-      comment = "Launch Kiro with GITHUB_PAT available";
-    };
   };
 
   programs.emacs = {
@@ -237,92 +214,6 @@ in {
         }
       }
     }
-  '';
-
-  # Disabled while kiro-cli ignores env-based MCP auth; avoid store exposure later.
-  # home.file.".kiro/settings/mcp.json".text = ''
-  #   {
-  #     "mcpServers": {
-  #       "github": {
-  #         "type": "http",
-  #         "url": "https://api.githubcopilot.com/mcp/",
-  #         "headers": {
-  #           "Authorization": "''${GITHUB_PAT}"
-  #         },
-  #         "disabled": false,
-  #         "autoApprove": []
-  #       },
-  #       "context7": {
-  #         "type": "http",
-  #         "url": "https://mcp.context7.com/mcp",
-  #         "headers": {
-  #           "Authorization": "''${CONTEXT7}"
-  #         },
-  #         "disabled": false,
-  #         "autoApprove": []
-  #       }
-  #     }
-  #   }
-  # '';
-
-  home.activation.kiroMcpJson = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    install -m 700 -d "$HOME/.kiro/settings"
-    # Remove any existing symlink created by prior home.file config.
-    if [ -e "$HOME/.kiro/settings/mcp.json" ] || [ -L "$HOME/.kiro/settings/mcp.json" ]; then
-      rm -f "$HOME/.kiro/settings/mcp.json"
-    fi
-    GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    cat > "$HOME/.kiro/settings/mcp.json" <<EOF
-    {
-      "mcpServers": {
-        "github": {
-          "type": "http",
-          "url": "https://api.githubcopilot.com/mcp/",
-          "headers": {
-            "Authorization": "''${GITHUB_PAT}"
-          },
-          "disabled": false,
-          "autoApprove": []
-        },
-        "context7": {
-          "type": "http",
-          "url": "https://mcp.context7.com/mcp",
-          "headers": {
-            "Authorization": "''${CONTEXT7}"
-          },
-          "disabled": false,
-          "autoApprove": []
-        },
-        "playwright": {
-          "command": "npx",
-          "args": [
-            "@playwright/mcp@latest"
-          ],
-          "env": {
-            "PLAYWRIGHT_HEADLESS": "false"
-          }
-        },
-        "pdf-reader": {
-          "command": "npx",
-          "args": [
-            "@sylphx/pdf-reader-mcp"
-          ]
-        },
-        "postgres": {
-          "command": "uvx",
-          "args": [
-            "postgres-mcp",
-            "--access-mode=unrestricted"
-          ],
-          "env": {
-            "DATABASE_URI": "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
-          }
-        }
-      }
-    }
-    EOF
-    chmod 600 "$HOME/.kiro/settings/mcp.json"
   '';
 
   home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
