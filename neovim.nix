@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   gp-nvim = pkgs.vimUtils.buildVimPlugin {
     pname = "gp.nvim";
     version = "v3.9.0";
@@ -30,236 +34,239 @@ in {
       taplo
       ty
     ];
-    plugins = with pkgs.vimPlugins; [
-      lualine-nvim
-      nvim-web-devicons
-      {
-        plugin = nvim-treesitter.withPlugins (p: [
-          p.tree-sitter-nix
-          p.tree-sitter-vim
-          p.tree-sitter-bash
-          p.tree-sitter-lua
-          p.tree-sitter-python
-          p.tree-sitter-json
-          p.tree-sitter-toml
-        ]);
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/nvim-treesitter.lua}
-          '';
-      }
-      gruvbox-nvim
-      {
-        plugin = nvim-lspconfig;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/nvim-lspconfig.lua}
-          '';
-      }
-      fugitive
-      vim-rhubarb
-      {
-        plugin = neogit;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/neogit.lua}
-          '';
-      }
-      {
-        plugin = gp-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/gp-nvim.lua}
-          '';
-      }
-      # avante's dependencies first
-      dressing-nvim
-      nui-nvim
-      {
-        plugin = avante-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/avante-nvim.lua}
-          '';
-      }
-      # diffview - optional dependency for neogit
-      diffview-nvim
-      {
-        plugin = oil-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/oil.lua}
-          '';
-      }
-      nvim-treesitter-textobjects
-      gruvbox-material
-      vim-code-dark
-      mini-nvim
-      nvim-web-devicons
-      {
-        plugin = nvim-tree-lua;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/nvim-tree-lua.lua}
-          '';
-      }
-      vim-tmux-navigator
-      vim-tmux-clipboard
-      vim-unimpaired
+    plugins = with pkgs.vimPlugins;
+      [
+        lualine-nvim
+        nvim-web-devicons
+        {
+          plugin = nvim-treesitter.withPlugins (p: [
+            p.tree-sitter-nix
+            p.tree-sitter-vim
+            p.tree-sitter-bash
+            p.tree-sitter-lua
+            p.tree-sitter-python
+            p.tree-sitter-json
+            p.tree-sitter-toml
+          ]);
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/nvim-treesitter.lua}
+            '';
+        }
+        gruvbox-nvim
+        {
+          plugin = nvim-lspconfig;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/nvim-lspconfig.lua}
+            '';
+        }
+        fugitive
+        vim-rhubarb
+        {
+          plugin = neogit;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/neogit.lua}
+            '';
+        }
+        {
+          plugin = gp-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/gp-nvim.lua}
+            '';
+        }
+        # avante's dependencies first
+        dressing-nvim
+        nui-nvim
+        {
+          plugin = avante-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/avante-nvim.lua}
+            '';
+        }
+        # diffview - optional dependency for neogit
+        diffview-nvim
+        {
+          plugin = oil-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/oil.lua}
+            '';
+        }
+        nvim-treesitter-textobjects
+        gruvbox-material
+        vim-code-dark
+        mini-nvim
+        nvim-web-devicons
+        {
+          plugin = nvim-tree-lua;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/nvim-tree-lua.lua}
+            '';
+        }
+        vim-tmux-navigator
+        vim-tmux-clipboard
+        vim-unimpaired
 
-      vim-dadbod
-      {
-        plugin = vim-dadbod-ui;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/vim-dadbod.lua}
-          '';
-      }
-      vim-dadbod-completion
+        vim-dadbod
+        {
+          plugin = vim-dadbod-ui;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/vim-dadbod.lua}
+            '';
+        }
+        vim-dadbod-completion
 
-      nvim-nio
-      nvim-dap
-      {
-        plugin = nvim-dap-ui;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/nvim-dap-ui.lua}
-          '';
-      }
+        nvim-dap
+        {
+          plugin = nvim-dap-ui;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/nvim-dap-ui.lua}
+            '';
+        }
 
-      {
-        plugin = nvim-dap-python;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/nvim-dap-python.lua}
-          '';
-      }
+        {
+          plugin = nvim-dap-python;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/nvim-dap-python.lua}
+            '';
+        }
 
-      {
-        plugin = nvim-dap-virtual-text;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/nvim-dap-virtual-text.lua}
-          '';
-      }
+        {
+          plugin = nvim-dap-virtual-text;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/nvim-dap-virtual-text.lua}
+            '';
+        }
 
-      plenary-nvim
-      telescope-nvim
+        plenary-nvim
+        telescope-nvim
 
-      {
-        plugin = telescope-dap-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/telescope-dap-nvim.lua}
-          '';
-      }
+        {
+          plugin = telescope-dap-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/telescope-dap-nvim.lua}
+            '';
+        }
 
-      {
-        plugin = fzf-lua;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/fzf-lua.lua}
-          '';
-      }
+        {
+          plugin = fzf-lua;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/fzf-lua.lua}
+            '';
+        }
 
-      {
-        plugin = nvim-surround;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/nvim-surround.lua}
-          '';
-      }
+        {
+          plugin = nvim-surround;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/nvim-surround.lua}
+            '';
+        }
 
-      {
-        plugin = lualine-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/lualine-nvim.lua}
-          '';
-      }
+        {
+          plugin = lualine-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/lualine-nvim.lua}
+            '';
+        }
 
-      {
-        plugin = bufferline-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/bufferline-nvim.lua}
-          '';
-      }
+        {
+          plugin = bufferline-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/bufferline-nvim.lua}
+            '';
+        }
 
-      {
-        plugin = indent-blankline-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/indent-blankline-nvim.lua}
-          '';
-      }
+        {
+          plugin = indent-blankline-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/indent-blankline-nvim.lua}
+            '';
+        }
 
-      vim-signify
+        vim-signify
 
-      {
-        plugin = aerial-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/aerial-nvim.lua}
-          '';
-      }
+        {
+          plugin = aerial-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/aerial-nvim.lua}
+            '';
+        }
 
-      {
-        plugin = conform-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            ${builtins.readFile ./nvim/plugin/conform.lua}
-          '';
-      }
+        {
+          plugin = conform-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              ${builtins.readFile ./nvim/plugin/conform.lua}
+            '';
+        }
 
-      {
-        plugin = comment-nvim;
-        type = "lua";
-        config =
-          # lua
-          ''
-            require('Comment').setup()
-          '';
-      }
-    ];
+        {
+          plugin = comment-nvim;
+          type = "lua";
+          config =
+            # lua
+            ''
+              require('Comment').setup()
+            '';
+        }
+      ]
+      ++ lib.optionals (pkgs.vimPlugins ? nvim-nio) [
+        nvim-nio
+      ];
     extraLuaConfig =
       # lua
       ''
