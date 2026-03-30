@@ -1,9 +1,20 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  screenshotRegion = pkgs.writeShellScript "hypr-screenshot-region" ''
+    set -eu
+    region="$(${pkgs.slurp}/bin/slurp)"
+    [ -n "$region" ] || exit 0
+    ${pkgs.grim}/bin/grim -g "$region" - | ${pkgs.wl-clipboard}/bin/wl-copy --type image/png
+    ${pkgs.libnotify}/bin/notify-send "Screenshot copied"
+  '';
+in {
   home.packages = with pkgs; [
     networkmanagerapplet
     bluetuith
     polkit_gnome
     brightnessctl
+    playerctl
+    hyprlock
+    xfce.thunar
   ];
 
   services.mako = {
@@ -19,6 +30,43 @@
     };
   };
 
+  xdg.configFile."hypr/hyprlock.conf".text = ''
+    general {
+      no_fade_in = true
+      no_fade_out = true
+    }
+
+    background {
+      color = rgba(16, 16, 16, 1.0)
+    }
+
+    input-field {
+      size = 260, 48
+      outline_thickness = 2
+      dots_size = 0.2
+      dots_spacing = 0.2
+      dots_center = true
+      inner_color = rgba(26, 26, 26, 0.9)
+      outer_color = rgba(58, 58, 58, 0.8)
+      font_color = rgba(230, 230, 230, 1.0)
+      fade_on_empty = false
+      placeholder_text = "Password"
+      position = 0, -80
+      halign = center
+      valign = center
+    }
+
+    label {
+      text = "$TIME"
+      font_size = 44
+      font_family = "Hack Nerd Font Mono"
+      color = rgba(230, 230, 230, 1.0)
+      position = 0, 80
+      halign = center
+      valign = center
+    }
+  '';
+
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
@@ -30,6 +78,8 @@
         "HYPRCURSOR_THEME,Adwaita"
         "HYPRCURSOR_SIZE,24"
         "NIXOS_OZONE_WL,1"
+        "GTK_CSD,0"
+        "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
       ];
 
       input = {
@@ -74,11 +124,14 @@
 
       bind = [
         "$mod, Return, exec, $term"
-        "$mod, D, exec, $menu"
+        "$mod, D, workspace, 2"
         "$mod, B, exec, brave"
         "$mod, E, exec, emacsclient -c -a emacs"
+        "$mod, R, exec, thunar"
+        "$mod, P, exec, ${screenshotRegion}"
+        "$mod SHIFT, R, exec, hyprctl reload"
         "$mod, Q, killactive"
-        "$mod, F, fullscreen, 0"
+        "$mod SHIFT, F, fullscreen, 0"
         "$mod, Space, togglefloating"
         "$mod, Tab, cyclenext"
         "$mod SHIFT, Tab, cyclenext, prev"
@@ -93,6 +146,11 @@
         "$mod, 8, workspace, 8"
         "$mod, 9, workspace, 9"
         "$mod, 0, workspace, 10"
+        "$mod, X, workspace, 1"
+        "$mod, F, workspace, 3"
+        "$mod, G, workspace, 4"
+        "$mod, W, workspace, 5"
+        "$mod, T, workspace, 6"
 
         "CTRL SHIFT, 1, movetoworkspace, 1"
         "CTRL SHIFT, 2, movetoworkspace, 2"
@@ -116,11 +174,31 @@
         ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ", XF86AudioPlay, exec, playerctl play-pause"
+        ", XF86AudioPause, exec, playerctl pause"
+        ", XF86AudioNext, exec, playerctl next"
+        ", XF86AudioPrev, exec, playerctl previous"
+        ", Print, exec, ${screenshotRegion}"
+        "SUPER, L, exec, hyprlock"
+        "SUPER, Super_L, exec, $menu"
       ];
 
       bindm = [
         "$mod, mouse:272, movewindow"
         "$mod, mouse:273, resizewindow"
+      ];
+
+      workspace = [
+        "1, persistent:true, default:true"
+        "2, persistent:true"
+        "3, persistent:true"
+        "4, persistent:true"
+        "5, persistent:true"
+        "6, persistent:true"
+        "7, persistent:true"
+        "8, persistent:true"
+        "9, persistent:true"
+        "10, persistent:true"
       ];
     };
   };
@@ -134,7 +212,9 @@
       spacing = 8;
       modules-left = ["hyprland/workspaces"];
       modules-center = ["hyprland/window"];
-      modules-right = ["network" "bluetooth" "pulseaudio" "battery" "clock" "tray"];
+      modules-right = ["cpu" "memory" "network" "bluetooth" "pulseaudio" "battery" "clock" "tray"];
+      cpu.format = "cpu {usage}%";
+      memory.format = "ram {}%";
       network = {
         format-wifi = "wifi {essid}";
         format-ethernet = "eth";
@@ -179,6 +259,8 @@
       }
 
       #window,
+      #cpu,
+      #memory,
       #network,
       #bluetooth,
       #pulseaudio,

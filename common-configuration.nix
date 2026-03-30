@@ -40,7 +40,10 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  hardware.bluetooth.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
 
   # Set your time zone.
   time.timeZone = "Asia/Manila";
@@ -172,9 +175,19 @@
     unzip
   ];
 
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-  };
+  environment.sessionVariables =
+    {
+      NIXOS_OZONE_WL = "1";
+    }
+    // lib.optionalAttrs (hostname == "gram990") {
+      KDEWALLET_DISABLE = "1";
+    };
+
+  environment.etc."brave/policies/managed/disable-password-manager.json".text = ''
+    {
+      "PasswordManagerEnabled": false
+    }
+  '';
 
   specialisation.hyprland.configuration = {
     # Hyprland session via greetd (Wayland-native DM).
@@ -185,14 +198,18 @@
     programs.hyprland.enable = true;
     xdg.portal = {
       enable = true;
-      extraPortals = [pkgs.xdg-desktop-portal-hyprland];
+      extraPortals = [
+        pkgs.xdg-desktop-portal-hyprland
+        pkgs.xdg-desktop-portal-gtk
+      ];
+      configPackages = [pkgs.xdg-desktop-portal-hyprland];
     };
 
     services.greetd = {
       enable = true;
       settings.default_session = {
-        command = "${pkgs.hyprland}/bin/Hyprland";
-        user = "${username}";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
+        user = "greeter";
       };
     };
   };
