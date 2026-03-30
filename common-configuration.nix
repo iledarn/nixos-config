@@ -151,7 +151,7 @@
   users.users.${username} = {
     isNormalUser = true;
     description = username;
-    extraGroups = ["networkmanager" "wheel" "docker"];
+    extraGroups = ["networkmanager" "wheel" "docker" "video"];
     packages = with pkgs; [
       firefox
       #  thunderbird
