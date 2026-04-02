@@ -20,6 +20,11 @@
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
     exec ${pkgsUnstable.claude-code}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
   '';
+  # Wrapper to expose GitHub token for gh CLI
+  ghWithToken = pkgs.writeShellScriptBin "gh" ''
+    export GH_TOKEN="$(cat ${config.sops.secrets.github_pat.path})"
+    exec ${pkgs.gh}/bin/gh "$@"
+  '';
 in {
   # TODO please change the username & home directory to your own
   home.username = username;
@@ -48,7 +53,6 @@ in {
       # telegram-desktop
       htop
       git
-      gh
       keepassxc
       jq
       yq
@@ -109,6 +113,7 @@ in {
     ++ [
       codexWithMcpTokens
       claudeWithGitHub
+      ghWithToken
     ];
 
   programs.brave = {
