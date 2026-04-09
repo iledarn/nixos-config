@@ -109,6 +109,7 @@ in {
       btop
       zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       linuxPackages.cpupower
+      pkgsUnstable.supabase-cli
     ]
     ++ [
       codexWithMcpTokens
