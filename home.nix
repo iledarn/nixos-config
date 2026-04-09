@@ -324,6 +324,12 @@ in {
       user = "git";
       identityFile = "/home/${username}/.ssh/id_ed25519work-github";
     };
+    "odoo-test" = {
+      host = "10.10.10.11 10.10.10.12";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
