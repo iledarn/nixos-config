@@ -182,6 +182,7 @@
     wget
     unzip
     nmap
+    openssl
   ];
 
   systemd.services.cpupower-performance = lib.mkIf (hostname == "p171g") {
