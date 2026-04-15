@@ -226,6 +226,13 @@ in {
           "headers": {
             "Authorization": "Bearer ''${GITHUB_PAT}"
           }
+        },
+        "open-brain": {
+          "type": "http",
+          "url": "https://mygtjexltvrucugsvcol.supabase.co/functions/v1/open-brain-mcp",
+          "headers": {
+            "x-brain-key": "85f28016ed2b004e88443015c2b57677815981eb5fdc7eb9c932e244eed24df3"
+          }
         }
       }
     }
