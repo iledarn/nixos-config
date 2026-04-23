@@ -17,6 +17,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    caelestia-shell = {
+      url = "github:caelestia-dots/shell";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs @ {
@@ -27,6 +31,7 @@
     nix-flatpak,
     zen-browser,
     sops-nix,
+    caelestia-shell,
     ...
   }: let
     system = "x86_64-linux";
@@ -58,7 +63,7 @@
             home-manager.users.${username} = import ./home.nix;
             home-manager.extraSpecialArgs = {
               inherit username stateVersion pkgsUnstable;
-              inherit (inputs) sops-nix zen-browser;
+              inherit (inputs) sops-nix zen-browser caelestia-shell;
             };
           }
         ];
