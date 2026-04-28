@@ -42,8 +42,12 @@
   networking.networkmanager.dispatcherScripts = lib.mkIf (hostname == "p171g") [{
     source = pkgs.writeText "10-pve-route" ''
       #!/bin/sh
-      if [ "$2" = "up" ] && [ "$1" = "wlp0s20f3" ]; then
-        ${pkgs.iproute2}/bin/ip route replace 10.10.10.0/24 via 192.168.1.51 dev wlp0s20f3
+      if [ "$2" = "up" ]; then
+        case "$1" in
+          wlp0s20f3|enp*)
+            ${pkgs.iproute2}/bin/ip route replace 10.10.10.0/24 via 192.168.1.51 dev "$1"
+            ;;
+        esac
       fi
     '';
     type = "basic";
@@ -237,6 +241,8 @@
   '';
 
   nix.settings = {
+    keep-outputs = true;
+    keep-derivations = true;
     experimental-features = ["nix-command" "flakes"];
     trusted-users = ["root" username];
     substituters = [
