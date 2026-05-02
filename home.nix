@@ -35,7 +35,7 @@ in {
   imports = [
     ./dconf.nix
     ./hyprland.nix
-    ./caelestia.nix
+    # ./caelestia.nix
     ./neovim.nix
     sops-nix.homeManagerModules.sops
   ];
