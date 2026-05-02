@@ -18,7 +18,13 @@
   # Wrapper to expose GitHub token only for Claude Code invocations
   claudeWithGitHub = pkgs.writeShellScriptBin "claude" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    export OPEN_BRAIN_KEY="$(cat ${config.sops.secrets.open_brain_key.path})"
     exec ${pkgsUnstable.claude-code}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
+  '';
+  # Wrapper to expose GitHub token for gh CLI
+  ghWithToken = pkgs.writeShellScriptBin "gh" ''
+    export GH_TOKEN="$(cat ${config.sops.secrets.github_pat.path})"
+    exec ${pkgs.gh}/bin/gh "$@"
   '';
 in {
   # TODO please change the username & home directory to your own
@@ -49,7 +55,6 @@ in {
       tmux
       htop
       git
-      gh
       keepassxc
       jq
       yq
@@ -89,7 +94,7 @@ in {
       zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       fuse
       jetbrains-mono
-      ubuntu_font_family
+      ubuntu-classic
       cmake
       libtool
       gcc
@@ -108,6 +113,7 @@ in {
     ++ [
       codexWithMcpTokens
       claudeWithGitHub
+      ghWithToken
     ];
 
   programs.brave = {
@@ -172,6 +178,7 @@ in {
       openai_api_key = {};
       github_pat = {};
       context7_api_key = {};
+      open_brain_key = {};
     };
   };
 
@@ -185,6 +192,15 @@ in {
     };
     initExtra = ''
     '';
+  };
+
+  sops.templates."gdfuse-config" = {
+    path = "${config.home.homeDirectory}/.gdfuse/default/config";
+    content = ''
+      client_id = ${config.sops.placeholder."google_client_id"}
+      client_secret = ${config.sops.placeholder."google_client_secret"}
+    '';
+    mode = "0600";
   };
 
   home.file.".codex/config.toml".text = ''
@@ -221,6 +237,13 @@ in {
           "url": "https://api.githubcopilot.com/mcp/",
           "headers": {
             "Authorization": "Bearer ''${GITHUB_PAT}"
+          }
+        },
+        "open-brain": {
+          "type": "http",
+          "url": "https://mygtjexltvrucugsvcol.supabase.co/functions/v1/open-brain-mcp",
+          "headers": {
+            "x-brain-key": "''${OPEN_BRAIN_KEY}"
           }
         }
       }
