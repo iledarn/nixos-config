@@ -104,7 +104,6 @@ in {
       age
       uv
       icloudpd
-      flameshot
       digikam
       nodejs
       grim
@@ -114,6 +113,7 @@ in {
       codexWithMcpTokens
       claudeWithGitHub
       ghWithToken
+      pkgsUnstable.flameshot
     ];
 
   programs.brave = {
