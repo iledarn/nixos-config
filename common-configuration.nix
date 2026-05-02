@@ -189,55 +189,51 @@
     }
   '';
 
-  specialisation.hyprland.configuration = {
-    # Hyprland session via greetd (Wayland-native DM).
-    services.xserver.enable = lib.mkForce false;
-    services.xserver.displayManager.gdm.enable = lib.mkForce false;
-    services.xserver.desktopManager.gnome.enable = lib.mkForce false;
+  # specialisation.hyprland.configuration = {
+  #   # Hyprland session via greetd (Wayland-native DM).
+  #   services.xserver.enable = lib.mkForce false;
+  #   services.xserver.displayManager.gdm.enable = lib.mkForce false;
+  #   services.xserver.desktopManager.gnome.enable = lib.mkForce false;
+  #   programs.hyprland.enable = true;
+  #   xdg.portal = {
+  #     enable = true;
+  #     extraPortals = [
+  #       pkgs.xdg-desktop-portal-hyprland
+  #       pkgs.xdg-desktop-portal-gtk
+  #     ];
+  #     configPackages = [pkgs.xdg-desktop-portal-hyprland];
+  #   };
+  #   services.greetd = {
+  #     enable = true;
+  #     settings.default_session = {
+  #       command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
+  #       user = "greeter";
+  #     };
+  #   };
+  # };
 
-    programs.hyprland.enable = true;
-    xdg.portal = {
-      enable = true;
-      extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-gtk
-      ];
-      configPackages = [pkgs.xdg-desktop-portal-hyprland];
-    };
-
-    services.greetd = {
-      enable = true;
-      settings.default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
-        user = "greeter";
-      };
-    };
-  };
-
-  specialisation.caelestia.configuration = {
-    # Caelestia shell session: Hyprland + caelestia-shell (replaces waybar/wofi/mako).
-    services.xserver.enable = lib.mkForce false;
-    services.xserver.displayManager.gdm.enable = lib.mkForce false;
-    services.xserver.desktopManager.gnome.enable = lib.mkForce false;
-
-    programs.hyprland.enable = true;
-    xdg.portal = {
-      enable = true;
-      extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-gtk
-      ];
-      configPackages = [pkgs.xdg-desktop-portal-hyprland];
-    };
-
-    services.greetd = {
-      enable = true;
-      settings.default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
-        user = "greeter";
-      };
-    };
-  };
+  # specialisation.caelestia.configuration = {
+  #   # Caelestia shell session: Hyprland + caelestia-shell (replaces waybar/wofi/mako).
+  #   services.xserver.enable = lib.mkForce false;
+  #   services.xserver.displayManager.gdm.enable = lib.mkForce false;
+  #   services.xserver.desktopManager.gnome.enable = lib.mkForce false;
+  #   programs.hyprland.enable = true;
+  #   xdg.portal = {
+  #     enable = true;
+  #     extraPortals = [
+  #       pkgs.xdg-desktop-portal-hyprland
+  #       pkgs.xdg-desktop-portal-gtk
+  #     ];
+  #     configPackages = [pkgs.xdg-desktop-portal-hyprland];
+  #   };
+  #   services.greetd = {
+  #     enable = true;
+  #     settings.default_session = {
+  #       command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.hyprland}/bin/Hyprland";
+  #       user = "greeter";
+  #     };
+  #   };
+  # };
 
   system.activationScripts.playwrightChrome = ''
     mkdir -p /opt/google/chrome
