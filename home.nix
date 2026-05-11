@@ -338,6 +338,16 @@ in {
       forwardAgent = true;
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    grafana-reports = {
+      hostname = "192.168.1.109";
+      forwardAgent = true;
+    };
+    odoo-16-project-test = {
+      hostname = "192.168.0.32";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
