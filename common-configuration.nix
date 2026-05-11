@@ -39,19 +39,21 @@
   networking.networkmanager.enable = true;
 
   # Route to isolated test containers on PVE (vmbr1)
-  networking.networkmanager.dispatcherScripts = lib.mkIf (hostname == "p171g") [{
-    source = pkgs.writeText "10-pve-route" ''
-      #!/bin/sh
-      if [ "$2" = "up" ]; then
-        case "$1" in
-          wlp0s20f3|enp*)
-            ${pkgs.iproute2}/bin/ip route replace 10.10.10.0/24 via 192.168.1.51 dev "$1"
-            ;;
-        esac
-      fi
-    '';
-    type = "basic";
-  }];
+  networking.networkmanager.dispatcherScripts = lib.mkIf (hostname == "p171g") [
+    {
+      source = pkgs.writeText "10-pve-route" ''
+        #!/bin/sh
+        if [ "$2" = "up" ]; then
+          case "$1" in
+            wlp0s20f3|enp*)
+              ${pkgs.iproute2}/bin/ip route replace 10.10.10.0/24 via 192.168.1.51 dev "$1"
+              ;;
+          esac
+        fi
+      '';
+      type = "basic";
+    }
+  ];
 
   # Set your time zone.
   time.timeZone = "Asia/Manila";
