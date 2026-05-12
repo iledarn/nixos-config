@@ -38,6 +38,10 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  # On p171g, hand DNS to systemd-resolved so split DNS for *.odoo.local works
+  # (see services.resolved block below).
+  networking.networkmanager.dns = lib.mkIf (hostname == "p171g") "systemd-resolved";
+
   # Route to isolated test containers on PVE (vmbr1)
   networking.networkmanager.dispatcherScripts = lib.mkIf (hostname == "p171g") [
     {
@@ -54,6 +58,17 @@
       type = "basic";
     }
   ];
+
+  # Split DNS for Kaertech LAN: resolve *.odoo.local via dnsmasq on CT 108
+  # (192.168.1.19). All other queries continue through NetworkManager's
+  # normal upstream. The leading ~ marks odoo.local as a routing-only domain.
+  services.resolved = lib.mkIf (hostname == "p171g") {
+    enable = true;
+    extraConfig = ''
+      DNS=192.168.1.19
+      Domains=~odoo.local
+    '';
+  };
 
   # Set your time zone.
   time.timeZone = "Asia/Manila";
