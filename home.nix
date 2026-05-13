@@ -117,6 +117,13 @@ in {
       ghWithToken
     ];
 
+  programs.mpv = {
+    enable = true;
+    config = {
+      video-output-levels = "full";
+    };
+  };
+
   programs.brave = {
     enable = true;
     extensions = [];
