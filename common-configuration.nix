@@ -50,7 +50,7 @@
         if [ "$2" = "up" ]; then
           case "$1" in
             wlp0s20f3|enp*)
-              ${pkgs.iproute2}/bin/ip route replace 10.10.10.0/24 via 192.168.1.51 dev "$1"
+              ${pkgs.iproute2}/bin/ip route replace 10.10.10.0/24 via 192.168.20.100 dev "$1"
               ;;
           esac
         fi
