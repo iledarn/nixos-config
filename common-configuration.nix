@@ -42,23 +42,6 @@
   # (see services.resolved block below).
   networking.networkmanager.dns = lib.mkIf (hostname == "p171g") "systemd-resolved";
 
-  # Route to isolated test containers on PVE (vmbr1)
-  networking.networkmanager.dispatcherScripts = lib.mkIf (hostname == "p171g") [
-    {
-      source = pkgs.writeText "10-pve-route" ''
-        #!/bin/sh
-        if [ "$2" = "up" ]; then
-          case "$1" in
-            wlp0s20f3|enp*)
-              ${pkgs.iproute2}/bin/ip route replace 10.10.10.0/24 via 192.168.20.100 dev "$1"
-              ;;
-          esac
-        fi
-      '';
-      type = "basic";
-    }
-  ];
-
   # Split DNS for Kaertech LAN: resolve *.odoo.local via dnsmasq on CT 108
   # (192.168.1.19). All other queries continue through NetworkManager's
   # normal upstream. The leading ~ marks odoo.local as a routing-only domain.
