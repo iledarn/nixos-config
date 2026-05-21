@@ -41,6 +41,7 @@ in {
     ./dconf.nix
     ./neovim.nix
     sops-nix.homeManagerModules.sops
+    zen-browser.homeModules.default
   ];
 
   home.packages = with pkgs;
@@ -107,7 +108,6 @@ in {
       grim
       slurp
       btop
-      zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       linuxPackages.cpupower
       pkgsUnstable.supabase-cli
     ]
@@ -130,6 +130,14 @@ in {
     commandLineArgs = [
       "--enable-features=TabScrolling,VerticalTabsFeature"
     ];
+  };
+
+  programs.zen-browser = {
+    enable = true;
+    policies = {
+      PasswordManagerEnabled = false;
+      OfferToSaveLogins = false;
+    };
   };
 
   xdg = {
