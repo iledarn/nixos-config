@@ -43,12 +43,12 @@
   networking.networkmanager.dns = lib.mkIf (hostname == "p171g") "systemd-resolved";
 
   # Split DNS for Kaertech LAN: resolve *.odoo.local via dnsmasq on CT 108
-  # (192.168.1.19). All other queries continue through NetworkManager's
+  # (192.168.20.108). All other queries continue through NetworkManager's
   # normal upstream. The leading ~ marks odoo.local as a routing-only domain.
   services.resolved = lib.mkIf (hostname == "p171g") {
     enable = true;
     extraConfig = ''
-      DNS=192.168.1.19
+      DNS=192.168.20.108
       Domains=~odoo.local
     '';
   };
@@ -138,6 +138,7 @@
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_15;
+    extraPlugins = ps: with ps; [ pgvector ];
     enableTCPIP = true; # if you need TCP/IP connections
     authentication = pkgs.lib.mkForce ''
       # Configuration for authentication
