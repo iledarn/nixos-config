@@ -249,6 +249,11 @@ in {
           "headers": {
             "x-brain-key": "85f28016ed2b004e88443015c2b57677815981eb5fdc7eb9c932e244eed24df3"
           }
+        },
+        "teams": {
+          "type": "stdio",
+          "command": "npx",
+          "args": ["-y", "@floriscornel/teams-mcp@latest"]
         }
       }
     }
