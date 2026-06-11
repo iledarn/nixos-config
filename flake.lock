@@ -491,6 +491,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-main": {
+      "locked": {
+        "lastModified": 1781150282,
+        "narHash": "sha256-0PhpeuYUR+yKSD0Fehaa9IH8V4aPdct0EZ/GgqKNqj0=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "e4f9ba813d403b65bb81732208d4dfa86e30bf8e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1730741070,
@@ -559,6 +575,7 @@
         "nixpkgs-24-11": "nixpkgs-24-11",
         "nixpkgs-25-05": "nixpkgs-25-05",
         "nixpkgs-25-11": "nixpkgs-25-11",
+        "nixpkgs-main": "nixpkgs-main",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix",
         "zen-browser": "zen-browser"

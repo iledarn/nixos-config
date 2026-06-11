@@ -2,6 +2,7 @@
   config,
   pkgs,
   pkgsUnstable,
+  pkgsMain,
   username,
   stateVersion,
   sops-nix,
@@ -13,7 +14,7 @@
   codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    exec ${pkgsUnstable.codex}/bin/codex "$@"
+    exec ${pkgsMain.codex}/bin/codex "$@"
   '';
   # Wrapper to expose GitHub token only for Claude Code invocations
   claudeWithGitHub = pkgs.writeShellScriptBin "claude" ''
