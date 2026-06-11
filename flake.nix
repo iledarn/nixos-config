@@ -7,7 +7,6 @@
     nixpkgs-25-05.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-25-11.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-main.url = "github:NixOS/nixpkgs/master";
     home-manager-23-11 = {
       url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs-23-11";
@@ -43,7 +42,6 @@
     nixpkgs-25-05,
     nixpkgs-25-11,
     nixpkgs-unstable,
-    nixpkgs-main,
     home-manager-23-11,
     home-manager-24-11,
     home-manager-25-05,
@@ -61,11 +59,6 @@
         config.allowUnfree = true; # needed for kiro
       };
 
-      pkgsMain = import nixpkgs-main {
-        inherit system;
-        config.allowUnfree = true; # needed for kiro
-      };
-
       mkSystem = {
         hostname,
         username,
@@ -76,7 +69,7 @@
         nixpkgsInput.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit hostname username pkgsUnstable pkgsMain;
+            inherit hostname username pkgsUnstable;
           };
           modules = [
             ./common-configuration.nix
@@ -89,7 +82,7 @@
               home-manager.backupFileExtension = "bak";
               home-manager.users.${username} = import ./home.nix;
               home-manager.extraSpecialArgs = {
-                inherit username stateVersion pkgsUnstable pkgsMain; # This makes username available in home.nix
+                inherit username stateVersion pkgsUnstable; # This makes username available in home.nix
                 inherit (inputs) sops-nix zen-browser;
               };
             }
