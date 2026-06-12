@@ -3,6 +3,7 @@
   pkgs,
   pkgsUnstable,
   codexCliNix,
+  claudeCodeNix,
   username,
   stateVersion,
   sops-nix,
@@ -19,7 +20,7 @@
   # Wrapper to expose GitHub token only for Claude Code invocations
   claudeWithGitHub = pkgs.writeShellScriptBin "claude" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    exec ${pkgsUnstable.claude-code}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
+    exec ${claudeCodeNix.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
   '';
   # Wrapper to expose GitHub token for gh CLI
   ghWithToken = pkgs.writeShellScriptBin "gh" ''
@@ -208,7 +209,7 @@ in {
     mode = "0600";
   };
 
-  home.file.".codex/config.toml".text = ''
+  home.file."KAERTECH/.codex/config.toml".text = ''
     [mcp_servers.github]
     url = "https://api.githubcopilot.com/mcp/"
     bearer_token_env_var = "GITHUB_PAT"
@@ -219,19 +220,17 @@ in {
 
     [mcp_servers.playwright]
     command = "npx"
-    args = ["@playwright/mcp@latest"]
+    args = ["-y", "@playwright/mcp@latest"]
     env = { PLAYWRIGHT_HEADLESS = "false" }
 
     [mcp_servers."pdf-reader"]
     command = "npx"
-    args = ["@sylphx/pdf-reader-mcp"]
+    args = ["-y", "@sylphx/pdf-reader-mcp"]
 
     [mcp_servers.postgres]
     command = "uvx"
     args = ["postgres-mcp", "--access-mode=unrestricted"]
-    env = {
-      DATABASE_URI = "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
-    }
+    env_vars = ["DATABASE_URI"]
   '';
 
   home.file.".config/claude/mcp.json".text = ''
