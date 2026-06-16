@@ -154,6 +154,21 @@
     '';
   };
 
+  # Native MySQL for local KMS (Kaertech Monitoring System) dev — the non-Docker
+  # restore target used by the nixkms Django envs. Mirrors services.postgresql
+  # above. NO credentials live here. Admin is `root@localhost`, which mysql80
+  # leaves passwordless over the world-readable unix socket (and which has
+  # WITH GRANT OPTION) — that's what bootstraps the app user. The app/restore
+  # user `kt_admin` and its password are created OUTSIDE nix (so the secret never
+  # enters the world-readable nix store) and live only in ~/.my.cnf — the
+  # ~/.pgpass analog. Bootstrap kt_admin with the restore-dev-db-kms skill's
+  # scripts/bootstrap-native-mysql.sh after the first `nixos-rebuild`.
+  services.mysql = {
+    enable = true;
+    package = pkgs.mysql80;
+    settings.mysqld.bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
+  };
+
   virtualisation.docker.enable = true;
 
   # Garbage collection can be automated
