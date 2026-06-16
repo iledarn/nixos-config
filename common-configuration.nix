@@ -205,6 +205,12 @@
     openssl
   ];
 
+  # Point non-nixpkgs interpreters (uv/python-build-standalone, used by uvx-launched
+  # MCP servers, etc.) at the system CA bundle. Their compiled-in default cafile path
+  # doesn't exist here, so without this they can't verify TLS (CERTIFICATE_VERIFY_FAILED).
+  # OpenSSL reads SSL_CERT_FILE at runtime regardless of the interpreter.
+  environment.variables.SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
+
   systemd.services.cpupower-performance = lib.mkIf (hostname == "p171g") {
     description = "Apply persistent cpupower settings";
     wantedBy = ["multi-user.target"];
