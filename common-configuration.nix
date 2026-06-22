@@ -169,6 +169,16 @@
     settings.mysqld.bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
   };
 
+  # Native Redis for local KMS dev — the cache/broker backend the nixkms Django
+  # envs expect alongside MySQL. Mirrors services.mysql above. No credentials:
+  # loopback only, no password (dev). The empty-name "" is the default instance,
+  # which runs as redis.service.
+  services.redis.servers."" = {
+    enable = true;
+    bind = "127.0.0.1"; # loopback only
+    port = 6379;        # TCP on 6379 (matches Docker redis + nixkms REDIS_PORT)
+  };
+
   virtualisation.docker.enable = true;
 
   # Garbage collection can be automated
