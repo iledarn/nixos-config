@@ -138,7 +138,7 @@
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_15;
-    extraPlugins = ps: with ps; [ pgvector ];
+    extensions = ps: with ps; [ pgvector ];
     enableTCPIP = true; # if you need TCP/IP connections
     authentication = pkgs.lib.mkForce ''
       # Configuration for authentication
