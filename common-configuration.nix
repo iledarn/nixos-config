@@ -139,7 +139,7 @@
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_15;
-    extensions = ps: with ps; [ pgvector ];
+    extensions = ps: with ps; [pgvector];
     enableTCPIP = true; # if you need TCP/IP connections
     authentication = pkgs.lib.mkForce ''
       # Configuration for authentication
@@ -177,7 +177,7 @@
   services.redis.servers."" = {
     enable = true;
     bind = "127.0.0.1"; # loopback only
-    port = 6379;        # TCP on 6379 (matches Docker redis + nixkms REDIS_PORT)
+    port = 6379; # TCP on 6379 (matches Docker redis + nixkms REDIS_PORT)
   };
 
   virtualisation.docker.enable = true;
