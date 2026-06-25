@@ -253,7 +253,10 @@ in {
         "teams": {
           "type": "stdio",
           "command": "npx",
-          "args": ["-y", "@floriscornel/teams-mcp@latest"]
+          "args": [
+          "-y",
+          "git+https://github.com/okolovmark/teams-mcp.git#stable"
+          ]
         }
       }
     }
