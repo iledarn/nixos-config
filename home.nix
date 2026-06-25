@@ -346,11 +346,6 @@ in {
       controlPath = "~/.ssh/master-%r@%n:%p";
       controlPersist = "no";
     };
-    kepiProd = {
-      hostname = "139.162.11.95";
-      user = "prod";
-      identityFile = "/home/${username}/.ssh/id_ed25519";
-    };
     work-github = {
       hostname = "github.com";
       user = "git";
