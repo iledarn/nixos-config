@@ -346,6 +346,18 @@ in {
       controlPath = "~/.ssh/master-%r@%n:%p";
       controlPersist = "no";
     };
+    odoo-16-prod = {
+      hostname = "46.137.245.154";
+      user = "ubuntu";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo-12-prod = {
+      hostname = "122.248.203.73";
+      user = "ubuntu";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
     work-github = {
       hostname = "github.com";
       user = "git";
