@@ -38,18 +38,19 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # On p171g, hand DNS to systemd-resolved so split DNS for *.odoo.local works
-  # (see services.resolved block below).
+  # On p171g, hand DNS to systemd-resolved so split DNS for the Kaertech LAN
+  # zones works (see services.resolved block below).
   networking.networkmanager.dns = lib.mkIf (hostname == "p171g") "systemd-resolved";
 
-  # Split DNS for Kaertech LAN: resolve *.odoo.local via dnsmasq on CT 108
-  # (192.168.20.108). All other queries continue through NetworkManager's
-  # normal upstream. The leading ~ marks odoo.local as a routing-only domain.
+  # Split DNS for Kaertech LAN: resolve *.odoo.local and odoo.kepi via dnsmasq
+  # on CT 108 (192.168.20.108). All other queries continue through
+  # NetworkManager's normal upstream. The leading ~ marks each as a
+  # routing-only domain (not a search domain / default resolver).
   services.resolved = lib.mkIf (hostname == "p171g") {
     enable = true;
     extraConfig = ''
       DNS=192.168.20.108
-      Domains=~odoo.local
+      Domains=~odoo.local ~odoo.kepi
     '';
   };
 
