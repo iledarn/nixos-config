@@ -386,6 +386,20 @@ in {
       forwardAgent = true;
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    kms-linode-prod = {
+      hostname = "139.162.25.216";
+      user = "ildar";
+      port = 2205;
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-linode-prod-web = {
+      hostname = "139.162.25.216";
+      user = "kms-web";
+      port = 2205;
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
