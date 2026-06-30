@@ -400,6 +400,30 @@ in {
       forwardAgent = true;
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    kts-prod-new = {
+      hostname = "192.168.20.110";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kts-prod-new-root = {
+      hostname = "192.168.20.110";
+      user = "root";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-prod-new = {
+      hostname = "192.168.20.111";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-prod-new-root = {
+      hostname = "192.168.20.111";
+      user = "root";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
