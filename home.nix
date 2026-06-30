@@ -379,6 +379,13 @@ in {
       forwardAgent = true;
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    kts-box-server = {
+      hostname = "192.168.1.38";
+      user = "proddb";
+      port = 2020;
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
