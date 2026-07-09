@@ -110,6 +110,8 @@ in {
       flameshot
       digikam
       nodejs
+      python3 # bare interpreter + stdlib on PATH for tools that call `python3` (use uv/uvx for PyPI pkgs)
+      python3Packages.nwdiag # nwdiag/rackdiag/packetdiag — draw network diagrams from text
       grim
       slurp
       btop
