@@ -55,6 +55,8 @@ in {
       tmux
       # telegram-desktop
       htop
+      ncdu
+      bleachbit
       git
       keepassxc
       jq
