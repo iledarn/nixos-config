@@ -274,6 +274,7 @@
   '';
 
   nix.settings = {
+    auto-optimise-store = true;
     keep-outputs = true;
     keep-derivations = true;
     experimental-features = ["nix-command" "flakes"];
@@ -317,10 +318,29 @@
 
   zramSwap = {
     enable = true;
-    # Optional: customize settings
-    # memoryPercent = 50;  # Default is 50% of RAM
-    # algorithm = "zstd"; # Default is lz4
+    # 16 GB RAM is the binding constraint on p171g; zstd compresses ~3.5x, so
+    # over-committing zram past 100% of RAM is nearly free and buys real headroom.
+    memoryPercent = 150;
+    # algorithm = "zstd"; # Default is lz4 (p171g already runs zstd)
   };
+
+  # zram is fast, so page out to it aggressively instead of holding cold pages in RAM.
+  boot.kernel.sysctl."vm.swappiness" = 180;
+
+  # Disk swapfile as an OOM backstop for runaway Odoo/DB restores. Lives on the
+  # LUKS-encrypted ext4 root, so it inherits full-disk encryption. p171g-only
+  # (size/host-specific); other hosts keep hardware-configuration.nix's empty list.
+  swapDevices = lib.mkIf (hostname == "p171g") [
+    {
+      device = "/swapfile";
+      size = 8 * 1024; # MiB
+    }
+  ];
+
+  # fstrim.timer is enabled by default, but discards only reach the NVMe if the
+  # LUKS layer passes them through. p171g-specific device UUID.
+  boot.initrd.luks.devices."luks-e6b37db5-5dbc-4d50-a8ad-3b48183642cc".allowDiscards =
+    lib.mkIf (hostname == "p171g") true;
 
   programs.nix-ld = {
     enable = true;
