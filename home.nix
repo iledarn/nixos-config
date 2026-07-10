@@ -428,6 +428,12 @@ in {
       forwardAgent = true;
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    lenovo_pgx = {
+      hostname = "192.168.20.199";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
