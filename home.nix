@@ -112,6 +112,7 @@ in {
       nodejs
       python3 # bare interpreter + stdlib on PATH for tools that call `python3` (use uv/uvx for PyPI pkgs)
       python3Packages.nwdiag # nwdiag/rackdiag/packetdiag — draw network diagrams from text
+      aichat # terminal LLM chat client; configured for the PGX vLLM endpoint (see ~/.config/aichat/config.yaml)
       grim
       slurp
       btop
@@ -445,6 +446,19 @@ in {
       };
     };
   };
+
+  # aichat: terminal LLM chat client pointed at the Lenovo PGX vLLM endpoint (KAI-1).
+  # Managed declaratively (read-only symlink); roles/sessions still write to ~/.config/aichat/.
+  home.file.".config/aichat/config.yaml".text = ''
+    model: pgx:nvidia/nemotron-3-super
+    clients:
+    - type: openai-compatible
+      name: pgx
+      api_base: http://192.168.20.199:8000/v1
+      api_key: dummy
+      models:
+      - name: nvidia/nemotron-3-super
+  '';
 
   home.stateVersion = stateVersion;
 
