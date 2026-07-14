@@ -42,16 +42,17 @@
   # zones works (see services.resolved block below).
   networking.networkmanager.dns = lib.mkIf (hostname == "p171g") "systemd-resolved";
 
-  # Split DNS for Kaertech LAN: resolve the whole .kepi TLD (odoo1.kepi ..
-  # odoo4.kepi per-developer boxes, etc.) via dnsmasq on CT 108
-  # (192.168.20.108). All other queries continue through NetworkManager's
-  # normal upstream. The leading ~ marks ~kepi as a routing-only domain
-  # (not a search domain / default resolver) covering every *.kepi name.
+  # Split DNS for Kaertech LAN: resolve *.odoo.local and the whole .kepi TLD
+  # (odoo1.kepi .. odoo4.kepi per-developer boxes, etc.) via dnsmasq on
+  # CT 108 (192.168.20.108). All other queries continue through
+  # NetworkManager's normal upstream. The leading ~ marks each as a
+  # routing-only domain (not a search domain / default resolver); ~kepi
+  # covers every *.kepi name, ~odoo.local the legacy test hostnames.
   services.resolved = lib.mkIf (hostname == "p171g") {
     enable = true;
     extraConfig = ''
       DNS=192.168.20.108
-      Domains=~kepi
+      Domains=~odoo.local ~kepi
     '';
   };
 
