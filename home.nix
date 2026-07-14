@@ -440,6 +440,32 @@ in {
       forwardAgent = true;
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    # Per-developer Odoo 16 test CTs (odoo1.kepi .. odoo4.kepi), CT 112-115.
+    # DHCP-reserved IPs on the office LAN; all share CT 101 PostgreSQL.
+    odoo1_kepi = {
+      hostname = "192.168.20.112";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo2_kepi = {
+      hostname = "192.168.20.113";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo3_kepi = {
+      hostname = "192.168.20.114";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo4_kepi = {
+      hostname = "192.168.20.115";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
