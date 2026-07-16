@@ -142,7 +142,7 @@
         stateVersion = "25.11";
       };
 
-      p171g = mkSystem {
+      lat5531 = mkSystem {
         hostname = "lat5531";
         username = "ildar";
         nixpkgsInput = nixpkgs-26-05;
