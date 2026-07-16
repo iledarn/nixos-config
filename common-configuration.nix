@@ -40,7 +40,7 @@
 
   # On p171g, hand DNS to systemd-resolved so split DNS for the Kaertech LAN
   # zones works (see services.resolved block below).
-  networking.networkmanager.dns = lib.mkIf (hostname == "p171g") "systemd-resolved";
+  networking.networkmanager.dns = lib.mkIf (hostname == "lat5531") "systemd-resolved";
 
   # Split DNS for Kaertech LAN: resolve *.odoo.local and the whole .kepi TLD
   # (odoo1.kepi .. odoo4.kepi per-developer boxes, etc.) via dnsmasq on
@@ -48,7 +48,7 @@
   # NetworkManager's normal upstream. The leading ~ marks each as a
   # routing-only domain (not a search domain / default resolver); ~kepi
   # covers every *.kepi name, ~odoo.local the legacy test hostnames.
-  services.resolved = lib.mkIf (hostname == "p171g") {
+  services.resolved = lib.mkIf (hostname == "lat5531") {
     enable = true;
     extraConfig = ''
       DNS=192.168.20.108
@@ -111,7 +111,7 @@
 
   # Enable firmware updates via fwupd.
   services.fwupd.enable = true;
-  services.thermald.enable = lib.mkIf (hostname == "p171g") true;
+  services.thermald.enable = lib.mkIf (hostname == "lat5531") true;
 
   services.timesyncd.enable = false;
   services.chrony = {
@@ -332,7 +332,7 @@
   # Disk swapfile as an OOM backstop for runaway Odoo/DB restores. Lives on the
   # LUKS-encrypted ext4 root, so it inherits full-disk encryption. p171g-only
   # (size/host-specific); other hosts keep hardware-configuration.nix's empty list.
-  swapDevices = lib.mkIf (hostname == "p171g") [
+  swapDevices = lib.mkIf (hostname == "lat5531") [
     {
       device = "/swapfile";
       size = 8 * 1024; # MiB
@@ -341,8 +341,8 @@
 
   # fstrim.timer is enabled by default, but discards only reach the NVMe if the
   # LUKS layer passes them through. p171g-specific device UUID.
-  boot.initrd.luks.devices."luks-e6b37db5-5dbc-4d50-a8ad-3b48183642cc".allowDiscards =
-    lib.mkIf (hostname == "p171g") true;
+  boot.initrd.luks.devices."luks-7c78c455-b342-4f1e-9581-d450e15e00f9".allowDiscards =
+    lib.mkIf (hostname == "lat5531") true;
 
   programs.nix-ld = {
     enable = true;
@@ -363,5 +363,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.11"; # Did you read the comment?
+  system.stateVersion = "26.05"; # Did you read the comment?
 }

@@ -6,6 +6,7 @@
     nixpkgs-24-11.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs-25-05.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-25-11.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-26-05.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
@@ -25,6 +26,10 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-25-11";
     };
+    home-manager-26-05 = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-26-05";
+    };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     hyprland.url = "github:hyprwm/Hyprland";
     sops-nix = {
@@ -43,6 +48,7 @@
     nixpkgs-24-11,
     nixpkgs-25-05,
     nixpkgs-25-11,
+    nixpkgs-26-05,
     nixpkgs-unstable,
     codex-cli-nix,
     claude-code-nix,
@@ -50,6 +56,7 @@
     home-manager-24-11,
     home-manager-25-05,
     home-manager-25-11,
+    home-manager-26-05,
     nix-flatpak,
     sops-nix,
     ...
@@ -133,6 +140,14 @@
         nixpkgsInput = nixpkgs-25-11;
         homeManagerInput = home-manager-25-11;
         stateVersion = "25.11";
+      };
+
+      p171g = mkSystem {
+        hostname = "lat5531";
+        username = "ildar";
+        nixpkgsInput = nixpkgs-26-05;
+        homeManagerInput = home-manager-26-05;
+        stateVersion = "26.05";
       };
     };
 
