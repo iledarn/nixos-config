@@ -491,6 +491,20 @@ in {
       - name: nvidia/nemotron-3-super
   '';
 
+  # Flameshot launcher for the GNOME custom shortcut (Shift+Alt+P, see dconf.nix).
+  # GNOME's media-keys spawns the command without a shell, so the pipe below needs
+  # its own script. `--raw | wl-copy` is the Wayland-friendly clipboard path;
+  # flameshot's built-in copy is unreliable on GNOME/Wayland. Managed declaratively
+  # so it can't go missing (the old hand-placed ~/configfiles path did).
+  home.file."configfiles/flameshot-launch.sh" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # Use Wayland-friendly clipboard path for flameshot.
+      ${pkgs.flameshot}/bin/flameshot gui --raw | ${pkgs.wl-clipboard}/bin/wl-copy
+    '';
+  };
+
   home.stateVersion = stateVersion;
 
   # Let home Manager install and manage itself.
