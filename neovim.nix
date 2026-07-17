@@ -25,13 +25,12 @@ in {
     extraPackages = with pkgs; [
       # pyright
       lua-language-server
-      nodePackages.prettier
+      prettier
       ruff
       taplo
       ty
     ];
     plugins = with pkgs.vimPlugins; [
-      lualine-nvim
       nvim-web-devicons
       {
         plugin = nvim-treesitter.withPlugins (p: [
@@ -60,7 +59,7 @@ in {
             ${builtins.readFile ./nvim/plugin/nvim-lspconfig.lua}
           '';
       }
-      fugitive
+      vim-fugitive
       vim-rhubarb
       {
         plugin = neogit;
@@ -95,7 +94,6 @@ in {
       gruvbox-material
       vim-code-dark
       mini-nvim
-      nvim-web-devicons
       {
         plugin = nvim-tree-lua;
         type = "lua";
@@ -248,7 +246,7 @@ in {
           '';
       }
     ];
-    extraLuaConfig =
+    initLua =
       # lua
       ''
         local ruff_format = "${pkgs.ruff}/bin/ruff format --stdin-filename % -"
