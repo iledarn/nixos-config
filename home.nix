@@ -343,128 +343,130 @@ in {
 
   programs.ssh.enable = true;
   programs.ssh.enableDefaultConfig = false;
-  programs.ssh.matchBlocks = {
+  # programs.ssh.settings replaced the deprecated matchBlocks. Attribute names are
+  # Host patterns; values use OpenSSH directive names (HostName/User/IdentityFile/...).
+  programs.ssh.settings = {
     "*" = {
-      forwardAgent = false;
-      addKeysToAgent = "no";
-      compression = false;
-      serverAliveInterval = 0;
-      serverAliveCountMax = 3;
-      hashKnownHosts = false;
-      userKnownHostsFile = "~/.ssh/known_hosts";
-      controlMaster = "no";
-      controlPath = "~/.ssh/master-%r@%n:%p";
-      controlPersist = "no";
+      ForwardAgent = false;
+      AddKeysToAgent = "no";
+      Compression = false;
+      ServerAliveInterval = 0;
+      ServerAliveCountMax = 3;
+      HashKnownHosts = false;
+      UserKnownHostsFile = "~/.ssh/known_hosts";
+      ControlMaster = "no";
+      ControlPath = "~/.ssh/master-%r@%n:%p";
+      ControlPersist = "no";
     };
     odoo-16-prod = {
-      hostname = "46.137.245.154";
-      user = "ubuntu";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "46.137.245.154";
+      User = "ubuntu";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     odoo-12-prod = {
-      hostname = "122.248.203.73";
-      user = "ubuntu";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "122.248.203.73";
+      User = "ubuntu";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     work-github = {
-      hostname = "github.com";
-      user = "git";
-      identityFile = "/home/${username}/.ssh/id_ed25519work-github";
+      HostName = "github.com";
+      User = "git";
+      IdentityFile = "/home/${username}/.ssh/id_ed25519work-github";
     };
-    "odoo-test" = {
-      host = "10.10.10.11 10.10.10.12";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+    odoo-test = {
+      header = "Host 10.10.10.11 10.10.10.12";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     grafana-reports = {
-      hostname = "192.168.1.109";
-      forwardAgent = true;
+      HostName = "192.168.1.109";
+      ForwardAgent = true;
     };
     odoo-16-project-test = {
-      hostname = "192.168.0.32";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.0.32";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kts-box-server = {
-      hostname = "192.168.1.38";
-      user = "proddb";
-      port = 2020;
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.1.38";
+      User = "proddb";
+      Port = 2020;
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kms-linode-prod = {
-      hostname = "139.162.25.216";
-      user = "ildar";
-      port = 2205;
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "139.162.25.216";
+      User = "ildar";
+      Port = 2205;
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kms-linode-prod-web = {
-      hostname = "139.162.25.216";
-      user = "kms-web";
-      port = 2205;
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "139.162.25.216";
+      User = "kms-web";
+      Port = 2205;
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kts-prod-new = {
-      hostname = "192.168.20.110";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.110";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kts-prod-new-root = {
-      hostname = "192.168.20.110";
-      user = "root";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.110";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kms-prod-new = {
-      hostname = "192.168.20.111";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.111";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kms-prod-new-root = {
-      hostname = "192.168.20.111";
-      user = "root";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.111";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     lenovo_pgx = {
-      hostname = "192.168.20.199";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.199";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     # Per-developer Odoo 16 test CTs (odoo1.kepi .. odoo4.kepi), CT 112-115.
     # DHCP-reserved IPs on the office LAN; all share CT 101 PostgreSQL.
     odoo1_kepi = {
-      hostname = "192.168.20.112";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.112";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     odoo2_kepi = {
-      hostname = "192.168.20.113";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.113";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     odoo3_kepi = {
-      hostname = "192.168.20.114";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.114";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     odoo4_kepi = {
-      hostname = "192.168.20.115";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.115";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
   };
 
