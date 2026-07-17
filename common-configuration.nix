@@ -106,6 +106,22 @@
     xkb.options = "ctrl:nocaps";
   };
 
+  # Logitech K580 quirk: over the Unifying dongle the keyboard enumerates as
+  # 046d:4089 and swaps Left Alt with Left Super; over Bluetooth it enumerates
+  # with a different id and behaves correctly. Swap the two modifiers back for
+  # the dongle device only. keyd remaps at the evdev layer (below Wayland), so
+  # this applies under GNOME/Wayland and only to the matched device.
+  services.keyd = {
+    enable = true;
+    keyboards.k580 = {
+      ids = ["046d:4089"];
+      settings.main = {
+        leftalt = "leftmeta";
+        leftmeta = "leftalt";
+      };
+    };
+  };
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
