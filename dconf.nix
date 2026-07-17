@@ -107,7 +107,7 @@ with lib.hm.gvariant; {
     "org/gnome/desktop/input-sources" = {
       mru-sources = [(mkTuple ["xkb" "en"])];
       sources = [(mkTuple ["xkb" "us"]) (mkTuple ["xkb" "ru"])];
-      xkb-options = ["terminalte:ctrl_alt_bksp" "lv4:ralt_switch" "ctrl:nocaps" "grp:shifts_toggle"];
+      xkb-options = ["lv4:ralt_switch" "ctrl:nocaps" "grp:shifts_toggle"];
     };
 
     "org/gnome/desktop/interface" = {
