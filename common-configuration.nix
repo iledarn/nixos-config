@@ -38,9 +38,9 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # On p171g, hand DNS to systemd-resolved so split DNS for the Kaertech LAN
+  # Hand DNS to systemd-resolved so split DNS for the Kaertech LAN
   # zones works (see services.resolved block below).
-  networking.networkmanager.dns = lib.mkIf (hostname == "lat5531") "systemd-resolved";
+  networking.networkmanager.dns = "systemd-resolved";
 
   # Split DNS for Kaertech LAN: resolve *.odoo.local and the whole .kepi TLD
   # (odoo1.kepi .. odoo4.kepi per-developer boxes, etc.) via dnsmasq on
@@ -48,12 +48,12 @@
   # NetworkManager's normal upstream. The leading ~ marks each as a
   # routing-only domain (not a search domain / default resolver); ~kepi
   # covers every *.kepi name, ~odoo.local the legacy test hostnames.
-  services.resolved = lib.mkIf (hostname == "lat5531") {
+  services.resolved = {
     enable = true;
-    extraConfig = ''
-      DNS=192.168.20.108
-      Domains=~odoo.local ~kepi
-    '';
+  #  extraConfig = ''
+  #    DNS=192.168.20.108
+  #    Domains=~odoo.local ~kepi
+  #  '';
   };
 
   # Set your time zone.
@@ -111,7 +111,7 @@
 
   # Enable firmware updates via fwupd.
   services.fwupd.enable = true;
-  services.thermald.enable = lib.mkIf (hostname == "lat5531") true;
+  services.thermald.enable = true;
 
   services.timesyncd.enable = false;
   services.chrony = {
@@ -166,11 +166,12 @@
   # enters the world-readable nix store) and live only in ~/.my.cnf — the
   # ~/.pgpass analog. Bootstrap kt_admin with the restore-dev-db-kms skill's
   # scripts/bootstrap-native-mysql.sh after the first `nixos-rebuild`.
-  services.mysql = {
-    enable = true;
-    package = pkgs.mysql80;
-    settings.mysqld.bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
-  };
+
+  #services.mysql = {
+#    enable = true;
+#    package = pkgs.mysql80;
+#    settings.mysqld.bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
+#  };
 
   # Native Redis for local KMS dev — the cache/broker backend the nixkms Django
   # envs expect alongside MySQL. Mirrors services.mysql above. No credentials:
@@ -223,27 +224,6 @@
   # doesn't exist here, so without this they can't verify TLS (CERTIFICATE_VERIFY_FAILED).
   # OpenSSL reads SSL_CERT_FILE at runtime regardless of the interpreter.
   environment.variables.SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
-
-  systemd.services.cpupower-performance = lib.mkIf (hostname == "p171g") {
-    description = "Apply persistent cpupower settings";
-    wantedBy = ["multi-user.target"];
-    after = ["multi-user.target"];
-    script = ''
-      ${pkgs.linuxPackages.cpupower}/bin/cpupower frequency-set -g performance
-      ${pkgs.linuxPackages.cpupower}/bin/cpupower frequency-set -u 2.2GHz
-    '';
-    serviceConfig.Type = "oneshot";
-  };
-
-  systemd.services.disable-intel-turbo = lib.mkIf (hostname == "p171g") {
-    description = "Disable Intel turbo boost";
-    wantedBy = ["multi-user.target"];
-    after = ["multi-user.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.runtimeShell} -c 'echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo'";
-    };
-  };
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
@@ -320,19 +300,18 @@
 
   zramSwap = {
     enable = true;
-    # 16 GB RAM is the binding constraint on p171g; zstd compresses ~3.5x, so
-    # over-committing zram past 100% of RAM is nearly free and buys real headroom.
+    # zstd compresses ~3.5x, so over-committing zram past 100% of RAM is nearly
+    # free and buys real headroom.
     memoryPercent = 150;
-    # algorithm = "zstd"; # Default is lz4 (p171g already runs zstd)
+    # algorithm = "zstd"; # Default is lz4
   };
 
   # zram is fast, so page out to it aggressively instead of holding cold pages in RAM.
   boot.kernel.sysctl."vm.swappiness" = 180;
 
   # Disk swapfile as an OOM backstop for runaway Odoo/DB restores. Lives on the
-  # LUKS-encrypted ext4 root, so it inherits full-disk encryption. p171g-only
-  # (size/host-specific); other hosts keep hardware-configuration.nix's empty list.
-  swapDevices = lib.mkIf (hostname == "lat5531") [
+  # LUKS-encrypted ext4 root, so it inherits full-disk encryption.
+  swapDevices = [
     {
       device = "/swapfile";
       size = 8 * 1024; # MiB
@@ -340,9 +319,8 @@
   ];
 
   # fstrim.timer is enabled by default, but discards only reach the NVMe if the
-  # LUKS layer passes them through. p171g-specific device UUID.
-  boot.initrd.luks.devices."luks-7c78c455-b342-4f1e-9581-d450e15e00f9".allowDiscards =
-    lib.mkIf (hostname == "lat5531") true;
+  # LUKS layer passes them through. lat5531-specific device UUID.
+  boot.initrd.luks.devices."luks-7c78c455-b342-4f1e-9581-d450e15e00f9".allowDiscards = true;
 
   programs.nix-ld = {
     enable = true;

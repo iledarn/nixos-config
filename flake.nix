@@ -2,30 +2,10 @@
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
-    nixpkgs-24-11.url = "github:NixOS/nixpkgs/nixos-24.11";
-    nixpkgs-25-05.url = "github:NixOS/nixpkgs/nixos-25.05";
-    nixpkgs-25-11.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-26-05.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
-    home-manager-23-11 = {
-      url = "github:nix-community/home-manager/release-23.11";
-      inputs.nixpkgs.follows = "nixpkgs-23-11";
-    };
-    home-manager-24-11 = {
-      url = "github:nix-community/home-manager/release-24.11";
-      inputs.nixpkgs.follows = "nixpkgs-24-11";
-    };
-    home-manager-25-05 = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-25-05";
-    };
-    home-manager-25-11 = {
-      url = "github:nix-community/home-manager/release-25.11";
-      inputs.nixpkgs.follows = "nixpkgs-25-11";
-    };
     home-manager-26-05 = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs-26-05";
@@ -34,7 +14,7 @@
     hyprland.url = "github:hyprwm/Hyprland";
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-25-05";
+      inputs.nixpkgs.follows = "nixpkgs-26-05";
     };
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
@@ -44,18 +24,10 @@
 
   outputs = inputs @ {
     self,
-    nixpkgs-23-11,
-    nixpkgs-24-11,
-    nixpkgs-25-05,
-    nixpkgs-25-11,
     nixpkgs-26-05,
     nixpkgs-unstable,
     codex-cli-nix,
     claude-code-nix,
-    home-manager-23-11,
-    home-manager-24-11,
-    home-manager-25-05,
-    home-manager-25-11,
     home-manager-26-05,
     nix-flatpak,
     sops-nix,
@@ -103,45 +75,6 @@
           ];
         };
     in {
-      scnsoft = mkSystem {
-        hostname = "scnsoft";
-        username = "ildar";
-        nixpkgsInput = nixpkgs-23-11;
-        homeManagerInput = home-manager-23-11;
-        stateVersion = "23.11";
-      };
-
-      kaertech = mkSystem {
-        hostname = "kaertech";
-        username = "ildar";
-        nixpkgsInput = nixpkgs-23-11;
-        homeManagerInput = home-manager-23-11;
-        stateVersion = "23.11";
-      };
-
-      gram = mkSystem {
-        hostname = "gram";
-        username = "ildarn";
-        nixpkgsInput = nixpkgs-24-11;
-        homeManagerInput = home-manager-24-11;
-        stateVersion = "24.11";
-      };
-      gram990 = mkSystem {
-        hostname = "gram990";
-        username = "iledarn";
-        nixpkgsInput = nixpkgs-25-05;
-        homeManagerInput = home-manager-25-05;
-        stateVersion = "25.05";
-      };
-
-      p171g = mkSystem {
-        hostname = "p171g";
-        username = "ildar";
-        nixpkgsInput = nixpkgs-25-11;
-        homeManagerInput = home-manager-25-11;
-        stateVersion = "25.11";
-      };
-
       lat5531 = mkSystem {
         hostname = "lat5531";
         username = "ildar";
@@ -151,6 +84,6 @@
       };
     };
 
-    formatter.x86_64-linux = nixpkgs-24-11.legacyPackages.x86_64-linux.alejandra;
+    formatter.x86_64-linux = nixpkgs-26-05.legacyPackages.x86_64-linux.alejandra;
   };
 }

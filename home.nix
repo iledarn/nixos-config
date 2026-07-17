@@ -40,8 +40,8 @@ in {
   };
 
   imports = [
-    ./dconf.nix
-    ./neovim.nix
+    # ./dconf.nix
+    # ./neovim.nix
     sops-nix.homeManagerModules.sops
     zen-browser.homeModules.default
   ];
@@ -65,7 +65,7 @@ in {
       enlightenment.terminology
       wl-clipboard
       docker-compose
-      mysql80
+      # mysql80
       gnupg
       sops
       mc
