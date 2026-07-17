@@ -233,6 +233,7 @@
     unzip
     nmap
     openssl
+    nettools # netstat, ifconfig, route, arp (ss/ip from iproute2 are the modern equivalents)
   ];
 
   # Point non-nixpkgs interpreters (uv/python-build-standalone, used by uvx-launched
