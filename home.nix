@@ -40,7 +40,7 @@ in {
   };
 
   imports = [
-    # ./dconf.nix
+    ./dconf.nix
     # ./neovim.nix
     sops-nix.homeManagerModules.sops
     zen-browser.homeModules.default
