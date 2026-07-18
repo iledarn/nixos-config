@@ -109,18 +109,20 @@
   # Logitech K580 quirk: over the Unifying dongle the keyboard enumerates as
   # 046d:4089 and swaps Left Alt with Left Super; over Bluetooth it enumerates
   # with a different id and behaves correctly. Swap the two modifiers back for
-  # the dongle device only. keyd remaps at the evdev layer (below Wayland), so
-  # this applies under GNOME/Wayland and only to the matched device.
-  services.keyd = {
-    enable = true;
-    keyboards.k580 = {
-      ids = ["046d:4089"];
-      settings.main = {
-        leftalt = "leftmeta";
-        leftmeta = "leftalt";
-      };
-    };
-  };
+  # the dongle device only.
+  #
+  # This is done with a udev hwdb keycode remap rather than keyd on purpose:
+  # keyd grabs the device and re-emits through a virtual keyboard, which stops
+  # GNOME's xkb options (notably grp:shifts_toggle layout switching) from
+  # applying. hwdb rewrites the keycodes in place on the real device, so GNOME
+  # still sees the K580 with all xkb options intact. The match is bus 0003 (USB
+  # receiver) only, so the Bluetooth connection is untouched. Standard HID
+  # scancodes: 0x700e2 = Left Alt, 0x700e3 = Left GUI/Super.
+  services.udev.extraHwdb = ''
+    evdev:input:b0003v046Dp4089*
+     KEYBOARD_KEY_700e2=leftmeta
+     KEYBOARD_KEY_700e3=leftalt
+  '';
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
