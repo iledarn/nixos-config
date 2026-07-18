@@ -20,6 +20,9 @@
   # Wrapper to expose GitHub token only for Claude Code invocations
   claudeWithGitHub = pkgs.writeShellScriptBin "claude" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
+    # Force the classic renderer (no alternate screen buffer) so the conversation
+    # stays in the terminal's native scrollback and tmux copy-mode scrolling works.
+    export CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1
     exec ${claudeCodeNix.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
   '';
   # Wrapper to expose GitHub token for gh CLI
