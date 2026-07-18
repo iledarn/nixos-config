@@ -174,11 +174,15 @@ in {
 
       Service = {
         Type = "forking";
-        # Clear any stale FUSE endpoint left by an unclean previous exit
-        # ("Transport endpoint is not connected"), which otherwise makes every
-        # restart fail with "Mountpoint ... should be an existing directory".
-        # Leading "-" ignores the error when nothing is mounted.
-        ExecStartPre = "-${pkgs.fuse}/bin/fusermount -u %h/GoogleDrive";
+        # First clear any stale FUSE endpoint left by an unclean previous exit
+        # ("Transport endpoint is not connected"); the leading "-" ignores the
+        # error when nothing is mounted. Then (re)create the mountpoint, because
+        # google-drive-ocamlfuse refuses to mount unless the directory already
+        # exists ("Mountpoint ... should be an existing directory").
+        ExecStartPre = [
+          "-${pkgs.fuse}/bin/fusermount -u %h/GoogleDrive"
+          "${pkgs.coreutils}/bin/mkdir -p %h/GoogleDrive"
+        ];
         ExecStart = "${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse %h/GoogleDrive";
         ExecStop = "${pkgs.fuse}/bin/fusermount -u %h/GoogleDrive";
         Restart = "on-failure";
