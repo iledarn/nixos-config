@@ -109,6 +109,7 @@ in {
       insomnia
       age
       uv
+      copier # Copier project-template renderer (nixodoo-copier-template etc.)
       icloudpd
       flameshot
       digikam
