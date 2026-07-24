@@ -48,12 +48,14 @@
   # NetworkManager's normal upstream. The leading ~ marks each as a
   # routing-only domain (not a search domain / default resolver); ~kepi
   # covers every *.kepi name, ~odoo.local the legacy test hostnames.
+  # nixpkgs 26.05 replaced services.resolved.extraConfig with the structured
+  # settings.Resolve; this renders the same [Resolve] block in resolved.conf.
   services.resolved = {
     enable = true;
-  #  extraConfig = ''
-  #    DNS=192.168.20.108
-  #    Domains=~odoo.local ~kepi
-  #  '';
+    settings.Resolve = {
+      DNS = ["192.168.20.108"];
+      Domains = ["~odoo.local" "~kepi"];
+    };
   };
 
   # Set your time zone.
