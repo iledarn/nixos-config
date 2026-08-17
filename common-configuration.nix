@@ -94,6 +94,10 @@
       }
     ];
     packages = ["org.telegram.desktop"];
+    update.auto = {
+      enable = true;
+      onCalendar = "weekly";
+    };
   };
 
   xdg.portal = {
