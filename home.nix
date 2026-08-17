@@ -169,8 +169,16 @@ in {
     google-drive-mount = {
       Unit = {
         Description = "Mount Google Drive";
-        After = ["network-online.target"];
+        After = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
         Wants = ["network-online.target"];
+        # Authorization creates this file. Do not enter a restart loop before
+        # the one-time OAuth flow has completed.
+        ConditionPathExists = "%h/.gdfuse/default/state";
+        StartLimitIntervalSec = "5min";
+        StartLimitBurst = 3;
       };
 
       Service = {
@@ -181,11 +189,14 @@ in {
         # google-drive-ocamlfuse refuses to mount unless the directory already
         # exists ("Mountpoint ... should be an existing directory").
         ExecStartPre = [
-          "-${pkgs.fuse}/bin/fusermount -u %h/GoogleDrive"
+          # The package binary in /nix/store is not setuid. NixOS exposes the
+          # privileged helper through /run/wrappers, which lets the mount owner
+          # detach a dead FUSE endpoint. -z also handles a wedged filesystem.
+          "-/run/wrappers/bin/fusermount -uz %h/GoogleDrive"
           "${pkgs.coreutils}/bin/mkdir -p %h/GoogleDrive"
         ];
         ExecStart = "${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse %h/GoogleDrive";
-        ExecStop = "${pkgs.fuse}/bin/fusermount -u %h/GoogleDrive";
+        ExecStop = "-/run/wrappers/bin/fusermount -uz %h/GoogleDrive";
         Restart = "on-failure";
         RestartSec = "30s";
       };
