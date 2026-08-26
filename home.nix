@@ -2,6 +2,8 @@
   config,
   pkgs,
   pkgsUnstable,
+  codexCliNix,
+  claudeCodeNix,
   username,
   stateVersion,
   sops-nix,
@@ -13,12 +15,15 @@
   codexWithMcpTokens = pkgs.writeShellScriptBin "codex" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
     export CONTEXT7="$(cat ${config.sops.secrets.context7_api_key.path})"
-    exec ${pkgsUnstable.codex}/bin/codex "$@"
+    exec ${codexCliNix.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/codex "$@"
   '';
   # Wrapper to expose GitHub token only for Claude Code invocations
   claudeWithGitHub = pkgs.writeShellScriptBin "claude" ''
     export GITHUB_PAT="$(cat ${config.sops.secrets.github_pat.path})"
-    exec ${pkgsUnstable.claude-code}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
+    # Force the classic renderer (no alternate screen buffer) so the conversation
+    # stays in the terminal's native scrollback and tmux copy-mode scrolling works.
+    export CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1
+    exec ${claudeCodeNix.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
   '';
   # Wrapper to expose GitHub token for gh CLI
   ghWithToken = pkgs.writeShellScriptBin "gh" ''
@@ -209,12 +214,12 @@ in {
 
     [mcp_servers.playwright]
     command = "npx"
-    args = ["@playwright/mcp@latest"]
+    args = ["-y", "@playwright/mcp@latest"]
     env = { PLAYWRIGHT_HEADLESS = "false" }
 
     [mcp_servers."pdf-reader"]
     command = "npx"
-    args = ["@sylphx/pdf-reader-mcp"]
+    args = ["-y", "@sylphx/pdf-reader-mcp"]
 
     [mcp_servers.postgres]
     command = "uvx"
