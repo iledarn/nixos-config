@@ -203,7 +203,11 @@ in {
     mode = "0600";
   };
 
-  home.file.".codex/config.toml".text = ''
+  # Codex rewrites ~/.codex/config.toml itself (trust decisions, model picks), so that
+  # path must stay a real writable file - a home-manager symlink into the nix store
+  # makes codex fail with "failed to persist config.toml". Keep the managed copy here
+  # and let the activation script below seed ~/.codex/config.toml from it.
+  home.file."KAERTECH/.codex/config.toml".text = ''
     [mcp_servers.github]
     url = "https://api.githubcopilot.com/mcp/"
     bearer_token_env_var = "GITHUB_PAT"
@@ -250,11 +254,18 @@ in {
     }
   '';
 
-  home.activation.codexBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
-    if [ -f "$HOME/.codex/config.toml" ]; then
-      mkdir -p "$HOME/.codex"
+  # Free ~/.codex/config.toml from any leftover nix store symlink, then seed it with a
+  # writable copy of the managed config. An existing regular file is left untouched so
+  # codex keeps whatever it persisted there.
+  home.activation.codexConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    codexConfig="$HOME/.codex/config.toml"
+    if [ -L "$codexConfig" ]; then
       ts=$(date -u +"%Y%m%dT%H%M%S%N")
-      mv "$HOME/.codex/config.toml" "$HOME/.codex/config.toml.$ts"
+      run mv "$codexConfig" "$codexConfig.$ts"
+    fi
+    if [ ! -e "$codexConfig" ]; then
+      run mkdir -p "$HOME/.codex"
+      run install -m 0600 ${config.home.file."KAERTECH/.codex/config.toml".source} "$codexConfig"
     fi
   '';
 
