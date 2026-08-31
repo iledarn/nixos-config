@@ -30,6 +30,20 @@
     export GH_TOKEN="$(cat ${config.sops.secrets.github_pat.path})"
     exec ${pkgs.gh}/bin/gh "$@"
   '';
+  googleDriveHealthCheck = pkgs.writeShellScript "google-drive-health-check" ''
+    mountpoint="$HOME/GoogleDrive"
+
+    # Check both that FUSE owns the path and that the daemon answers a basic
+    # metadata request. A wedged FUSE daemon can remain mounted and look alive
+    # to systemd indefinitely.
+    if ! ${pkgs.util-linux}/bin/findmnt -rn -T "$mountpoint" -o FSTYPE \
+        | ${pkgs.gnugrep}/bin/grep -qx 'fuse.google-drive-ocamlfuse' \
+      || ! ${pkgs.coreutils}/bin/timeout --kill-after=5 15 \
+        ${pkgs.coreutils}/bin/stat "$mountpoint" >/dev/null
+    then
+      ${pkgs.systemd}/bin/systemctl --user restart google-drive-mount.service
+    fi
+  '';
 in {
   # TODO please change the username & home directory to your own
   home.username = username;
@@ -197,6 +211,11 @@ in {
         ];
         ExecStart = "${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse %h/GoogleDrive";
         ExecStop = "-/run/wrappers/bin/fusermount -uz %h/GoogleDrive";
+        # Detaching a FUSE mount does not guarantee that a wedged daemon will
+        # exit. Bound shutdown and kill every process left in the unit cgroup.
+        KillMode = "control-group";
+        TimeoutStopSec = "20s";
+        SendSIGKILL = true;
         Restart = "on-failure";
         RestartSec = "30s";
       };
@@ -205,6 +224,31 @@ in {
         WantedBy = ["default.target"];
       };
     };
+
+    google-drive-health-check = {
+      Unit = {
+        Description = "Check Google Drive FUSE mount responsiveness";
+        After = ["google-drive-mount.service"];
+        ConditionPathExists = "%h/.gdfuse/default/state";
+      };
+
+      Service = {
+        Type = "oneshot";
+        ExecStart = googleDriveHealthCheck;
+        TimeoutStartSec = "30s";
+      };
+    };
+  };
+
+  systemd.user.timers.google-drive-health-check = {
+    Unit.Description = "Periodically check Google Drive FUSE mount";
+    Timer = {
+      OnBootSec = "2min";
+      OnUnitActiveSec = "5min";
+      RandomizedDelaySec = "30s";
+      Persistent = true;
+    };
+    Install.WantedBy = ["timers.target"];
   };
 
   sops = {
