@@ -531,6 +531,20 @@ in {
       ForwardAgent = true;
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    # Proxmox hypervisor nodes. Proxmox is administered as root, so there is
+    # no unprivileged account to fall back to here.
+    pve1_kepi = {
+      HostName = "192.168.20.100";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    pve2_kepi = {
+      HostName = "192.168.20.200";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
