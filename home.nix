@@ -350,12 +350,24 @@ in {
       user = "prod";
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    odoo-16-prod = {
+      hostname = "46.137.245.154";
+      user = "ubuntu";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo-12-prod = {
+      hostname = "122.248.203.73";
+      user = "ubuntu";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
     work-github = {
       hostname = "github.com";
       user = "git";
       identityFile = "/home/${username}/.ssh/id_ed25519work-github";
     };
-    "odoo-test" = {
+    odoo-test = {
       host = "10.10.10.11 10.10.10.12";
       user = "kaertech";
       forwardAgent = true;
@@ -368,6 +380,97 @@ in {
     odoo-16-project-test = {
       hostname = "192.168.0.32";
       user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kts-box-server = {
+      hostname = "192.168.1.38";
+      user = "proddb";
+      port = 2020;
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-linode-prod = {
+      hostname = "139.162.25.216";
+      user = "ildar";
+      port = 2205;
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-linode-prod-web = {
+      hostname = "139.162.25.216";
+      user = "kms-web";
+      port = 2205;
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kts-prod-new = {
+      hostname = "192.168.20.110";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kts-prod-new-root = {
+      hostname = "192.168.20.110";
+      user = "root";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-prod-new = {
+      hostname = "192.168.20.111";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-prod-new-root = {
+      hostname = "192.168.20.111";
+      user = "root";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    lenovo_pgx = {
+      hostname = "192.168.20.199";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    # Per-developer Odoo 16 test CTs (odoo1.kepi .. odoo4.kepi), CT 112-115.
+    # DHCP-reserved IPs on the office LAN; all share CT 101 PostgreSQL.
+    odoo1_kepi = {
+      hostname = "192.168.20.112";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo2_kepi = {
+      hostname = "192.168.20.113";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo3_kepi = {
+      hostname = "192.168.20.114";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo4_kepi = {
+      hostname = "192.168.20.115";
+      user = "kaertech";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    # Proxmox hypervisor nodes. Proxmox is administered as root, so there is
+    # no unprivileged account to fall back to here.
+    pve1_kepi = {
+      hostname = "192.168.20.100";
+      user = "root";
+      forwardAgent = true;
+      identityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    pve2_kepi = {
+      hostname = "192.168.20.200";
+      user = "root";
       forwardAgent = true;
       identityFile = "/home/${username}/.ssh/id_ed25519";
     };
