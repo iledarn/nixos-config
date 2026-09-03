@@ -486,6 +486,15 @@ in {
     };
   };
 
+  # Ghostty, alongside foot rather than replacing it. Config keys are flat and
+  # match ghostty's own names: https://ghostty.org/docs/config/reference
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      font-family = "Hack Nerd Font Mono";
+    };
+  };
+
   home.stateVersion = stateVersion;
 
   # Let home Manager install and manage itself.
