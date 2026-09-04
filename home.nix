@@ -493,6 +493,8 @@ in {
     enable = true;
     settings = {
       font-family = "Hack Nerd Font Mono";
+      # No GTK headerbar: tmux handles tabs, so the title/tab bar is dead space.
+      gtk-titlebar = false;
     };
   };
 
