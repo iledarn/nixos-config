@@ -69,7 +69,8 @@ in {
       sops
       mc
       libreoffice
-      feh
+      gthumb
+      imv
       dconf2nix
       ripgrep
       fd
