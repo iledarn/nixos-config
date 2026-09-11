@@ -32,17 +32,93 @@
   '';
   googleDriveHealthCheck = pkgs.writeShellScript "google-drive-health-check" ''
     mountpoint="$HOME/GoogleDrive"
+    configfile="$HOME/.gdfuse/default/config"
+    statefile="$HOME/.gdfuse/default/state"
 
     # Check both that FUSE owns the path and that the daemon answers a basic
     # metadata request. A wedged FUSE daemon can remain mounted and look alive
     # to systemd indefinitely.
-    if ! ${pkgs.util-linux}/bin/findmnt -rn -T "$mountpoint" -o FSTYPE \
+    if ${pkgs.util-linux}/bin/findmnt -rn -T "$mountpoint" -o FSTYPE \
         | ${pkgs.gnugrep}/bin/grep -qx 'fuse.google-drive-ocamlfuse' \
-      || ! ${pkgs.coreutils}/bin/timeout --kill-after=5 15 \
+      && ${pkgs.coreutils}/bin/timeout --kill-after=5 15 \
         ${pkgs.coreutils}/bin/stat "$mountpoint" >/dev/null
     then
-      ${pkgs.systemd}/bin/systemctl --user restart google-drive-mount.service
+      exit 0
     fi
+
+    # A wedged daemon and dead OAuth credentials are indistinguishable from the
+    # mountpoint -- both fail with EIO -- but only the wedge is fixable by
+    # remounting. Google expires the refresh token after 7 days while the OAuth
+    # client sits in "Testing" publishing status, and restarting on an expired
+    # grant just churns every 5 minutes for a week without surfacing the real
+    # problem. So probe the grant before deciding what to do.
+    client_id=""
+    client_secret=""
+    refresh_token=""
+    if [ -r "$configfile" ] && [ -r "$statefile" ]; then
+      client_id=$(${pkgs.gnugrep}/bin/grep -oP '^client_id=\K.*' "$configfile" || true)
+      client_secret=$(${pkgs.gnugrep}/bin/grep -oP '^client_secret=\K.*' "$configfile" || true)
+      refresh_token=$(${pkgs.gnugrep}/bin/grep -oP '^refresh_token=\K.*' "$statefile" || true)
+    fi
+
+    if [ -n "$client_id" ] && [ -n "$client_secret" ] && [ -n "$refresh_token" ]; then
+      response=$(${pkgs.curl}/bin/curl -s --max-time 20 \
+        -X POST https://oauth2.googleapis.com/token \
+        -d "client_id=$client_id" \
+        -d "client_secret=$client_secret" \
+        -d "refresh_token=$refresh_token" \
+        -d grant_type=refresh_token || true)
+
+      case "$response" in
+        *invalid_grant*)
+          message="Google refused the stored refresh token (invalid_grant). Remounting cannot fix this -- run 'google-drive-ocamlfuse' to re-authorize. To stop it recurring every 7 days, switch the OAuth consent screen to 'In production' (or 'Internal')."
+
+          # Warn once per credential generation rather than every 5 minutes.
+          # Re-authorizing rewrites the state file, which makes it newer than
+          # the marker and re-arms the warning if it is still broken.
+          marker="''${XDG_RUNTIME_DIR:-/tmp}/google-drive-auth-warned"
+          if [ ! -e "$marker" ] || [ "$statefile" -nt "$marker" ]; then
+            ${pkgs.libnotify}/bin/notify-send --urgency=critical \
+              "Google Drive: re-authorization required" "$message" || true
+            ${pkgs.coreutils}/bin/touch "$marker"
+          fi
+
+          echo "$message" >&2
+          exit 0
+          ;;
+      esac
+    fi
+
+    ${pkgs.systemd}/bin/systemctl --user restart google-drive-mount.service
+  '';
+  # google-drive-ocamlfuse rewrites ~/.gdfuse/default/config in full on every
+  # startup. That path used to be a symlink straight at the sops-rendered
+  # secret, so the daemon wrote its ~70 default settings *through* the link and
+  # clobbered the secret, while every sops re-render threw the daemon's own
+  # settings away. Keep the config a plain file the daemon owns, and inject
+  # just the credentials into it here before each start.
+  gdfuseConfigSeed = pkgs.writeShellScript "gdfuse-config-seed" ''
+    set -eu
+    configdir="$HOME/.gdfuse/default"
+    configfile="$configdir/config"
+    credentials="${config.sops.templates."gdfuse-credentials".path}"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$configdir"
+
+    # Migrate away from the old symlink-at-the-secret layout.
+    if [ -L "$configfile" ]; then
+      ${pkgs.coreutils}/bin/rm -f "$configfile"
+    fi
+    ${pkgs.coreutils}/bin/touch "$configfile"
+    ${pkgs.coreutils}/bin/chmod 0600 "$configfile"
+
+    # Rebuild the file instead of editing in place: the secret can contain
+    # characters that are significant to sed.
+    tmp=$(${pkgs.coreutils}/bin/mktemp "$configdir/.config.XXXXXX")
+    ${pkgs.coreutils}/bin/chmod 0600 "$tmp"
+    ${pkgs.gnugrep}/bin/grep -v -E '^(client_id|client_secret)=' "$configfile" > "$tmp" || true
+    ${pkgs.gnugrep}/bin/grep -E '^(client_id|client_secret)=' "$credentials" >> "$tmp"
+    ${pkgs.coreutils}/bin/mv -f "$tmp" "$configfile"
   '';
 in {
   # TODO please change the username & home directory to your own
@@ -203,6 +279,9 @@ in {
         # google-drive-ocamlfuse refuses to mount unless the directory already
         # exists ("Mountpoint ... should be an existing directory").
         ExecStartPre = [
+          # Inject the sops-managed credentials into the daemon-owned config
+          # file before the daemon starts and rewrites that file itself.
+          "${gdfuseConfigSeed}"
           # The package binary in /nix/store is not setuid. NixOS exposes the
           # privileged helper through /run/wrappers, which lets the mount owner
           # detach a dead FUSE endpoint. -z also handles a wedged filesystem.
@@ -273,11 +352,14 @@ in {
     '';
   };
 
-  sops.templates."gdfuse-config" = {
-    path = "${config.home.homeDirectory}/.gdfuse/default/config";
+  # Deliberately NOT ~/.gdfuse/default/config -- see gdfuseConfigSeed above.
+  # Written in the daemon's own "key=value" form (no spaces) so the seed script
+  # can match the lines exactly.
+  sops.templates."gdfuse-credentials" = {
+    path = "${config.home.homeDirectory}/.config/gdfuse/credentials";
     content = ''
-      client_id = ${config.sops.placeholder."google_client_id"}
-      client_secret = ${config.sops.placeholder."google_client_secret"}
+      client_id=${config.sops.placeholder."google_client_id"}
+      client_secret=${config.sops.placeholder."google_client_secret"}
     '';
     mode = "0600";
   };
