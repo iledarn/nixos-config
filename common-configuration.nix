@@ -7,6 +7,7 @@
   lib,
   hostname,
   username,
+  pkgsMysql,
   ...
 }: {
   imports = [
@@ -190,12 +191,11 @@
   # enters the world-readable nix store) and live only in ~/.my.cnf — the
   # ~/.pgpass analog. Bootstrap kt_admin with the restore-dev-db-kms skill's
   # scripts/bootstrap-native-mysql.sh after the first `nixos-rebuild`.
-
-  #services.mysql = {
-#    enable = true;
-#    package = pkgs.mysql80;
-#    settings.mysqld.bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
-#  };
+  services.mysql = {
+    enable = true;
+    package = pkgsMysql.mysql80; # from pinned 25.11 — 26.05 dropped mysql80 (EOL)
+    settings.mysqld.bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
+  };
 
   # Native Redis for local KMS dev — the cache/broker backend the nixkms Django
   # envs expect alongside MySQL. Mirrors services.mysql above. No credentials:

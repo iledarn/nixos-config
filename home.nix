@@ -158,7 +158,6 @@ in {
       enlightenment.terminology
       wl-clipboard
       docker-compose
-      # mysql80
       gnupg
       sops
       mc

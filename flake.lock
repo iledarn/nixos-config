@@ -420,6 +420,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-25-11": {
+      "locked": {
+        "lastModified": 1773222311,
+        "narHash": "sha256-BHoB/XpbqoZkVYZCfXJXfkR+GXFqwb/4zbWnOr2cRcU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0590cd39f728e129122770c029970378a79d076a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-25.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-26-05": {
       "locked": {
         "lastModified": 1784160687,
@@ -531,6 +547,7 @@
         "home-manager-26-05": "home-manager-26-05",
         "hyprland": "hyprland",
         "nix-flatpak": "nix-flatpak",
+        "nixpkgs-25-11": "nixpkgs-25-11",
         "nixpkgs-26-05": "nixpkgs-26-05",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix",

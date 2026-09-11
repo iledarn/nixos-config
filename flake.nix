@@ -3,6 +3,9 @@
 
   inputs = {
     nixpkgs-26-05.url = "github:NixOS/nixpkgs/nixos-26.05";
+    # MySQL only: 26.05 dropped mysql80 (EOL 2026-04-30). Pinned to the same
+    # rev the dell_p171g branch uses so both machines run identical MySQL 8.0.
+    nixpkgs-25-11.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
@@ -25,6 +28,7 @@
   outputs = inputs @ {
     self,
     nixpkgs-26-05,
+    nixpkgs-25-11,
     nixpkgs-unstable,
     codex-cli-nix,
     claude-code-nix,
@@ -42,6 +46,11 @@
         config.allowUnfree = true; # needed for kiro
       };
 
+      # MySQL 8.0 pkgs set (only for services.mysql)
+      pkgsMysql = import nixpkgs-25-11 {
+        inherit system;
+      };
+
       codexCliNix = codex-cli-nix;
       claudeCodeNix = claude-code-nix;
 
@@ -55,7 +64,7 @@
         nixpkgsInput.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit hostname username pkgsUnstable codexCliNix claudeCodeNix;
+            inherit hostname username pkgsUnstable pkgsMysql codexCliNix claudeCodeNix;
           };
           modules = [
             ./common-configuration.nix
