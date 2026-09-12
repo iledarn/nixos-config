@@ -556,6 +556,18 @@ in {
       ForwardAgent = true;
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    odoo-12-prod-new = {
+      HostName = "192.168.20.118";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo-12-prod-db-new = {
+      HostName = "192.168.20.117";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
     kts-prod-new = {
       HostName = "192.168.20.110";
       User = "kaertech";
