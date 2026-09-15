@@ -89,6 +89,17 @@
       esac
     fi
 
+    # A state file with no refresh_token yet is not a wedge -- it is the
+    # interactive OAuth flow in progress, which writes the pending auth request
+    # first and the token only once the browser round trip completes. Restarting
+    # inside that window hands the daemon credentials it cannot use, and because
+    # Type=forking reports success the unit then sits "active" without ever
+    # mounting, while the token that arrives moments later is never picked up.
+    if [ -r "$statefile" ] && [ -z "$refresh_token" ]; then
+      echo "Authorization in progress (no refresh_token yet) -- not restarting." >&2
+      exit 0
+    fi
+
     ${pkgs.systemd}/bin/systemctl --user restart google-drive-mount.service
   '';
   # google-drive-ocamlfuse rewrites ~/.gdfuse/default/config in full on every
