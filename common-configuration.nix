@@ -207,6 +207,39 @@
     port = 6379; # TCP on 6379 (matches Docker redis + nixkms REDIS_PORT)
   };
 
+  # Local-only nginx for the KTS v2 SPA (~/KAERTECH/kaertechKTSv2). Mirrors the
+  # repo's nginx/nginx.conf: serve the prebuilt client, proxy /api to the Express
+  # server and strip the /api prefix. The prefix strip is the trailing slash on
+  # proxyPass (location /api/ + upstream ".../" = nginx's own rewrite), which is
+  # the idiomatic equivalent of the repo's `rewrite ^/api/(.*)$ /$1 break`.
+  #
+  # Workers run as ildar because the document root lives under /home/ildar, which
+  # is mode 0700 — the default `nginx` user cannot traverse it. Acceptable here
+  # only because this vhost listens on loopback and serves a dev checkout; do not
+  # copy this onto a shared or internet-facing host.
+  services.nginx = {
+    enable = true;
+    user = "ildar";
+    group = "users";
+    recommendedProxySettings = true;
+    recommendedGzipSettings = true;
+    virtualHosts."kts-local" = {
+      listen = [
+        {
+          addr = "127.0.0.1";
+          port = 8080;
+        }
+      ];
+      root = "/home/ildar/KAERTECH/kaertechKTSv2/client-build";
+      locations."/" = {
+        tryFiles = "$uri /index.html"; # SPA fallback for react-router paths
+      };
+      locations."/api/" = {
+        proxyPass = "http://127.0.0.1:5000/";
+      };
+    };
+  };
+
   virtualisation.docker.enable = true;
 
   # Garbage collection can be automated
