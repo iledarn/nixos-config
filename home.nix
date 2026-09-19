@@ -649,6 +649,34 @@ in {
       ForwardAgent = true;
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
+
+    odoo16_prod_db_kepi = {
+      HostName = "192.168.20.201";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
+    odoo16_prod_kepi = {
+      HostName = "192.168.20.202";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
+    odoo16_prod_kepi_root = {
+      HostName = "192.168.20.202";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
+    odoo16_prod_db_replica_kepi = {
+      HostName = "192.168.20.120";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
   };
 
   programs.foot = {
