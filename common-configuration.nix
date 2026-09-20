@@ -240,6 +240,12 @@
     };
   };
 
+  # The NixOS nginx unit ships ProtectHome=yes, which makes /home appear EMPTY to
+  # the service — so the document root above is unreachable no matter which user
+  # the workers run as (the user=ildar setting is still needed on top of this, for
+  # the 0700 traversal). nginx only ever reads the bundle, so read-only is enough.
+  systemd.services.nginx.serviceConfig.ProtectHome = "read-only";
+
   virtualisation.docker.enable = true;
 
   # Garbage collection can be automated
