@@ -685,6 +685,13 @@ in {
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
 
+    odoo16_prod_kepi_public = {
+      HostName = "202.175.222.8";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
     odoo16_prod_kepi_root = {
       HostName = "192.168.20.202";
       User = "root";
