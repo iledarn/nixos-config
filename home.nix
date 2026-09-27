@@ -30,6 +30,24 @@
     export GH_TOKEN="$(cat ${config.sops.secrets.github_pat.path})"
     exec ${pkgs.gh}/bin/gh "$@"
   '';
+  # nginx (the kts-local vhost) permanently holds 127.0.0.1:8080, which is also
+  # google-drive-ocamlfuse's default OAuth loopback port. A bare re-authorization
+  # therefore dies with Unix_error(EADDRINUSE, "bind") and then, confusingly,
+  # sits out its whole window before reporting "Cannot retrieve verification
+  # code: Timeout expired" -- the bind failure scrolls past and the timeout looks
+  # like the problem.
+  #
+  # The port CANNOT be fixed in ~/.gdfuse/default/config: the binary's own CLI
+  # default overwrites oauth2_loopback_port in that file on every single run, so
+  # an edit there is silently reverted. A flag is the only place it sticks.
+  #
+  # Only the interactive auth flow binds this port. The mount daemon never does,
+  # which is why google-drive-mount.service below still calls the package path
+  # directly. A caller-supplied -port comes after ours and wins, so overriding
+  # remains possible.
+  gdfuseWithPort = pkgs.writeShellScriptBin "google-drive-ocamlfuse" ''
+    exec ${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse -port 18080 "$@"
+  '';
   googleDriveHealthCheck = pkgs.writeShellScript "google-drive-health-check" ''
     mountpoint="$HOME/GoogleDrive"
     configfile="$HOME/.gdfuse/default/config"
@@ -196,7 +214,8 @@ in {
       luajitPackages.lua-lsp
       lua-language-server
       gedit
-      google-drive-ocamlfuse
+      # google-drive-ocamlfuse comes from gdfuseWithPort below, not from pkgs --
+      # two derivations shipping bin/google-drive-ocamlfuse collide in the profile.
       google-chrome
       fuse
       jetbrains-mono
@@ -222,11 +241,13 @@ in {
       btop
       linuxPackages.cpupower
       pkgsUnstable.supabase-cli
+      pkgsUnstable.entire # AI-session recorder wired into kaertech-odoo-16 hooks; 26.05 is stuck on 0.6.2, the hooks expect 0.10.x
     ]
     ++ [
       codexWithMcpTokens
       claudeWithGitHub
       ghWithToken
+      gdfuseWithPort
     ];
 
   programs.mpv = {
