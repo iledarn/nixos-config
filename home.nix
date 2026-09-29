@@ -380,6 +380,7 @@ in {
       EDITOR = "nvim";
     };
     initExtra = ''
+      export ODOO16_PROJECT_DIR="$HOME/KAERTECH/kaertech-odoo-16"
     '';
   };
 
