@@ -601,6 +601,30 @@ in {
       ForwardAgent = true;
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    kts-db = {
+      HostName = "192.168.20.210";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kts-db-root = {
+      HostName = "192.168.20.210";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-web = {
+      HostName = "192.168.20.122";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-web-root = {
+      HostName = "192.168.20.122";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
     kts-prod-new = {
       HostName = "192.168.20.110";
       User = "kaertech";
