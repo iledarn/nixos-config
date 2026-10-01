@@ -625,6 +625,12 @@ in {
       ForwardAgent = true;
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    kts-phpmyadmin-root = {
+      HostName = "192.168.20.123";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
     kts-prod-new = {
       HostName = "192.168.20.110";
       User = "kaertech";
