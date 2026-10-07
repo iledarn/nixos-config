@@ -9,6 +9,9 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
+    # Official Claude Desktop Linux .deb from Anthropic's signed apt repo.
+    # No nixpkgs.follows, so builds come from danielbodart.cachix.org.
+    claude-desktop.url = "github:danielbodart/claude-desktop";
     home-manager-26-05 = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs-26-05";
@@ -71,6 +74,7 @@
             nix-flatpak.nixosModules.nix-flatpak
             homeManagerInput.nixosModules.home-manager
             inputs.sops-nix.nixosModules.sops
+            inputs.claude-desktop.nixosModules.default
             {
               home-manager.useUserPackages = true;
               # Automatically back up files that clash with Home Manager links

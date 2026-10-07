@@ -331,14 +331,20 @@
       "https://nix-community.cachix.org"
       "https://codex-cli.cachix.org"
       "https://claude-code.cachix.org"
+      "https://danielbodart.cachix.org"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "codex-cli.cachix.org-1:1Br3H1hHoRYG22n//cGKJOk3cQXgYobUel6O8DgSing="
       "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
+      "danielbodart.cachix.org-1:751qv4GxLFJCThWMEw1WL6kUqY0DpF6oqPqsLKnnEwU="
     ];
   };
+
+  # Claude Desktop (official Linux build). Cowork (QEMU VM sessions) left off;
+  # enabling it is cowork = { enable = true; users = [username]; };
+  programs.claude-desktop.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
