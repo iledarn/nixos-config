@@ -7,7 +7,6 @@
   lib,
   hostname,
   username,
-  pkgsMysql,
   ...
 }: {
   imports = [
@@ -184,7 +183,7 @@
 
   # Native MySQL for local KMS (Kaertech Monitoring System) dev — the non-Docker
   # restore target used by the nixkms Django envs. Mirrors services.postgresql
-  # above. NO credentials live here. Admin is `root@localhost`, which mysql80
+  # above. NO credentials live here. Admin is `root@localhost`, which MySQL
   # leaves passwordless over the world-readable unix socket (and which has
   # WITH GRANT OPTION) — that's what bootstraps the app user. The app/restore
   # user `kt_admin` and its password are created OUTSIDE nix (so the secret never
@@ -193,8 +192,13 @@
   # scripts/bootstrap-native-mysql.sh after the first `nixos-rebuild`.
   services.mysql = {
     enable = true;
-    package = pkgsMysql.mysql80; # from pinned 25.11 — 26.05 dropped mysql80 (EOL)
-    settings.mysqld.bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
+    package = pkgs.mysql84; # same major as KTS/KMS prod (CT 210 / CT 122, Ubuntu 26.04)
+    settings.mysqld = {
+      bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
+      character-set-server = "latin1";
+      collation-server = "latin1_swedish_ci";
+      restrict_fk_on_non_standard_key = "OFF";
+    };
   };
 
   # Native Redis for local KMS dev — the cache/broker backend the nixkms Django
