@@ -9,6 +9,9 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
+    # Neo4j-backed notes/todo store + Claude Code plugin used in kaertech-odoo-16.
+    # No nixpkgs.follows: it pins its own python314 and neo4j.
+    kb.url = "github:okolovmark/kb";
     # Official Claude Desktop Linux .deb from Anthropic's signed apt repo.
     # No nixpkgs.follows, so builds come from danielbodart.cachix.org.
     claude-desktop.url = "github:danielbodart/claude-desktop";
@@ -82,7 +85,7 @@
               home-manager.users.${username} = import ./home.nix;
               home-manager.extraSpecialArgs = {
                 inherit username stateVersion pkgsUnstable codexCliNix claudeCodeNix; # This makes username available in home.nix
-                inherit (inputs) sops-nix zen-browser;
+                inherit (inputs) sops-nix zen-browser kb;
               };
             }
           ];

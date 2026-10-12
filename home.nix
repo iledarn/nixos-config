@@ -8,6 +8,7 @@
   stateVersion,
   sops-nix,
   zen-browser,
+  kb,
   lib,
   ...
 }: let
@@ -248,6 +249,7 @@ in {
       claudeWithGitHub
       ghWithToken
       gdfuseWithPort
+      kb.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
 
   programs.mpv = {
