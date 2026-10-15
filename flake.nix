@@ -2,34 +2,25 @@
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs-23-11.url = "github:NixOS/nixpkgs/nixos-23.11";
-    nixpkgs-24-11.url = "github:NixOS/nixpkgs/nixos-24.11";
-    nixpkgs-25-05.url = "github:NixOS/nixpkgs/nixos-25.05";
-    nixpkgs-25-11.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-26-05.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
-    home-manager-23-11 = {
-      url = "github:nix-community/home-manager/release-23.11";
-      inputs.nixpkgs.follows = "nixpkgs-23-11";
-    };
-    home-manager-24-11 = {
-      url = "github:nix-community/home-manager/release-24.11";
-      inputs.nixpkgs.follows = "nixpkgs-24-11";
-    };
-    home-manager-25-05 = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-25-05";
-    };
-    home-manager-25-11 = {
-      url = "github:nix-community/home-manager/release-25.11";
-      inputs.nixpkgs.follows = "nixpkgs-25-11";
+    # Neo4j-backed notes/todo store + Claude Code plugin used in kaertech-odoo-16.
+    # No nixpkgs.follows: it pins its own python314 and neo4j.
+    kb.url = "github:okolovmark/kb";
+    # Official Claude Desktop Linux .deb from Anthropic's signed apt repo.
+    # No nixpkgs.follows, so builds come from danielbodart.cachix.org.
+    claude-desktop.url = "github:danielbodart/claude-desktop";
+    home-manager-26-05 = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-26-05";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     hyprland.url = "github:hyprwm/Hyprland";
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-25-05";
+      inputs.nixpkgs.follows = "nixpkgs-26-05";
     };
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
@@ -39,17 +30,11 @@
 
   outputs = inputs @ {
     self,
-    nixpkgs-23-11,
-    nixpkgs-24-11,
-    nixpkgs-25-05,
-    nixpkgs-25-11,
+    nixpkgs-26-05,
     nixpkgs-unstable,
     codex-cli-nix,
     claude-code-nix,
-    home-manager-23-11,
-    home-manager-24-11,
-    home-manager-25-05,
-    home-manager-25-11,
+    home-manager-26-05,
     nix-flatpak,
     sops-nix,
     ...
@@ -83,6 +68,7 @@
             nix-flatpak.nixosModules.nix-flatpak
             homeManagerInput.nixosModules.home-manager
             inputs.sops-nix.nixosModules.sops
+            inputs.claude-desktop.nixosModules.default
             {
               home-manager.useUserPackages = true;
               # Automatically back up files that clash with Home Manager links
@@ -90,52 +76,21 @@
               home-manager.users.${username} = import ./home.nix;
               home-manager.extraSpecialArgs = {
                 inherit username stateVersion pkgsUnstable codexCliNix claudeCodeNix; # This makes username available in home.nix
-                inherit (inputs) sops-nix zen-browser;
+                inherit (inputs) sops-nix zen-browser kb;
               };
             }
           ];
         };
     in {
-      scnsoft = mkSystem {
-        hostname = "scnsoft";
-        username = "ildar";
-        nixpkgsInput = nixpkgs-23-11;
-        homeManagerInput = home-manager-23-11;
-        stateVersion = "23.11";
-      };
-
-      kaertech = mkSystem {
-        hostname = "kaertech";
-        username = "ildar";
-        nixpkgsInput = nixpkgs-23-11;
-        homeManagerInput = home-manager-23-11;
-        stateVersion = "23.11";
-      };
-
-      gram = mkSystem {
-        hostname = "gram";
-        username = "ildarn";
-        nixpkgsInput = nixpkgs-24-11;
-        homeManagerInput = home-manager-24-11;
-        stateVersion = "24.11";
-      };
       gram990 = mkSystem {
         hostname = "gram990";
         username = "iledarn";
-        nixpkgsInput = nixpkgs-25-11;
-        homeManagerInput = home-manager-25-11;
-        stateVersion = "25.11";
-      };
-
-      p171g = mkSystem {
-        hostname = "p171g";
-        username = "ildar";
-        nixpkgsInput = nixpkgs-25-11;
-        homeManagerInput = home-manager-25-11;
-        stateVersion = "25.11";
+        nixpkgsInput = nixpkgs-26-05;
+        homeManagerInput = home-manager-26-05;
+        stateVersion = "26.05";
       };
     };
 
-    formatter.x86_64-linux = nixpkgs-24-11.legacyPackages.x86_64-linux.alejandra;
+    formatter.x86_64-linux = nixpkgs-26-05.legacyPackages.x86_64-linux.alejandra;
   };
 }

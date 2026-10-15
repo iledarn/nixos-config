@@ -8,6 +8,7 @@
   stateVersion,
   sops-nix,
   zen-browser,
+  kb,
   lib,
   ...
 }: let
@@ -30,6 +31,125 @@
     export GH_TOKEN="$(cat ${config.sops.secrets.github_pat.path})"
     exec ${pkgs.gh}/bin/gh "$@"
   '';
+  # nginx (the kts-local vhost) permanently holds 127.0.0.1:8080, which is also
+  # google-drive-ocamlfuse's default OAuth loopback port. A bare re-authorization
+  # therefore dies with Unix_error(EADDRINUSE, "bind") and then, confusingly,
+  # sits out its whole window before reporting "Cannot retrieve verification
+  # code: Timeout expired" -- the bind failure scrolls past and the timeout looks
+  # like the problem.
+  #
+  # The port CANNOT be fixed in ~/.gdfuse/default/config: the binary's own CLI
+  # default overwrites oauth2_loopback_port in that file on every single run, so
+  # an edit there is silently reverted. A flag is the only place it sticks.
+  #
+  # Only the interactive auth flow binds this port. The mount daemon never does,
+  # which is why google-drive-mount.service below still calls the package path
+  # directly. A caller-supplied -port comes after ours and wins, so overriding
+  # remains possible.
+  gdfuseWithPort = pkgs.writeShellScriptBin "google-drive-ocamlfuse" ''
+    exec ${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse -port 18080 "$@"
+  '';
+  googleDriveHealthCheck = pkgs.writeShellScript "google-drive-health-check" ''
+    mountpoint="$HOME/GoogleDrive"
+    configfile="$HOME/.gdfuse/default/config"
+    statefile="$HOME/.gdfuse/default/state"
+
+    # Check both that FUSE owns the path and that the daemon answers a basic
+    # metadata request. A wedged FUSE daemon can remain mounted and look alive
+    # to systemd indefinitely.
+    if ${pkgs.util-linux}/bin/findmnt -rn -T "$mountpoint" -o FSTYPE \
+        | ${pkgs.gnugrep}/bin/grep -qx 'fuse.google-drive-ocamlfuse' \
+      && ${pkgs.coreutils}/bin/timeout --kill-after=5 15 \
+        ${pkgs.coreutils}/bin/stat "$mountpoint" >/dev/null
+    then
+      exit 0
+    fi
+
+    # A wedged daemon and dead OAuth credentials are indistinguishable from the
+    # mountpoint -- both fail with EIO -- but only the wedge is fixable by
+    # remounting. Google expires the refresh token after 7 days while the OAuth
+    # client sits in "Testing" publishing status, and restarting on an expired
+    # grant just churns every 5 minutes for a week without surfacing the real
+    # problem. So probe the grant before deciding what to do.
+    client_id=""
+    client_secret=""
+    refresh_token=""
+    if [ -r "$configfile" ] && [ -r "$statefile" ]; then
+      client_id=$(${pkgs.gnugrep}/bin/grep -oP '^client_id=\K.*' "$configfile" || true)
+      client_secret=$(${pkgs.gnugrep}/bin/grep -oP '^client_secret=\K.*' "$configfile" || true)
+      refresh_token=$(${pkgs.gnugrep}/bin/grep -oP '^refresh_token=\K.*' "$statefile" || true)
+    fi
+
+    if [ -n "$client_id" ] && [ -n "$client_secret" ] && [ -n "$refresh_token" ]; then
+      response=$(${pkgs.curl}/bin/curl -s --max-time 20 \
+        -X POST https://oauth2.googleapis.com/token \
+        -d "client_id=$client_id" \
+        -d "client_secret=$client_secret" \
+        -d "refresh_token=$refresh_token" \
+        -d grant_type=refresh_token || true)
+
+      case "$response" in
+        *invalid_grant*)
+          message="Google refused the stored refresh token (invalid_grant). Remounting cannot fix this -- run 'google-drive-ocamlfuse' to re-authorize. To stop it recurring every 7 days, switch the OAuth consent screen to 'In production' (or 'Internal')."
+
+          # Warn once per credential generation rather than every 5 minutes.
+          # Re-authorizing rewrites the state file, which makes it newer than
+          # the marker and re-arms the warning if it is still broken.
+          marker="''${XDG_RUNTIME_DIR:-/tmp}/google-drive-auth-warned"
+          if [ ! -e "$marker" ] || [ "$statefile" -nt "$marker" ]; then
+            ${pkgs.libnotify}/bin/notify-send --urgency=critical \
+              "Google Drive: re-authorization required" "$message" || true
+            ${pkgs.coreutils}/bin/touch "$marker"
+          fi
+
+          echo "$message" >&2
+          exit 0
+          ;;
+      esac
+    fi
+
+    # A state file with no refresh_token yet is not a wedge -- it is the
+    # interactive OAuth flow in progress, which writes the pending auth request
+    # first and the token only once the browser round trip completes. Restarting
+    # inside that window hands the daemon credentials it cannot use, and because
+    # Type=forking reports success the unit then sits "active" without ever
+    # mounting, while the token that arrives moments later is never picked up.
+    if [ -r "$statefile" ] && [ -z "$refresh_token" ]; then
+      echo "Authorization in progress (no refresh_token yet) -- not restarting." >&2
+      exit 0
+    fi
+
+    ${pkgs.systemd}/bin/systemctl --user restart google-drive-mount.service
+  '';
+  # google-drive-ocamlfuse rewrites ~/.gdfuse/default/config in full on every
+  # startup. That path used to be a symlink straight at the sops-rendered
+  # secret, so the daemon wrote its ~70 default settings *through* the link and
+  # clobbered the secret, while every sops re-render threw the daemon's own
+  # settings away. Keep the config a plain file the daemon owns, and inject
+  # just the credentials into it here before each start.
+  gdfuseConfigSeed = pkgs.writeShellScript "gdfuse-config-seed" ''
+    set -eu
+    configdir="$HOME/.gdfuse/default"
+    configfile="$configdir/config"
+    credentials="${config.sops.templates."gdfuse-credentials".path}"
+
+    ${pkgs.coreutils}/bin/mkdir -p "$configdir"
+
+    # Migrate away from the old symlink-at-the-secret layout.
+    if [ -L "$configfile" ]; then
+      ${pkgs.coreutils}/bin/rm -f "$configfile"
+    fi
+    ${pkgs.coreutils}/bin/touch "$configfile"
+    ${pkgs.coreutils}/bin/chmod 0600 "$configfile"
+
+    # Rebuild the file instead of editing in place: the secret can contain
+    # characters that are significant to sed.
+    tmp=$(${pkgs.coreutils}/bin/mktemp "$configdir/.config.XXXXXX")
+    ${pkgs.coreutils}/bin/chmod 0600 "$tmp"
+    ${pkgs.gnugrep}/bin/grep -v -E '^(client_id|client_secret)=' "$configfile" > "$tmp" || true
+    ${pkgs.gnugrep}/bin/grep -E '^(client_id|client_secret)=' "$credentials" >> "$tmp"
+    ${pkgs.coreutils}/bin/mv -f "$tmp" "$configfile"
+  '';
 in {
   # TODO please change the username & home directory to your own
   home.username = username;
@@ -46,6 +166,7 @@ in {
     ./dconf.nix
     ./neovim.nix
     sops-nix.homeManagerModules.sops
+    zen-browser.homeModules.default
   ];
 
   home.packages = with pkgs;
@@ -57,6 +178,8 @@ in {
       tmux
       # telegram-desktop
       htop
+      ncdu
+      bleachbit
       git
       keepassxc
       jq
@@ -93,7 +216,8 @@ in {
       luajitPackages.lua-lsp
       lua-language-server
       gedit
-      google-drive-ocamlfuse
+      # google-drive-ocamlfuse comes from gdfuseWithPort below, not from pkgs --
+      # two derivations shipping bin/google-drive-ocamlfuse collide in the profile.
       google-chrome
       fuse
       jetbrains-mono
@@ -106,21 +230,27 @@ in {
       insomnia
       age
       uv
+      copier # Copier project-template renderer (nixodoo-copier-template etc.)
       icloudpd
       flameshot
       digikam
       nodejs
+      python3 # bare interpreter + stdlib on PATH for tools that call `python3` (use uv/uvx for PyPI pkgs)
+      python3Packages.nwdiag # nwdiag/rackdiag/packetdiag — draw network diagrams from text
+      aichat # terminal LLM chat client; configured for the PGX vLLM endpoint (see ~/.config/aichat/config.yaml)
       grim
       slurp
       btop
-      zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       linuxPackages.cpupower
       pkgsUnstable.supabase-cli
+      pkgsUnstable.entire # AI-session recorder wired into kaertech-odoo-16 hooks; 26.05 is stuck on 0.6.2, the hooks expect 0.10.x
     ]
     ++ [
       codexWithMcpTokens
       claudeWithGitHub
       ghWithToken
+      gdfuseWithPort
+      kb.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
 
   programs.mpv = {
@@ -136,6 +266,14 @@ in {
     commandLineArgs = [
       "--enable-features=TabScrolling,VerticalTabsFeature"
     ];
+  };
+
+  programs.zen-browser = {
+    enable = true;
+    policies = {
+      PasswordManagerEnabled = false;
+      OfferToSaveLogins = false;
+    };
   };
 
   xdg = {
@@ -155,14 +293,42 @@ in {
     google-drive-mount = {
       Unit = {
         Description = "Mount Google Drive";
-        After = ["network-online.target"];
+        After = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
         Wants = ["network-online.target"];
+        # Authorization creates this file. Do not enter a restart loop before
+        # the one-time OAuth flow has completed.
+        ConditionPathExists = "%h/.gdfuse/default/state";
+        StartLimitIntervalSec = "5min";
+        StartLimitBurst = 3;
       };
 
       Service = {
         Type = "forking";
+        # First clear any stale FUSE endpoint left by an unclean previous exit
+        # ("Transport endpoint is not connected"); the leading "-" ignores the
+        # error when nothing is mounted. Then (re)create the mountpoint, because
+        # google-drive-ocamlfuse refuses to mount unless the directory already
+        # exists ("Mountpoint ... should be an existing directory").
+        ExecStartPre = [
+          # Inject the sops-managed credentials into the daemon-owned config
+          # file before the daemon starts and rewrites that file itself.
+          "${gdfuseConfigSeed}"
+          # The package binary in /nix/store is not setuid. NixOS exposes the
+          # privileged helper through /run/wrappers, which lets the mount owner
+          # detach a dead FUSE endpoint. -z also handles a wedged filesystem.
+          "-/run/wrappers/bin/fusermount -uz %h/GoogleDrive"
+          "${pkgs.coreutils}/bin/mkdir -p %h/GoogleDrive"
+        ];
         ExecStart = "${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse %h/GoogleDrive";
-        ExecStop = "${pkgs.fuse}/bin/fusermount -u %h/GoogleDrive";
+        ExecStop = "-/run/wrappers/bin/fusermount -uz %h/GoogleDrive";
+        # Detaching a FUSE mount does not guarantee that a wedged daemon will
+        # exit. Bound shutdown and kill every process left in the unit cgroup.
+        KillMode = "control-group";
+        TimeoutStopSec = "20s";
+        SendSIGKILL = true;
         Restart = "on-failure";
         RestartSec = "30s";
       };
@@ -171,6 +337,31 @@ in {
         WantedBy = ["default.target"];
       };
     };
+
+    google-drive-health-check = {
+      Unit = {
+        Description = "Check Google Drive FUSE mount responsiveness";
+        After = ["google-drive-mount.service"];
+        ConditionPathExists = "%h/.gdfuse/default/state";
+      };
+
+      Service = {
+        Type = "oneshot";
+        ExecStart = googleDriveHealthCheck;
+        TimeoutStartSec = "30s";
+      };
+    };
+  };
+
+  systemd.user.timers.google-drive-health-check = {
+    Unit.Description = "Periodically check Google Drive FUSE mount";
+    Timer = {
+      OnBootSec = "2min";
+      OnUnitActiveSec = "5min";
+      RandomizedDelaySec = "30s";
+      Persistent = true;
+    };
+    Install.WantedBy = ["timers.target"];
   };
 
   sops = {
@@ -192,14 +383,18 @@ in {
       EDITOR = "nvim";
     };
     initExtra = ''
+      export ODOO16_PROJECT_DIR="$HOME/KAERTECH/kaertech-odoo-16"
     '';
   };
 
-  sops.templates."gdfuse-config" = {
-    path = "${config.home.homeDirectory}/.gdfuse/default/config";
+  # Deliberately NOT ~/.gdfuse/default/config -- see gdfuseConfigSeed above.
+  # Written in the daemon's own "key=value" form (no spaces) so the seed script
+  # can match the lines exactly.
+  sops.templates."gdfuse-credentials" = {
+    path = "${config.home.homeDirectory}/.config/gdfuse/credentials";
     content = ''
-      client_id = ${config.sops.placeholder."google_client_id"}
-      client_secret = ${config.sops.placeholder."google_client_secret"}
+      client_id=${config.sops.placeholder."google_client_id"}
+      client_secret=${config.sops.placeholder."google_client_secret"}
     '';
     mode = "0600";
   };
@@ -229,9 +424,7 @@ in {
     [mcp_servers.postgres]
     command = "uvx"
     args = ["postgres-mcp", "--access-mode=unrestricted"]
-    env = {
-      DATABASE_URI = "postgresql://odoo:mypassword@localhost:5432/erp2026_01_15"
-    }
+    env_vars = ["DATABASE_URI"]
   '';
 
   home.file.".config/claude/mcp.json".text = ''
@@ -250,6 +443,14 @@ in {
           "headers": {
             "x-brain-key": "85f28016ed2b004e88443015c2b57677815981eb5fdc7eb9c932e244eed24df3"
           }
+        },
+        "teams": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+          "-y",
+          "git+https://github.com/okolovmark/teams-mcp.git#stable"
+          ]
         }
       }
     }
@@ -333,147 +534,221 @@ in {
 
   programs.ssh.enable = true;
   programs.ssh.enableDefaultConfig = false;
-  programs.ssh.matchBlocks = {
+  # programs.ssh.settings replaced the deprecated matchBlocks. Attribute names are
+  # Host patterns; values use OpenSSH directive names (HostName/User/IdentityFile/...).
+  programs.ssh.settings = {
     "*" = {
-      forwardAgent = false;
-      addKeysToAgent = "no";
-      compression = false;
-      serverAliveInterval = 0;
-      serverAliveCountMax = 3;
-      hashKnownHosts = false;
-      userKnownHostsFile = "~/.ssh/known_hosts";
-      controlMaster = "no";
-      controlPath = "~/.ssh/master-%r@%n:%p";
-      controlPersist = "no";
-    };
-    kepiProd = {
-      hostname = "139.162.11.95";
-      user = "prod";
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      ForwardAgent = false;
+      AddKeysToAgent = "no";
+      Compression = false;
+      ServerAliveInterval = 0;
+      ServerAliveCountMax = 3;
+      HashKnownHosts = false;
+      UserKnownHostsFile = "~/.ssh/known_hosts";
+      ControlMaster = "no";
+      ControlPath = "~/.ssh/master-%r@%n:%p";
+      ControlPersist = "no";
     };
     odoo-16-prod = {
-      hostname = "46.137.245.154";
-      user = "ubuntu";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "46.137.245.154";
+      User = "ubuntu";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     odoo-12-prod = {
-      hostname = "122.248.203.73";
-      user = "ubuntu";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "122.248.203.73";
+      User = "ubuntu";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     work-github = {
-      hostname = "github.com";
-      user = "git";
-      identityFile = "/home/${username}/.ssh/id_ed25519work-github";
+      HostName = "github.com";
+      User = "git";
+      IdentityFile = "/home/${username}/.ssh/id_ed25519work-github";
     };
     odoo-test = {
-      host = "10.10.10.11 10.10.10.12";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      header = "Host 10.10.10.11 10.10.10.12";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     grafana-reports = {
-      hostname = "192.168.1.109";
-      forwardAgent = true;
+      HostName = "192.168.1.109";
+      ForwardAgent = true;
     };
     odoo-16-project-test = {
-      hostname = "192.168.0.32";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.0.32";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kts-box-server = {
-      hostname = "192.168.1.38";
-      user = "proddb";
-      port = 2020;
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.1.38";
+      User = "proddb";
+      Port = 2020;
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kms-linode-prod = {
-      hostname = "139.162.25.216";
-      user = "ildar";
-      port = 2205;
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "139.162.25.216";
+      User = "ildar";
+      Port = 2205;
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kms-linode-prod-web = {
-      hostname = "139.162.25.216";
-      user = "kms-web";
-      port = 2205;
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "139.162.25.216";
+      User = "kms-web";
+      Port = 2205;
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo-12-prod-new = {
+      HostName = "192.168.20.118";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    odoo-12-prod-db-new = {
+      HostName = "192.168.20.117";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kts-db = {
+      HostName = "192.168.20.210";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kts-db-root = {
+      HostName = "192.168.20.210";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-web = {
+      HostName = "192.168.20.122";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kms-web-root = {
+      HostName = "192.168.20.122";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+    kts-phpmyadmin-root = {
+      HostName = "192.168.20.123";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kts-prod-new = {
-      hostname = "192.168.20.110";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.110";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kts-prod-new-root = {
-      hostname = "192.168.20.110";
-      user = "root";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.110";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kms-prod-new = {
-      hostname = "192.168.20.111";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.111";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     kms-prod-new-root = {
-      hostname = "192.168.20.111";
-      user = "root";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.111";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     lenovo_pgx = {
-      hostname = "192.168.20.199";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.199";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     # Per-developer Odoo 16 test CTs (odoo1.kepi .. odoo4.kepi), CT 112-115.
     # DHCP-reserved IPs on the office LAN; all share CT 101 PostgreSQL.
     odoo1_kepi = {
-      hostname = "192.168.20.112";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.112";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     odoo2_kepi = {
-      hostname = "192.168.20.113";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.113";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     odoo3_kepi = {
-      hostname = "192.168.20.114";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.114";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     odoo4_kepi = {
-      hostname = "192.168.20.115";
-      user = "kaertech";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.115";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     # Proxmox hypervisor nodes. Proxmox is administered as root, so there is
     # no unprivileged account to fall back to here.
     pve1_kepi = {
-      hostname = "192.168.20.100";
-      user = "root";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.100";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
     pve2_kepi = {
-      hostname = "192.168.20.200";
-      user = "root";
-      forwardAgent = true;
-      identityFile = "/home/${username}/.ssh/id_ed25519";
+      HostName = "192.168.20.200";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
+    odoo16_prod_db_kepi = {
+      HostName = "192.168.20.201";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
+    odoo16_prod_kepi = {
+      HostName = "192.168.20.202";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
+    odoo16_prod_kepi_public = {
+      HostName = "202.175.222.8";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
+    odoo16_prod_kepi_root = {
+      HostName = "192.168.20.202";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
+
+    odoo16_prod_db_replica_kepi = {
+      HostName = "192.168.20.120";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
   };
 
@@ -496,6 +771,33 @@ in {
       # No GTK headerbar: tmux handles tabs, so the title/tab bar is dead space.
       gtk-titlebar = false;
     };
+  };
+
+  # aichat: terminal LLM chat client pointed at the Lenovo PGX vLLM endpoint (KAI-1).
+  # Managed declaratively (read-only symlink); roles/sessions still write to ~/.config/aichat/.
+  home.file.".config/aichat/config.yaml".text = ''
+    model: pgx:nvidia/nemotron-3-super
+    clients:
+    - type: openai-compatible
+      name: pgx
+      api_base: http://192.168.20.199:8000/v1
+      api_key: dummy
+      models:
+      - name: nvidia/nemotron-3-super
+  '';
+
+  # Flameshot launcher for the GNOME custom shortcut (Shift+Alt+P, see dconf.nix).
+  # GNOME's media-keys spawns the command without a shell, so the pipe below needs
+  # its own script. `--raw | wl-copy` is the Wayland-friendly clipboard path;
+  # flameshot's built-in copy is unreliable on GNOME/Wayland. Managed declaratively
+  # so it can't go missing (the old hand-placed ~/configfiles path did).
+  home.file."configfiles/flameshot-launch.sh" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # Use Wayland-friendly clipboard path for flameshot.
+      ${pkgs.flameshot}/bin/flameshot gui --raw | ${pkgs.wl-clipboard}/bin/wl-copy
+    '';
   };
 
   home.stateVersion = stateVersion;

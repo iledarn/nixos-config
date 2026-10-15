@@ -38,36 +38,24 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # On p171g, hand DNS to systemd-resolved so split DNS for *.odoo.local works
-  # (see services.resolved block below).
-  networking.networkmanager.dns = lib.mkIf (hostname == "p171g") "systemd-resolved";
+  # Hand DNS to systemd-resolved so split DNS for the Kaertech LAN
+  # zones works (see services.resolved block below).
+  networking.networkmanager.dns = "systemd-resolved";
 
-  # Route to isolated test containers on PVE (vmbr1)
-  networking.networkmanager.dispatcherScripts = lib.mkIf (hostname == "p171g") [
-    {
-      source = pkgs.writeText "10-pve-route" ''
-        #!/bin/sh
-        if [ "$2" = "up" ]; then
-          case "$1" in
-            wlp0s20f3|enp*)
-              ${pkgs.iproute2}/bin/ip route replace 10.10.10.0/24 via 192.168.1.51 dev "$1"
-              ;;
-          esac
-        fi
-      '';
-      type = "basic";
-    }
-  ];
-
-  # Split DNS for Kaertech LAN: resolve *.odoo.local via dnsmasq on CT 108
-  # (192.168.1.19). All other queries continue through NetworkManager's
-  # normal upstream. The leading ~ marks odoo.local as a routing-only domain.
-  services.resolved = lib.mkIf (hostname == "p171g") {
+  # Split DNS for Kaertech LAN: resolve *.odoo.local and the whole .kepi TLD
+  # (odoo1.kepi .. odoo4.kepi per-developer boxes, etc.) via dnsmasq on
+  # CT 108 (192.168.20.108). All other queries continue through
+  # NetworkManager's normal upstream. The leading ~ marks each as a
+  # routing-only domain (not a search domain / default resolver); ~kepi
+  # covers every *.kepi name, ~odoo.local the legacy test hostnames.
+  # nixpkgs 26.05 replaced services.resolved.extraConfig with the structured
+  # settings.Resolve; this renders the same [Resolve] block in resolved.conf.
+  services.resolved = {
     enable = true;
-    extraConfig = ''
-      DNS=192.168.1.19
-      Domains=~odoo.local
-    '';
+    settings.Resolve = {
+      DNS = ["192.168.20.108"];
+      Domains = ["~odoo.local" "~kepi"];
+    };
   };
 
   # Set your time zone.
@@ -106,6 +94,10 @@
       }
     ];
     packages = ["org.telegram.desktop"];
+    update.auto = {
+      enable = true;
+      onCalendar = "weekly";
+    };
   };
 
   xdg.portal = {
@@ -120,12 +112,30 @@
     xkb.options = "ctrl:nocaps";
   };
 
+  # Logitech K580 quirk: over the Unifying dongle the keyboard enumerates as
+  # 046d:4089 and swaps Left Alt with Left Super; over Bluetooth it enumerates
+  # with a different id and behaves correctly. Swap the two modifiers back for
+  # the dongle device only.
+  #
+  # This is done with a udev hwdb keycode remap rather than keyd on purpose:
+  # keyd grabs the device and re-emits through a virtual keyboard, which stops
+  # GNOME's xkb options (notably grp:shifts_toggle layout switching) from
+  # applying. hwdb rewrites the keycodes in place on the real device, so GNOME
+  # still sees the K580 with all xkb options intact. The match is bus 0003 (USB
+  # receiver) only, so the Bluetooth connection is untouched. Standard HID
+  # scancodes: 0x700e2 = Left Alt, 0x700e3 = Left GUI/Super.
+  services.udev.extraHwdb = ''
+    evdev:input:b0003v046Dp4089*
+     KEYBOARD_KEY_700e2=leftmeta
+     KEYBOARD_KEY_700e3=leftalt
+  '';
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
   # Enable firmware updates via fwupd.
   services.fwupd.enable = true;
-  services.thermald.enable = lib.mkIf (hostname == "p171g") true;
+  services.thermald.enable = true;
 
   services.timesyncd.enable = false;
   services.chrony = {
@@ -155,6 +165,7 @@
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_15;
+    extensions = ps: with ps; [pgvector];
     enableTCPIP = true; # if you need TCP/IP connections
     authentication = pkgs.lib.mkForce ''
       # Configuration for authentication
@@ -168,6 +179,36 @@
     initialScript = pkgs.writeText "backend-initScript" ''
       CREATE USER odoo WITH PASSWORD 'mypassword' CREATEDB;
     '';
+  };
+
+  # Native MySQL for local KMS (Kaertech Monitoring System) dev — the non-Docker
+  # restore target used by the nixkms Django envs. Mirrors services.postgresql
+  # above. NO credentials live here. Admin is `root@localhost`, which MySQL
+  # leaves passwordless over the world-readable unix socket (and which has
+  # WITH GRANT OPTION) — that's what bootstraps the app user. The app/restore
+  # user `kt_admin` and its password are created OUTSIDE nix (so the secret never
+  # enters the world-readable nix store) and live only in ~/.my.cnf — the
+  # ~/.pgpass analog. Bootstrap kt_admin with the restore-dev-db-kms skill's
+  # scripts/bootstrap-native-mysql.sh after the first `nixos-rebuild`.
+  services.mysql = {
+    enable = true;
+    package = pkgs.mysql84; # same major as KTS/KMS prod (CT 210 / CT 122, Ubuntu 26.04)
+    settings.mysqld = {
+      bind-address = "127.0.0.1"; # TCP on 3306 (matches Docker db + nixkms DB_PORT)
+      character-set-server = "latin1";
+      collation-server = "latin1_swedish_ci";
+      restrict_fk_on_non_standard_key = "OFF";
+    };
+  };
+
+  # Native Redis for local KMS dev — the cache/broker backend the nixkms Django
+  # envs expect alongside MySQL. Mirrors services.mysql above. No credentials:
+  # loopback only, no password (dev). The empty-name "" is the default instance,
+  # which runs as redis.service.
+  services.redis.servers."" = {
+    enable = true;
+    bind = "127.0.0.1"; # loopback only
+    port = 6379; # TCP on 6379 (matches Docker redis + nixkms REDIS_PORT)
   };
 
   virtualisation.docker.enable = true;
@@ -204,28 +245,15 @@
     unzip
     nmap
     openssl
+    nettools # netstat, ifconfig, route, arp (ss/ip from iproute2 are the modern equivalents)
+    dnsutils # dig, nslookup, host, nsupdate (BIND tools)
   ];
 
-  systemd.services.cpupower-performance = lib.mkIf (hostname == "p171g") {
-    description = "Apply persistent cpupower settings";
-    wantedBy = ["multi-user.target"];
-    after = ["multi-user.target"];
-    script = ''
-      ${pkgs.linuxPackages.cpupower}/bin/cpupower frequency-set -g performance
-      ${pkgs.linuxPackages.cpupower}/bin/cpupower frequency-set -u 2.2GHz
-    '';
-    serviceConfig.Type = "oneshot";
-  };
-
-  systemd.services.disable-intel-turbo = lib.mkIf (hostname == "p171g") {
-    description = "Disable Intel turbo boost";
-    wantedBy = ["multi-user.target"];
-    after = ["multi-user.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.runtimeShell} -c 'echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo'";
-    };
-  };
+  # Point non-nixpkgs interpreters (uv/python-build-standalone, used by uvx-launched
+  # MCP servers, etc.) at the system CA bundle. Their compiled-in default cafile path
+  # doesn't exist here, so without this they can't verify TLS (CERTIFICATE_VERIFY_FAILED).
+  # OpenSSL reads SSL_CERT_FILE at runtime regardless of the interpreter.
+  environment.variables.SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
@@ -258,6 +286,7 @@
   '';
 
   nix.settings = {
+    auto-optimise-store = true;
     keep-outputs = true;
     keep-derivations = true;
     experimental-features = ["nix-command" "flakes"];
@@ -267,14 +296,20 @@
       "https://nix-community.cachix.org"
       "https://codex-cli.cachix.org"
       "https://claude-code.cachix.org"
+      "https://danielbodart.cachix.org"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "codex-cli.cachix.org-1:1Br3H1hHoRYG22n//cGKJOk3cQXgYobUel6O8DgSing="
       "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
+      "danielbodart.cachix.org-1:751qv4GxLFJCThWMEw1WL6kUqY0DpF6oqPqsLKnnEwU="
     ];
   };
+
+  # Claude Desktop (official Linux build). Cowork (QEMU VM sessions) left off;
+  # enabling it is cowork = { enable = true; users = [username]; };
+  programs.claude-desktop.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -286,8 +321,8 @@
 
   # List services that you want to enable:
 
-  # Enable the OpenSSH daemon (this host only, so the other laptop can ssh in).
-  services.openssh = lib.mkIf (hostname == "gram990") {
+  # Enable the OpenSSH daemon so the other laptop can ssh in.
+  services.openssh = {
     enable = true;
     ports = [ 22 ];
     settings = {
@@ -309,10 +344,27 @@
 
   zramSwap = {
     enable = true;
-    # Optional: customize settings
-    # memoryPercent = 50;  # Default is 50% of RAM
+    # zstd compresses ~3.5x, so over-committing zram past 100% of RAM is nearly
+    # free and buys real headroom.
+    memoryPercent = 150;
     # algorithm = "zstd"; # Default is lz4
   };
+
+  # zram is fast, so page out to it aggressively instead of holding cold pages in RAM.
+  boot.kernel.sysctl."vm.swappiness" = 180;
+
+  # Disk swapfile as an OOM backstop for runaway Odoo/DB restores. Lives on the
+  # LUKS-encrypted ext4 root, so it inherits full-disk encryption.
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 8 * 1024; # MiB
+    }
+  ];
+
+  # fstrim.timer is enabled by default, but discards only reach the NVMe if the
+  # LUKS layer passes them through. gram990-specific device UUID.
+  boot.initrd.luks.devices."luks-c18b2570-9cf9-4ee6-b5c4-67745356717a".allowDiscards = true;
 
   programs.nix-ld = {
     enable = true;
@@ -333,5 +385,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.11"; # Did you read the comment?
+  system.stateVersion = "26.05"; # Did you read the comment?
 }
