@@ -85,6 +85,21 @@
 
   services.udev.packages = with pkgs; [gnome-settings-daemon];
 
+  # Never sleep, so Claude Desktop Remote Control stays reachable: closing the
+  # lid only locks the screen, and suspend/hibernate are refused outright
+  # (this also covers the GDM greeter's own idle suspend).
+  services.logind.settings.Login = {
+    HandleLidSwitch = "lock";
+    HandleLidSwitchExternalPower = "lock";
+    HandleLidSwitchDocked = "ignore";
+  };
+  systemd.sleep.settings.Sleep = {
+    AllowSuspend = "no";
+    AllowHibernation = "no";
+    AllowHybridSleep = "no";
+    AllowSuspendThenHibernate = "no";
+  };
+
   services.flatpak = {
     enable = true;
     remotes = [

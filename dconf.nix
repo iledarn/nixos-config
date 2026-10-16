@@ -230,6 +230,8 @@ with lib.hm.gvariant; {
       picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/blobs-l.svg";
       primary-color = "#241f31";
       secondary-color = "#000000";
+      lock-enabled = true;
+      lock-delay = mkUint32 0;
     };
 
     "org/gnome/desktop/search-providers" = {
@@ -237,7 +239,9 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/desktop/session" = {
-      idle-delay = mkUint32 0;
+      # Blank + lock the screen after 5 idle minutes (the machine never sleeps,
+      # see services.logind / systemd.sleep in common-configuration.nix).
+      idle-delay = mkUint32 300;
     };
 
     "org/gnome/desktop/wm/keybindings" = {
@@ -410,8 +414,9 @@ with lib.hm.gvariant; {
 
     "org/gnome/settings-daemon/plugins/power" = {
       idle-dim = false;
-      sleep-inactive-ac-timeout = 7200;
-      sleep-inactive-battery-timeout = 3600;
+      sleep-inactive-ac-type = "nothing";
+      sleep-inactive-battery-type = "nothing";
+      power-button-action = "interactive";
     };
 
     "org/gnome/shell" = {
