@@ -26,6 +26,17 @@
     export CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1
     exec ${claudeCodeNix.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/claude --mcp-config "$HOME/.config/claude/mcp.json" "$@"
   '';
+  # kaertech-odoo-16 expects entire 0.11.5; nixpkgs-unstable has 0.11.3
+  entire = pkgsUnstable.entire.overrideAttrs (finalAttrs: old: {
+    version = "0.11.5";
+    src = pkgsUnstable.fetchFromGitHub {
+      owner = "entireio";
+      repo = "cli";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-MpTJt9HyEWkPGZIBST+iop0iCHHfy/4Hw3T5TmwB6Yo=";
+    };
+    vendorHash = "sha256-SgjJ2+eXUzN5YAafVII7Lgj9i2s1JDRBLanNNvhP0gA=";
+  });
   # Wrapper to expose GitHub token for gh CLI
   ghWithToken = pkgs.writeShellScriptBin "gh" ''
     export GH_TOKEN="$(cat ${config.sops.secrets.github_pat.path})"
@@ -242,7 +253,7 @@ in {
       btop
       linuxPackages.cpupower
       pkgsUnstable.supabase-cli
-      pkgsUnstable.entire # AI-session recorder wired into kaertech-odoo-16 hooks; 26.05 is stuck on 0.6.2, the hooks expect 0.10.x
+      entire # AI-session recorder wired into kaertech-odoo-16 hooks; pinned above
     ]
     ++ [
       codexWithMcpTokens
