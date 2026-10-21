@@ -434,11 +434,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1791359348,
-        "narHash": "sha256-cAyGOyl9P6JsYD/AgaFtSklAuSgfQi6v5YOd6bzE1RE=",
+        "lastModified": 1792482570,
+        "narHash": "sha256-sfpET2JNI688fMBSZA/wCzur0fAAN6gd8MPGRqPFK7E=",
         "owner": "okolovmark",
         "repo": "kb",
-        "rev": "9e10c9d8dac82d028813aa95ba93a219b49a937c",
+        "rev": "78022910daa1ef40c80ac1132789b83469af7aba",
         "type": "github"
       },
       "original": {
