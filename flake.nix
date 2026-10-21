@@ -71,6 +71,7 @@
           system = "x86_64-linux";
           specialArgs = {
             inherit hostname username pkgsUnstable pkgsMysql codexCliNix claudeCodeNix;
+            inherit (inputs) kb;
           };
           modules = [
             ./common-configuration.nix
