@@ -589,6 +589,11 @@ in {
       ForwardAgent = true;
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    dell_lat5531 = {
+      HostName = "192.168.1.234";
+      User = "ildar";
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
     kms-linode-prod = {
       HostName = "139.162.25.216";
       User = "ildar";
