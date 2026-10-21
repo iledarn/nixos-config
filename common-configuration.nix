@@ -247,6 +247,7 @@
     openssl
     nettools # netstat, ifconfig, route, arp (ss/ip from iproute2 are the modern equivalents)
     dnsutils # dig, nslookup, host, nsupdate (BIND tools)
+    wireguard-tools # wg, wg-quick; import a peer .conf with `nmcli connection import type wireguard file <x>.conf`
   ];
 
   # Point non-nixpkgs interpreters (uv/python-build-standalone, used by uvx-launched
