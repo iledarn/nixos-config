@@ -279,6 +279,9 @@
     isNormalUser = true;
     description = username;
     extraGroups = ["networkmanager" "wheel" "docker"];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKhxNwOPv2XsxKzlY9WAwjxLaraFxu83Aam87ZOiFDWZ iledarnp@gmail.com"
+    ];
     packages = with pkgs; [
       firefox
       #  thunderbird
@@ -376,7 +379,15 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+    };
+    openFirewall = true;
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
