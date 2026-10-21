@@ -7,12 +7,17 @@
   lib,
   hostname,
   username,
+  kb,
   ...
 }: {
   imports = [
     # Include the results of the hardware scan.
     ./hosts/${hostname}/hardware-configuration.nix
   ];
+
+  # kb's Claude Code plugin at a username-independent path, so the shared
+  # ~/.claude/settings.json (CLAUDE_CODE_PLUGIN_DIRS) works for every user/host.
+  environment.etc."claude/kb-plugin".source = "${kb.packages.${pkgs.stdenv.hostPlatform.system}.default}/share/kb/claude-plugin";
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
