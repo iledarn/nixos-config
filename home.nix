@@ -720,6 +720,12 @@ in {
       ForwardAgent = true;
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    pve3_kepi = {
+      HostName = "192.168.20.250";
+      User = "root";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
 
     odoo16_prod_db_kepi = {
       HostName = "192.168.20.201";
