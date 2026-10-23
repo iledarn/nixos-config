@@ -222,6 +222,7 @@ in {
       gnomeExtensions.workspace-indicator
       gnomeExtensions.system-monitor
       obs-studio
+      kooha # simple GNOME screen recorder (region/window, GIF/MP4, audio); lighter than OBS for quick clips
       nil
       luajitPackages.lua-lsp
       lua-language-server
