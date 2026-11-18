@@ -281,6 +281,7 @@ in {
 
   programs.zen-browser = {
     enable = true;
+    setAsDefaultBrowser = true;
     policies = {
       PasswordManagerEnabled = false;
       OfferToSaveLogins = false;
@@ -289,6 +290,19 @@ in {
 
   xdg = {
     enable = true;
+    # Home Manager owns ~/.config/mimeapps.list from here on, so every default
+    # has to be declared: apps can no longer register handlers themselves.
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        # setAsDefaultBrowser also claims these; keep their previous handlers.
+        "text/plain" = "org.gnome.TextEditor.desktop";
+        "x-scheme-handler/mailto" = "emacs-mail.desktop";
+        # Login callbacks of Claude Desktop and Claude Code.
+        "x-scheme-handler/claude" = "com.anthropic.Claude.desktop";
+        "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
+      };
+    };
   };
 
   programs.emacs = {
