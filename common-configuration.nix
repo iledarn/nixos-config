@@ -309,6 +309,10 @@
     openssl
     nettools # netstat, ifconfig, route, arp (ss/ip from iproute2 are the modern equivalents)
     dnsutils # dig, nslookup, host, nsupdate (BIND tools)
+    # Zen (same build as Home Manager's, policies included) also goes in the system
+    # profile: Claude Desktop 5.x narrows PATH to system dirs, and gio skips desktop
+    # entries whose Exec isn't on PATH, so its links fell back to GNOME Web.
+    config.home-manager.users.${username}.programs.zen-browser.finalPackage
   ];
 
   # Point non-nixpkgs interpreters (uv/python-build-standalone, used by uvx-launched
