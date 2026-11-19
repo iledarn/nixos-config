@@ -309,6 +309,9 @@
     openssl
     nettools # netstat, ifconfig, route, arp (ss/ip from iproute2 are the modern equivalents)
     dnsutils # dig, nslookup, host, nsupdate (BIND tools)
+    # System profile, not Home Manager: polkit reads action files only from here, and
+    # KeePassXC 2.8 Quick Unlock needs its org.keepassxc.KeePassXC.unlockDatabase action.
+    keepassxc
     # Zen (same build as Home Manager's, policies included) also goes in the system
     # profile: Claude Desktop 5.x narrows PATH to system dirs, and gio skips desktop
     # entries whose Exec isn't on PATH, so its links fell back to GNOME Web.
@@ -397,6 +400,40 @@
     };
     openFirewall = true;
   };
+
+  # Face unlock (Howdy) with the Latitude 5531 IR camera, for polkit prompts only:
+  # KeePassXC Quick Unlock and graphical admin prompts. Login, the lock screen,
+  # sudo and pkexec keep the password. Howdy can be fooled by a good printed photo.
+  # After the first rebuild: `sudo linux-enable-ir-emitter configure` (setup is kept
+  # in /var/lib/linux-enable-ir-emitter), then `sudo howdy add` to enrol the face.
+  services.linux-enable-ir-emitter.enable = true; # device defaults to video2, the IR node
+  services.howdy = {
+    enable = true;
+    settings.video.device_path = "/dev/v4l/by-path/pci-0000:00:14.0-usb-0:6:1.2-video-index0";
+  };
+  # services.howdy turns Howdy on for every PAM service as "required" (face AND
+  # password); switch it off globally and make it an alternative to the password
+  # for polkit only.
+  security.pam.howdy.enable = false;
+  security.pam.services.polkit-1.howdy = {
+    enable = true;
+    control = "sufficient";
+  };
+  # polkit 127 runs PAM in the sandboxed polkit-agent-helper@ unit (PrivateDevices,
+  # DevicePolicy=strict), where Howdy finds no camera; let it reach V4L devices.
+  systemd.services."polkit-agent-helper@".serviceConfig = {
+    PrivateDevices = false;
+    DeviceAllow = ["char-video4linux rw"];
+  };
+  # polkit can't tell PAM which action is being approved, so face would also be
+  # enough for `pkexec <cmd>` as root. Refuse pkexec outright; sudo stays.
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "org.freedesktop.policykit.exec") {
+        return polkit.Result.NO;
+      }
+    });
+  '';
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

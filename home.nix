@@ -192,7 +192,6 @@ in {
       ncdu
       bleachbit
       git
-      keepassxc
       jq
       yq
       fzf
