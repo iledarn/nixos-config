@@ -404,9 +404,19 @@
   # Face unlock (Howdy) with the Latitude 5531 IR camera, for polkit prompts only:
   # KeePassXC Quick Unlock and graphical admin prompts. Login, the lock screen,
   # sudo and pkexec keep the password. Howdy can be fooled by a good printed photo.
-  # After the first rebuild: `sudo linux-enable-ir-emitter configure` (setup is kept
-  # in /var/lib/linux-enable-ir-emitter), then `sudo howdy add` to enrol the face.
+  # On a fresh install the emitter setup comes from hosts/lat5531/ir-emitter (below); the
+  # face still has to be enrolled by hand (`sudo howdy add`), and is kept out of git.
   services.linux-enable-ir-emitter.enable = true; # device defaults to video2, the IR node
+  # What `sudo linux-enable-ir-emitter configure` saved on 2026-11-18, put back into its
+  # state directory when missing; a setup already there is never overwritten.
+  systemd.tmpfiles.rules = let
+    setup = ./hosts/lat5531/ir-emitter;
+    name = "pci-0000:00:14.0-usb-0:6:1.2-video-index0";
+  in [
+    "d /var/lib/linux-enable-ir-emitter 0755 root root -"
+    "C \"/var/lib/linux-enable-ir-emitter/${name}\" 0644 root root - ${setup}/${name}"
+    "C \"/var/lib/linux-enable-ir-emitter/${name}.ini\" 0644 root root - ${setup}/${name}.ini"
+  ];
   services.howdy = {
     enable = true;
     settings.video.device_path = "/dev/v4l/by-path/pci-0000:00:14.0-usb-0:6:1.2-video-index0";
