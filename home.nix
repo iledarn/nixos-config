@@ -714,6 +714,13 @@ in {
       ForwardAgent = true;
       IdentityFile = "/home/${username}/.ssh/id_ed25519";
     };
+    # odoo5.kepi on CT 125, outside the CT 111+N numbering.
+    odoo5_kepi = {
+      HostName = "192.168.20.125";
+      User = "kaertech";
+      ForwardAgent = true;
+      IdentityFile = "/home/${username}/.ssh/id_ed25519";
+    };
     # Proxmox hypervisor nodes. Proxmox is administered as root, so there is
     # no unprivileged account to fall back to here.
     pve1_kepi = {
